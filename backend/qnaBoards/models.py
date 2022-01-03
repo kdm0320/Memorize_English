@@ -2,7 +2,7 @@ from django.db import models
 from core.models import CoreModel
 
 
-class QnABoard(CoreModel):
+class QnaBoard(CoreModel):
     title = models.CharField(max_length=30)
     content = models.TextField()
     writer = models.ForeignKey(

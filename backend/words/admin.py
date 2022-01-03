@@ -4,4 +4,4 @@ from . import models
 
 @admin.register(models.Word)
 class WordAdmin(admin.ModelAdmin):
-    list_display = ("wordsets",)
+    list_display = ("title",)

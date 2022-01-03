@@ -8,6 +8,15 @@ class UserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
         (
             "Custom Profile",
-            {"fields": ("nickname",)},
+            {
+                "fields": (
+                    "nickname",
+                    "collection",
+                    "voca",
+                    "finished_collection",
+                    "finished_voca",
+                )
+            },
         ),
     )
+    list_display = ""

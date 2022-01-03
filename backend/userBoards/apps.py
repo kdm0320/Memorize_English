@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class UserboardsConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'userBoards'
+class UserBoardsConfig(AppConfig):
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "userBoards"
