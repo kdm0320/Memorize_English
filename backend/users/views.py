@@ -3,8 +3,11 @@ from django.conf import settings
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions
+
+from words.serializers import WordSerializer
 
 from .serializers import UserSerializer
 from .models import User
@@ -43,3 +46,20 @@ class UserViewSet(ModelViewSet):
             return Response(data={"token": encoded_jwt, "id": user.pk})
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+    @action(detail=True)
+    def collection(self, request, pk):
+        user = self.get_object()
+        serializer = WordSerializer(user.favs.all(), many=True).data
+        return Response(serializer)
+
+
+class CollectionView(APIView):
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        pass
+
+    def put(self, request):
+        pass
