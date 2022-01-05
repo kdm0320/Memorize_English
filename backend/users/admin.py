@@ -24,3 +24,5 @@ class UserAdmin(UserAdmin):
         "username",
         "nickname",
     )
+
+    filter_horizontal = ("collection",)
