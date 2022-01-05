@@ -1,17 +1,16 @@
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView, RetrieveAPIView
-
-from .serializers import WordSerializer, BigWordSerializer
+from rest_framework.viewsets import ModelViewSet
+from rest_framework import permissions
+from .serializers import WordSerializer
 from .models import Word
 
 
-class ListWordsView(ListAPIView):
+class WordViewSet(ModelViewSet):
     queryset = Word.objects.all()
     serializer_class = WordSerializer
 
-
-class SeeWordView(RetrieveAPIView):
-    queryset = Word.objects.all()
-    serializer_class = BigWordSerializer
+    def get_permissions(self):
+        if self.action == "list" or self.action == "retrieve":
+            permission_classes = [permissions.AllowAny]
+        else:
+            permission_classes = [permissions.IsAdminUser]
+        return [permission() for permission in permission_classes]
