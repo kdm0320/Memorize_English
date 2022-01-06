@@ -10,7 +10,7 @@ from words import models
 
 def convert_data():
     data = openpyxl.load_workbook(
-        "C:/Users/User/Desktop/Dongmin/Project/memorize_english/datas/TOEIC 토익 빈출 영어단어정리 327.xlsx"
+        "C:/Users/User/Desktop/Dongmin/Project/memorize_english/datas/words/TOEIC 토익 빈출 영어단어정리 327.xlsx"
     )
     ws = data.active
     words = ws["B"] + ws["E"]
