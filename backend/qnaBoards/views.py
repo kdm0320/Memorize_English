@@ -1,5 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions
+from rest_framework.decorators import action
+
 from .serializers import NoticeSerializer
 from .models import QnaBoard
 from .permissons import IsWriter

@@ -10,6 +10,7 @@ class QnaBoard(CoreModel):
     )
     photo = models.ImageField(null=True, blank=True)
     views = models.IntegerField(default=0)
+    is_solved = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

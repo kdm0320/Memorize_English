@@ -8,7 +8,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions
 
 from words.serializers import WordSerializer
-
+from words.models import Word
 from .serializers import UserSerializer
 from .models import User
 from .permissions import IsSelf
@@ -22,9 +22,9 @@ class UserViewSet(ModelViewSet):
 
     def get_permissions(self):
         permission_classes = []
-        if self.action == "list":
+        if self.action == "list" or self.action == "retrieve":
             permission_classes = [permissions.IsAdminUser]
-        elif self.action == "create" or self.action == "retrieve":
+        elif self.action == "create":
             permission_classes = [permissions.AllowAny]
         else:
             permission_classes = [IsSelf]
@@ -50,16 +50,26 @@ class UserViewSet(ModelViewSet):
     @action(detail=True)
     def collection(self, request, pk):
         user = self.get_object()
-        serializer = WordSerializer(user.favs.all(), many=True).data
+        serializer = WordSerializer(user.collection.all(), many=True).data
         return Response(serializer)
+
+    @collection.mapping.put
+    def add_collection(self, request, pk):
+        pk = request.data.get("pk", None)
+        user = self.get_object()
+        if pk is not None:
+            try:
+                word = Word.objects.get(pk=pk)
+                if word in user.collection.all():
+                    user.collection.remove(word)
+                else:
+                    user.collection.add(word)
+                return Response()
+            except Word.DoesNotExist:
+                pass
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class CollectionView(APIView):
 
     permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request):
-        pass
-
-    def put(self, request):
-        pass

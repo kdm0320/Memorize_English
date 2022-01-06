@@ -11,10 +11,5 @@ class NoticeSerializer(serializers.ModelSerializer):
             "content",
             "writer",
             "views",
+            "is_solved",
         )
-
-
-class BigNoticeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.QnaBoard
-        exclude = ()
