@@ -23,8 +23,8 @@ function App() {
 
         <Route path="/loby" element={<Loby />} />
         <Route path="/achievment" element={<Achievment />} />
-        <Route path="/usercourses" element={<UserCourse />} />
-        <Route path="/uservoca" element={<UserVoca />} />
+        <Route path="/userCourses" element={<UserCourse />} />
+        <Route path="/userVoca" element={<UserVoca />} />
         <Route path="/courses" element={<Courses />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/qna" element={<QnaBoard />} />
