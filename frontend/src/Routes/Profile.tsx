@@ -41,6 +41,7 @@ function Profile() {
           />
           <input {...register("nickName")} placeholder="닉네임(Nickname)" />
           <button>save</button>
+          <button>cancle</button>
         </form>
       </div>
     </>

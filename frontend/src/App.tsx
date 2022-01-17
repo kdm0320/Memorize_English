@@ -20,7 +20,6 @@ function App() {
         <Route path="/" element={<Gate />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-
         <Route path="/loby" element={<Loby />} />
         <Route path="/achievment" element={<Achievment />} />
         <Route path="/userCourses" element={<UserCourse />} />
