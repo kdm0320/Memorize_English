@@ -1,16 +1,19 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { OnNoti } from "../atoms";
+import { basketState, IBasket, OnNoti } from "../atoms";
 import { CnNoti } from "../Components/Notification";
 import { Btn, Noti } from "../theme";
 
 interface IProp {
   location?: string;
+  bdcolor?: string | null;
+  brdius?: string | null;
 }
 
-interface ITitle {
-  title: string | null;
+interface IChosenSet {
+  borderColor: string;
 }
 
 const ChosenBox = styled.div`
@@ -27,6 +30,7 @@ const WorldSet = styled(motion.div)<IProp>`
   height: 100px;
   background-color: lightBlue;
   position: ${(props) => props.location};
+  border-width: 5px;
 `;
 
 const Overlay = styled(motion.div)`
@@ -48,9 +52,11 @@ const OverView = styled(motion.div)`
 `;
 
 const ChosenSet = styled(WorldSet)`
-  background-color: red;
+  background-color: lightblue;
   width: 50px;
   height: 50px;
+  border-color: ${(props) => props.bdcolor};
+  border-radius: ${(props) => props.brdius || "0px"};
 `;
 
 const datas = [
@@ -60,39 +66,64 @@ const datas = [
   { pk: "4", title: "비즈니스", is_learnig: false },
   { pk: "5", title: "기초", is_learnig: false },
 ];
+
 function Courses() {
-  const [id, setId] = useState<string | null>(null);
-  const [title, setTitle] = useState<string | null>(null);
-  const [baskets, setBaskets] = useState<(string | null)[]>([]);
+  const [id, setId] = useState<string | null | undefined>(null);
+  const [title, setTitle] = useState<string>("");
+  const [basket, setBaskets] = useRecoilState<IBasket>(basketState);
   const addBasket = () => {
-    setBaskets((prev) => [title, ...prev]);
+    if (Object.keys(basket).includes(title)) return null;
+    const world = title;
+    setBaskets((prev) => {
+      const newprev = { ...prev };
+      newprev[title] = false;
+      return newprev;
+    });
+  };
+  console.log(basket);
+  const [chekList, setCheckList] = useState<(string | undefined | null)[]>([]);
+
+  const chosenSetRef = useRef<HTMLDivElement>(null);
+  const deleteBasket = () => {};
+  const onChangeClick = () => {
+    setCheckList((prev) => [title, ...prev]);
   };
   return (
     <>
       <ChosenBox>
+        {/* <div>
+          {basket.length != 0
+            ? basket.map((set, index) => (
+                <ChosenSet onClick={onChangeClick} key={index}>
+                  {JSON.parse(set)}
+                </ChosenSet>
+              ))
+            : null}
+        </div> */}
         <h3>장바구니</h3>
         <button>저장</button>
         <button>삭제</button>
       </ChosenBox>
-      {datas.map((data) => (
-        <WorldSet
-          onClick={() => {
-            setId(data.pk + "#");
-            setTitle(data.title);
-          }}
-          key={data.pk + "#"}
-          layoutId={data.pk + "#"}
-        >
-          {data.title}
-        </WorldSet>
-      ))}
+      <div>
+        {datas.map((data) => (
+          <WorldSet
+            onClick={() => {
+              setId(data.pk + "#");
+              setTitle(data.title);
+            }}
+            key={data.pk + "#"}
+            layoutId={data.pk + "#"}
+          >
+            {data.title}
+          </WorldSet>
+        ))}
+      </div>
 
       <AnimatePresence>
         {id ? (
           <Overlay
             onClick={() => {
               setId(null);
-              setTitle(null);
             }}
           >
             <OverView layoutId={id}>
