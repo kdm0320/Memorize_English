@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import styled from "styled-components";
 
 export const Btn = styled.button`
@@ -30,4 +31,11 @@ export const Btn = styled.button`
   white-space: nowrap;
   will-change: box-shadow, transform;
   font-size: 18px;
+`;
+
+export const Noti = styled(motion.div)`
+  width: 300px;
+  height: 200px;
+  background-color: white;
+  font-size: 15px;
 `;

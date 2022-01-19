@@ -1,10 +1,19 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { Btn } from "../buttonTheme";
+import { OnNoti } from "../atoms";
+import { CnNoti } from "../Components/Notification";
+import { Btn, Noti } from "../theme";
+
+interface IProp {
+  location?: string;
+}
+
+interface ITitle {
+  title: string | null;
+}
 
 const ChosenBox = styled.div`
-  display: flex;
   float: right;
   width: 300px;
   height: 400px;
@@ -12,10 +21,6 @@ const ChosenBox = styled.div`
   border-color: black;
   border-width: 5px;
 `;
-
-interface IProp {
-  location?: string;
-}
 
 const WorldSet = styled(motion.div)<IProp>`
   width: 100px;
@@ -42,43 +47,57 @@ const OverView = styled(motion.div)`
   background-color: white;
 `;
 
-function Courses() {
-  const [showing, setShowing] = useState(false);
-  const [ischoice, setIschoice] = useState(false);
-  const toggleShowing = () => setShowing((prev) => !prev);
-  const toggleChoice = () => setIschoice((prev) => !prev);
+const ChosenSet = styled(WorldSet)`
+  background-color: red;
+  width: 50px;
+  height: 50px;
+`;
 
-  const datas = ["토익", "오픽", "실생활", "기본"];
-  const target = {
-    id: "",
-    title: "",
+const datas = [
+  { pk: "1", title: "토익", is_learnig: false },
+  { pk: "2", title: "오픽", is_learnig: false },
+  { pk: "3", title: "회화", is_learnig: false },
+  { pk: "4", title: "비즈니스", is_learnig: false },
+  { pk: "5", title: "기초", is_learnig: false },
+];
+function Courses() {
+  const [id, setId] = useState<string | null>(null);
+  const [title, setTitle] = useState<string | null>(null);
+  const [baskets, setBaskets] = useState<(string | null)[]>([]);
+  const addBasket = () => {
+    setBaskets((prev) => [title, ...prev]);
   };
   return (
     <>
       <ChosenBox>
         <h3>장바구니</h3>
-        <Btn>저장</Btn>
-
         <button>저장</button>
         <button>삭제</button>
       </ChosenBox>
-      <WorldSet location="relative" layoutId="choice">
+      {datas.map((data) => (
         <WorldSet
-          location="absolute"
-          style={{ top: 0 }}
-          onClick={toggleShowing}
-          layoutId="ex"
+          onClick={() => {
+            setId(data.pk + "#");
+            setTitle(data.title);
+          }}
+          key={data.pk + "#"}
+          layoutId={data.pk + "#"}
         >
-          단어주제
+          {data.title}
         </WorldSet>
-        단어주제
-      </WorldSet>
+      ))}
+
       <AnimatePresence>
-        {showing ? (
-          <Overlay onClick={toggleShowing}>
-            <OverView layoutId="ex">
+        {id ? (
+          <Overlay
+            onClick={() => {
+              setId(null);
+              setTitle(null);
+            }}
+          >
+            <OverView layoutId={id}>
               단어 상세내용
-              <button onClick={toggleChoice}>choose</button>
+              <button onClick={addBasket}>choose</button>
             </OverView>
           </Overlay>
         ) : null}
