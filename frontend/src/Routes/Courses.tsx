@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { MouseEvent, useEffect, useRef, useState } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { basketState, IBasket, OnNoti } from "../atoms";
@@ -71,35 +71,39 @@ function Courses() {
   const [id, setId] = useState<string | null | undefined>(null);
   const [title, setTitle] = useState<string>("");
   const [basket, setBaskets] = useRecoilState<IBasket>(basketState);
+  const [chekList, setCheckList] = useState<(string | undefined | null)[]>([]);
   const addBasket = () => {
     if (Object.keys(basket).includes(title)) return null;
-    const world = title;
     setBaskets((prev) => {
       const newprev = { ...prev };
       newprev[title] = false;
       return newprev;
     });
   };
-  console.log(basket);
-  const [chekList, setCheckList] = useState<(string | undefined | null)[]>([]);
 
   const chosenSetRef = useRef<HTMLDivElement>(null);
   const deleteBasket = () => {};
-  const onChangeClick = () => {
+  const onChangeClick = (event: MouseEvent) => {
+    setTitle(event.currentTarget.innerHTML);
     setCheckList((prev) => [title, ...prev]);
   };
+  console.log(chekList);
   return (
     <>
       <ChosenBox>
-        {/* <div>
-          {basket.length != 0
-            ? basket.map((set, index) => (
-                <ChosenSet onClick={onChangeClick} key={index}>
-                  {JSON.parse(set)}
+        <div>
+          {Object.keys(basket).length != 0
+            ? Object.keys(basket).map((set, index) => (
+                <ChosenSet
+                  onClick={onChangeClick}
+                  key={index}
+                  ref={chosenSetRef}
+                >
+                  {set}
                 </ChosenSet>
               ))
             : null}
-        </div> */}
+        </div>
         <h3>장바구니</h3>
         <button>저장</button>
         <button>삭제</button>
