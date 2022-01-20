@@ -3,13 +3,8 @@ import { MouseEvent, useRef, useState } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import styled from "styled-components";
 import { basketState, IBasket, OnNoti } from "../atoms";
+import { WorldSet } from "../Components/Worldset";
 import { Noti } from "../theme";
-
-interface IProp {
-  location?: string;
-  bdcolor?: string | null;
-  brdius?: string | null;
-}
 
 const ChosenBox = styled.div`
   float: right;
@@ -17,14 +12,6 @@ const ChosenBox = styled.div`
   height: 400px;
   background-color: red;
   border-color: black;
-  border-width: 5px;
-`;
-
-const WorldSet = styled(motion.div)<IProp>`
-  width: 100px;
-  height: 100px;
-  background-color: lightBlue;
-  position: ${(props) => props.location};
   border-width: 5px;
 `;
 

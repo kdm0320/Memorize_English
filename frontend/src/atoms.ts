@@ -1,6 +1,5 @@
 import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
-import { DefaultKeyword } from "typescript";
 
 export const isChosenAtom = atom({
   key: "isChosen",
