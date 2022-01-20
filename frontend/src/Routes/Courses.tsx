@@ -1,9 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { MouseEvent, useEffect, useRef, useState } from "react";
-import { useRecoilState } from "recoil";
+import { MouseEvent, useRef, useState } from "react";
+import { useRecoilState, useResetRecoilState } from "recoil";
 import styled from "styled-components";
 import { basketState, IBasket, OnNoti } from "../atoms";
-import { CnNoti } from "../Components/Notification";
 import { Btn, Noti } from "../theme";
 
 interface IProp {
@@ -67,21 +66,13 @@ const datas = [
   { pk: "5", title: "기초", is_learnig: false },
 ];
 
-const useConfirm = (message: string, callback: Function) => {
-  const showMessage = () => {
-    return (
-      <div>
-        <Noti>
-          {message}
-          <button>취소</button>
-          <button>확인</button>
-        </Noti>
-      </div>
-    );
-  };
+const useConfirm1 = (
+  message: string,
+  setOnNoti: Function,
+  callback: Function
+) => {
   const confirmAction = () => {
     if (window.confirm(message)) {
-      showMessage();
       callback();
     }
   };
@@ -100,7 +91,28 @@ function Courses() {
       return newprev;
     });
   };
-  const sendData = () => console.log("test"); //백엔드와 연결 후 장바구니 데이터를 유저 단어모음으로 보내주는 역할 함수
+
+  const [onNoti, setOnNoti] = useRecoilState(OnNoti);
+  const toggleNoti = () => setOnNoti((prev) => !prev);
+  const reset = useResetRecoilState(basketState);
+
+  const SendData = () => {
+    console.log("test");
+    toggleNoti();
+    reset();
+  }; //백엔드와 연결 후 장바구니 데이터를 유저 단어모음으로 보내주고 장바구니 리셋 역할 함수
+  const showFuction = (message: string) => {
+    return (
+      <div>
+        <Noti>
+          {message}
+          <button onClick={SendData}>확인</button>
+          <button onClick={toggleNoti}>취소</button>
+        </Noti>
+      </div>
+    );
+  };
+
   const chosenSetRef = useRef<HTMLDivElement>(null);
   const deleteBasket = () => {
     for (let i in basket) {
@@ -124,6 +136,8 @@ function Courses() {
   return (
     <>
       <ChosenBox>
+        {onNoti ? showFuction("저장하시겠습니까?") : null}
+
         <div>
           {Object.keys(basket).length != 0
             ? Object.keys(basket).map((set, index) => (
@@ -139,9 +153,7 @@ function Courses() {
             : null}
         </div>
         <h3>장바구니</h3>
-        <button onClick={useConfirm("저장하시겠습니까?", sendData)}>
-          저장
-        </button>
+        <button onClick={toggleNoti}>저장</button>
         <button onClick={deleteBasket}>삭제</button>
       </ChosenBox>
       <div>

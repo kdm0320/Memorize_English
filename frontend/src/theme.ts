@@ -38,4 +38,7 @@ export const Noti = styled(motion.div)`
   height: 200px;
   background-color: white;
   font-size: 15px;
+  border-color: black;
+  border-width: 5px;
+  border-style: solid;
 `;
