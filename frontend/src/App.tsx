@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Header from "./Components/Header";
 import Achievment from "./Routes/Achievment";
 import Courses from "./Routes/Courses";
 import Gate from "./Routes/Gate";
-import Header from "./Components/Header";
 import Loby from "./Routes/Loby";
 import Login from "./Routes/Login";
 import Profile from "./Routes/Profile";

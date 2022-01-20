@@ -1,13 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 function Header() {
-  if (
-    window.location.pathname === "/" ||
-    window.location.pathname === "/Login" ||
-    window.location.pathname === "/login" ||
-    window.location.pathname === "/signup"
-  )
-    return null;
+  const search = useLocation();
+  if (search.pathname === "/") return null;
+  if (search.pathname === "/Login" || search.pathname === "/login") return null;
+  if (search.pathname === "/signup") return null;
   return (
     <div>
       <Link to="/qna">

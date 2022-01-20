@@ -12,7 +12,9 @@ function Login() {
           {...register("password", { required: true })}
           placeholder="Password"
         />
-        <button>Log In</button>
+        <Link to="/loby">
+          <button>Log In</button>
+        </Link>
       </form>
       <div>
         Don't have a account?

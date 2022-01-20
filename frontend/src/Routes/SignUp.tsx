@@ -30,7 +30,9 @@ function SignUp() {
           placeholder="비밀번호 확인(Confirm Password)"
         />
         <input {...register("nickName")} placeholder="닉네임(Nickname)" />
-        <button>Create</button>
+        <Link to="/login">
+          <button>Create</button>
+        </Link>
       </form>
     </div>
   );

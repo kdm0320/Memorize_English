@@ -3,16 +3,12 @@ import { MouseEvent, useRef, useState } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import styled from "styled-components";
 import { basketState, IBasket, OnNoti } from "../atoms";
-import { Btn, Noti } from "../theme";
+import { Noti } from "../theme";
 
 interface IProp {
   location?: string;
   bdcolor?: string | null;
   brdius?: string | null;
-}
-
-interface IChosenSet {
-  borderColor: string;
 }
 
 const ChosenBox = styled.div`
@@ -65,19 +61,6 @@ const datas = [
   { pk: "4", title: "비즈니스", is_learnig: false },
   { pk: "5", title: "기초", is_learnig: false },
 ];
-
-const useConfirm1 = (
-  message: string,
-  setOnNoti: Function,
-  callback: Function
-) => {
-  const confirmAction = () => {
-    if (window.confirm(message)) {
-      callback();
-    }
-  };
-  return confirmAction;
-};
 
 function Courses() {
   const [id, setId] = useState<string | null | undefined>(null);
@@ -139,7 +122,7 @@ function Courses() {
         {onNoti ? showFuction("저장하시겠습니까?") : null}
 
         <div>
-          {Object.keys(basket).length != 0
+          {Object.keys(basket).length !== 0
             ? Object.keys(basket).map((set, index) => (
                 <ChosenSet
                   onClick={onChangeClick}
