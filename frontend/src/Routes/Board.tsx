@@ -42,9 +42,15 @@ function Board() {
         <Content bdstyle="dotted">0</Content>
       </ContentBar>
       <div>
-        <Link to="/qna/write">
-          <button>글쓰기</button>
-        </Link>
+        {search.pathname === "/qna" ? (
+          <Link to="/qna/write">
+            <button>글쓰기</button>
+          </Link>
+        ) : (
+          <Link to="/userBoard/write">
+            <button>글쓰기</button>
+          </Link>
+        )}
       </div>
     </div>
   );
