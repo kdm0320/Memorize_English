@@ -6,11 +6,11 @@ import Gate from "./Routes/Gate";
 import Loby from "./Routes/Loby";
 import Login from "./Routes/Login";
 import Profile from "./Routes/Profile";
-import QnaBoard from "./Routes/QnaBoard";
 import SignUp from "./Routes/SignUp";
-import UserBoard from "./Routes/UserBoard";
 import UserCourse from "./Routes/UserCourses";
 import UserVoca from "./Routes/UserVoca";
+import Write from "./Routes/Write";
+import Board from "./Routes/Board";
 
 function App() {
   return (
@@ -26,8 +26,10 @@ function App() {
         <Route path="/userVoca" element={<UserVoca />} />
         <Route path="/courses" element={<Courses />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/qna" element={<QnaBoard />} />
-        <Route path="/userBoard" element={<UserBoard />} />
+        <Route path="/qna" element={<Board />} />
+        <Route path="/userBoard" element={<Board />} />
+        <Route path="/qna/write" element={<Write />} />
+        <Route path="/userBoard/write" element={<Write />} />
       </Routes>
     </Router>
   );
