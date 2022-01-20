@@ -67,11 +67,31 @@ const datas = [
   { pk: "5", title: "기초", is_learnig: false },
 ];
 
+const useConfirm = (message: string, callback: Function) => {
+  const showMessage = () => {
+    return (
+      <div>
+        <Noti>
+          {message}
+          <button>취소</button>
+          <button>확인</button>
+        </Noti>
+      </div>
+    );
+  };
+  const confirmAction = () => {
+    if (window.confirm(message)) {
+      showMessage();
+      callback();
+    }
+  };
+  return confirmAction;
+};
+
 function Courses() {
   const [id, setId] = useState<string | null | undefined>(null);
   const [title, setTitle] = useState<string>("");
   const [basket, setBaskets] = useRecoilState<IBasket>(basketState);
-  const [chekList, setCheckList] = useState<(string | undefined | null)[]>([]);
   const addBasket = () => {
     if (Object.keys(basket).includes(title)) return null;
     setBaskets((prev) => {
@@ -80,14 +100,27 @@ function Courses() {
       return newprev;
     });
   };
-
+  const sendData = () => console.log("test"); //백엔드와 연결 후 장바구니 데이터를 유저 단어모음으로 보내주는 역할 함수
   const chosenSetRef = useRef<HTMLDivElement>(null);
-  const deleteBasket = () => {};
-  const onChangeClick = (event: MouseEvent) => {
-    setTitle(event.currentTarget.innerHTML);
-    setCheckList((prev) => [title, ...prev]);
+  const deleteBasket = () => {
+    for (let i in basket) {
+      if (basket[i]) {
+        setBaskets((prev) => {
+          const newprev = { ...prev };
+          delete newprev[i];
+          return newprev;
+        });
+      }
+    }
   };
-  console.log(chekList);
+  const onChangeClick = (event: MouseEvent) => {
+    setBaskets((prev) => {
+      const newprev = { ...prev };
+      newprev[event.currentTarget.innerHTML] =
+        !newprev[event.currentTarget.innerHTML];
+      return newprev;
+    });
+  };
   return (
     <>
       <ChosenBox>
@@ -98,6 +131,7 @@ function Courses() {
                   onClick={onChangeClick}
                   key={index}
                   ref={chosenSetRef}
+                  brdius={basket[set] ? "25px" : null}
                 >
                   {set}
                 </ChosenSet>
@@ -105,8 +139,10 @@ function Courses() {
             : null}
         </div>
         <h3>장바구니</h3>
-        <button>저장</button>
-        <button>삭제</button>
+        <button onClick={useConfirm("저장하시겠습니까?", sendData)}>
+          저장
+        </button>
+        <button onClick={deleteBasket}>삭제</button>
       </ChosenBox>
       <div>
         {datas.map((data) => (
