@@ -6,7 +6,7 @@ function Loby() {
       <Link to="/achievment">
         <button>성취도</button>
       </Link>
-      <Link to="/userCourses">
+      <Link to="/collection">
         <button>개인 단어모음</button>
       </Link>
       <Link to="/userVoca">
