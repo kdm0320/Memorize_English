@@ -130,18 +130,19 @@ function Collection() {
                   뜻 가리기
                 </button>
                 {clickedSet.content.map((word, index) => (
-                  <>
+                  <div>
                     <span key={index + "#" + word[0]}>{index + 1}</span>
-                    <>
+                    <form>
                       {isBlindWord ? null : (
                         <Word key={word[0]} readOnly value={word[0]} />
                       )}
                       {isBlindMean ? null : (
                         <Word key={word[1]} readOnly value={word[1]} />
                       )}
-                    </>
+                      <input type="button" value="단어장에 저장" />
+                    </form>
                     <br key={index + word[0] + "br"} />
-                  </>
+                  </div>
                 ))}
               </>
             )}
