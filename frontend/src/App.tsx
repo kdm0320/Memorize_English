@@ -22,9 +22,11 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/loby" element={<Loby />} />
         <Route path="/achievment" element={<Achievment />} />
-        {["/collection", "/collection/:setId"].map((path, index) => {
-          return <Route path={path} element={<Collection />} key={index} />;
-        })}
+        {["/collection", "/collection/test/:setId", "/collection/:setId"].map(
+          (path, index) => {
+            return <Route path={path} element={<Collection />} key={index} />;
+          }
+        )}
         {/* <Route path="/collection" element={<Collection />} /> */}
         <Route path="/userVoca" element={<UserVoca />} />
         <Route path="/courses" element={<Courses />} />

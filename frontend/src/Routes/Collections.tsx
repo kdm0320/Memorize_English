@@ -63,6 +63,12 @@ const Test = styled(motion.div)`
   margin: 0 auto;
 `;
 
+const Content = styled(Test)`
+  background-color: whitesmoke;
+  border-color: black;
+  border-style: solid;
+`;
+
 function Collection() {
   const navigate = useNavigate();
   const { setId } = useParams();
@@ -72,26 +78,62 @@ function Collection() {
     formState: { errors },
   } = useForm<IAnswer>();
   const [word, setWord] = useState(0);
-  const onSetClicked = (setId: string) => {
-    navigate(`/collection/${setId}`);
+  const [onTest, setOnTest] = useState(false);
+
+  const toggleOnTest = () => {
+    setOnTest((prev) => !prev);
+  };
+  const [isBlindMean, setIsBlindMean] = useState(false);
+  const [isBlindWord, setIsBlindWord] = useState(false);
+  const toggleMeanBlind = () => setIsBlindMean((prev) => !prev);
+  const toggleWordBlind = () => setIsBlindWord((prev) => !prev);
+
+  const onTestClicked = (setId: string) => {
+    toggleOnTest();
+    navigate(`/collection/test/${setId}`);
   };
   const onCloseClicked = () => {
+    if (onTest) toggleOnTest();
     navigate(`/collection`);
   };
   const clickedSet = setId && datas.find((set) => set.pk === setId);
   const onValid = (data: IAnswer) => {
     console.log(data);
   };
+  const onSetClicked = (setId: string) => {
+    navigate(`/collection/${setId}`);
+  };
   return (
     <div>
       <AnimatePresence>
-        {setId ? (
+        {setId && !onTest ? (
+          <Content>
+            {clickedSet && (
+              <>
+                <button onClick={() => onTestClicked(setId)}>test</button>
+                <button onClick={onCloseClicked}>close</button>
+                <button onClick={toggleWordBlind}>단어 가리기</button>
+                <button onClick={toggleMeanBlind}>뜻 가리기</button>
+                {clickedSet.content.map((word, index) => (
+                  <>
+                    <span>{index + 1}</span>
+                    {isBlindWord ? null : <span>{word[0]}</span>}
+                    {isBlindMean ? null : <span>{word[1]}</span>}
+                    <br />
+                  </>
+                ))}
+              </>
+            )}
+          </Content>
+        ) : null}
+      </AnimatePresence>
+      <AnimatePresence>
+        {setId && onTest ? (
           <Test>
             {clickedSet && (
               <>
                 <span>{errors.answer?.message}</span>
                 <div>{clickedSet.content[word][0]}</div>
-                {console.log(typeof clickedSet.content[word][1])}
                 <form onSubmit={handleSubmit(onValid)}>
                   <input></input>
                 </form>
@@ -102,9 +144,8 @@ function Collection() {
         ) : null}
       </AnimatePresence>
       {datas.map((data) => (
-        <WorldSet key={data.pk}>
+        <WorldSet onClick={() => onSetClicked(data.pk)} key={data.pk}>
           {data.title}
-          <button onClick={() => onSetClicked(data.pk)}>test</button>
         </WorldSet>
       ))}
     </div>
