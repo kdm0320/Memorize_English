@@ -69,6 +69,13 @@ const Content = styled(Test)`
   border-style: solid;
 `;
 
+const Word = styled.input`
+  border: 0;
+  background-color: whitesmoke;
+  outline: 0;
+  cursor: default;
+`;
+
 function Collection() {
   const navigate = useNavigate();
   const { setId } = useParams();
@@ -107,19 +114,33 @@ function Collection() {
     <div>
       <AnimatePresence>
         {setId && !onTest ? (
-          <Content>
+          <Content key="Content">
             {clickedSet && (
               <>
-                <button onClick={() => onTestClicked(setId)}>test</button>
-                <button onClick={onCloseClicked}>close</button>
-                <button onClick={toggleWordBlind}>단어 가리기</button>
-                <button onClick={toggleMeanBlind}>뜻 가리기</button>
+                <button key="test" onClick={() => onTestClicked(setId)}>
+                  test
+                </button>
+                <button key="close" onClick={onCloseClicked}>
+                  close
+                </button>
+                <button key="wordBlind" onClick={toggleWordBlind}>
+                  단어 가리기
+                </button>
+                <button key="meanBlind" onClick={toggleMeanBlind}>
+                  뜻 가리기
+                </button>
                 {clickedSet.content.map((word, index) => (
                   <>
-                    <span>{index + 1}</span>
-                    {isBlindWord ? null : <span>{word[0]}</span>}
-                    {isBlindMean ? null : <span>{word[1]}</span>}
-                    <br />
+                    <span key={index + "#" + word[0]}>{index + 1}</span>
+                    <>
+                      {isBlindWord ? null : (
+                        <Word key={word[0]} readOnly value={word[0]} />
+                      )}
+                      {isBlindMean ? null : (
+                        <Word key={word[1]} readOnly value={word[1]} />
+                      )}
+                    </>
+                    <br key={index + word[0] + "br"} />
                   </>
                 ))}
               </>
