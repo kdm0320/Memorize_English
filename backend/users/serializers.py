@@ -13,6 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
             "email",
             "nickname",
             "collection",
+            "user_voca",
         )
 
     read_only_fields = ("id",)

@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -7,7 +8,7 @@ class User(AbstractUser):
     collection = models.ManyToManyField(
         "words.Word", related_name="collection", blank=True
     )
-    user_voca = models.TextField(blank=True)
+    user_voca = models.JSONField(default='{}')
     finished_collection = models.TextField(blank=True)
     finished_collection_voca = models.TextField(blank=True)
     finished_user_voca = models.TextField(blank=True)
