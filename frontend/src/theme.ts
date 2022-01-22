@@ -1,6 +1,14 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
 
+export interface IProp {
+  location?: string;
+  bdcolor?: string | null;
+  brdius?: string | null;
+}
+export interface IAnswer {
+  answer: string;
+}
 export const Btn = styled.button`
   align-items: center;
   appearance: none;
@@ -41,4 +49,34 @@ export const Noti = styled(motion.div)`
   border-color: black;
   border-width: 5px;
   border-style: solid;
+`;
+
+export const TestBox = styled(motion.div)`
+  background-color: teal;
+  width: 80vw;
+  height: 90vh;
+  top: 20;
+  right: 0;
+  left: 0;
+  margin: 0 auto;
+`;
+
+export const Content = styled(TestBox)`
+  background-color: whitesmoke;
+  border-color: black;
+  border-style: solid;
+`;
+
+export const WordSet = styled(motion.div)<IProp>`
+  width: 100px;
+  height: 100px;
+  background-color: lightBlue;
+  position: ${(props) => props.location};
+  border-width: 5px;
+`;
+export const Word = styled.input<IProp>`
+  border: 0;
+  background-color: whitesmoke;
+  outline: 0;
+  cursor: default;
 `;

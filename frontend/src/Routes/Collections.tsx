@@ -3,11 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { WorldSet } from "../Components/Worldset";
-
-interface IAnswer {
-  answer: string;
-}
+import { Content, IAnswer, TestBox, Word, WordSet } from "../theme";
 
 const datas = [
   {
@@ -52,29 +48,6 @@ const datas = [
     ],
   },
 ];
-
-const Test = styled(motion.div)`
-  background-color: teal;
-  width: 80vw;
-  height: 90vh;
-  top: 20;
-  right: 0;
-  left: 0;
-  margin: 0 auto;
-`;
-
-const Content = styled(Test)`
-  background-color: whitesmoke;
-  border-color: black;
-  border-style: solid;
-`;
-
-const Word = styled.input`
-  border: 0;
-  background-color: whitesmoke;
-  outline: 0;
-  cursor: default;
-`;
 
 function Collection() {
   const navigate = useNavigate();
@@ -133,12 +106,16 @@ function Collection() {
                   <div>
                     <span key={index + "#" + word[0]}>{index + 1}</span>
                     <form>
-                      {isBlindWord ? null : (
-                        <Word key={word[0]} readOnly value={word[0]} />
-                      )}
-                      {isBlindMean ? null : (
-                        <Word key={word[1]} readOnly value={word[1]} />
-                      )}
+                      <Word
+                        key={word[0]}
+                        readOnly
+                        value={isBlindWord ? "" : word[0]}
+                      />
+                      <Word
+                        key={word[0]}
+                        readOnly
+                        value={isBlindMean ? "" : word[1]}
+                      />
                       <input type="button" value="단어장에 저장" />
                     </form>
                     <br key={index + word[0] + "br"} />
@@ -151,7 +128,7 @@ function Collection() {
       </AnimatePresence>
       <AnimatePresence>
         {setId && onTest ? (
-          <Test>
+          <TestBox>
             {clickedSet && (
               <>
                 <span>{errors.answer?.message}</span>
@@ -162,14 +139,16 @@ function Collection() {
                 <button onClick={onCloseClicked}>close</button>
               </>
             )}
-          </Test>
+          </TestBox>
         ) : null}
       </AnimatePresence>
-      {datas.map((data) => (
-        <WorldSet onClick={() => onSetClicked(data.pk)} key={data.pk}>
-          {data.title}
-        </WorldSet>
-      ))}
+      <AnimatePresence>
+        {datas.map((data) => (
+          <WordSet onClick={() => onSetClicked(data.pk)} key={data.pk}>
+            {data.title}
+          </WordSet>
+        ))}
+      </AnimatePresence>
     </div>
   );
 }

@@ -9,7 +9,7 @@ function Loby() {
       <Link to="/collection">
         <button>개인 단어모음</button>
       </Link>
-      <Link to="/userVoca">
+      <Link to="/voca">
         <button>단어장</button>
       </Link>
     </div>

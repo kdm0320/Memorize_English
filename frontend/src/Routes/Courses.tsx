@@ -3,8 +3,7 @@ import { MouseEvent, useRef, useState } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import styled from "styled-components";
 import { basketState, IBasket, OnNoti } from "../atoms";
-import { WorldSet } from "../Components/Worldset";
-import { Noti } from "../theme";
+import { Noti, WordSet } from "../theme";
 
 const ChosenBox = styled.div`
   float: right;
@@ -33,7 +32,7 @@ const OverView = styled(motion.div)`
   background-color: white;
 `;
 
-const ChosenSet = styled(WorldSet)`
+const ChosenSet = styled(WordSet)`
   background-color: lightblue;
   width: 50px;
   height: 50px;
@@ -128,7 +127,7 @@ function Courses() {
       </ChosenBox>
       <div>
         {datas.map((data) => (
-          <WorldSet
+          <WordSet
             onClick={() => {
               setId(data.pk + "#");
               setTitle(data.title);
@@ -137,7 +136,7 @@ function Courses() {
             layoutId={data.pk + "#"}
           >
             {data.title}
-          </WorldSet>
+          </WordSet>
         ))}
       </div>
 

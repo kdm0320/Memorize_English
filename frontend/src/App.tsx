@@ -27,8 +27,11 @@ function App() {
             return <Route path={path} element={<Collection />} key={index} />;
           }
         )}
-        {/* <Route path="/collection" element={<Collection />} /> */}
-        <Route path="/userVoca" element={<UserVoca />} />
+        {["/voca", "/voca/test/:vocaName", "/voca/:vocaName"].map(
+          (path, index) => {
+            return <Route path={path} element={<UserVoca />} key={index} />;
+          }
+        )}
         <Route path="/courses" element={<Courses />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/qna" element={<Board />} />
