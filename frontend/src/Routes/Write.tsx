@@ -53,13 +53,9 @@ function Write() {
         <Choice>
           <label>
             공개
-            <input type="checkbox" name="공개" id="close" value="공개" />
-          </label>
-        </Choice>
-        <Choice>
-          <label>
+            <input type="radio" name="isopen" id="open" value="공개" />
             비공개
-            <input type="checkbox" name="비공개" id="close" value="비공개" />
+            <input type="radio" name="isopen" id="close" value="비공개" />
           </label>
         </Choice>
       </span>
