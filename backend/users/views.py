@@ -20,6 +20,22 @@ class UserViewSet(ModelViewSet):
     queryset = User.objects.all().order_by("id")
     serializer_class = UserSerializer
 
+
+    def create(self, request, *args, **kwargs):
+        serializer = UserSerializer(data=request.data)
+        userValue = request.data['username']
+        emailValue = request.data['email']
+        exist_email = User.objects.filter(email=emailValue).first()
+        exist_user = User.objects.filter(username=userValue).first()
+        if exist_email:
+            return Response(status=status.HTTP_409_CONFLICT)
+        if exist_user:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if serializer.is_valid():
+            new_user = serializer.save()
+            return Response(UserSerializer(new_user).data,status=status.HTTP_201_CREATED)
+       
+
     def get_permissions(self):
         permission_classes = []
         if self.action == "list" or self.action == "retrieve":

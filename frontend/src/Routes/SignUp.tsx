@@ -26,26 +26,25 @@ function SignUp() {
     handleSubmit,
     formState: { errors },
   } = useForm<IForm>();
+
   const mutation = useMutation((newUser: IForm) =>
     axios.post(`${baseUrl}/users/`, newUser)
   );
-  const onValid = async (data: IForm) => {
-    // try {
-    //   mutation.mutateAsync({
-    //     username: data.username,
-    //     password: data.password,
-    //     first_name: data.first_name,
-    //     last_name: data.last_name,
-    //     email: data.email,
-    //     nickname: data.nickname,
-    //   });
-    // } catch (error) {
-    //   console.error(error);
-    // } finally {
-    //   console.log("done");
-    // }
-  };
 
+  const [errorCode, setErrorCode] = useState(0);
+  const onValid = (data: IForm) => {
+    mutation
+      .mutateAsync({
+        username: data.username,
+        password: data.password,
+        first_name: data.first_name,
+        last_name: data.last_name,
+        email: data.email,
+        nickname: data.nickname,
+      })
+      .then(() => setErrorCode(0))
+      .catch((e) => setErrorCode(e.response["status"]));
+  };
   return (
     <div>
       <form onSubmit={handleSubmit(onValid)}>
@@ -70,6 +69,7 @@ function SignUp() {
           placeholder="아이디(ID)"
           type="text"
         />
+        {errorCode === 400 ? <span>이미 존재하는 아이디입니다</span> : null}
         <span>{errors.username?.message}</span>
         <InPut
           {...register("email", {
@@ -82,6 +82,7 @@ function SignUp() {
           placeholder="이메일(email)"
           type="text"
         />
+        {errorCode === 409 ? <span>이미 존재하는 이메일입니다</span> : null}
         <span>{errors.email?.message}</span>
         <InPut
           {...register("password", {
