@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
-import styled from "styled-components";
+import styled, { DefaultTheme } from "styled-components";
+
+export const theme: DefaultTheme = {};
 
 export interface IProp {
   location?: string;

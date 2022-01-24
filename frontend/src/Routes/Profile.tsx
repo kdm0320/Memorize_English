@@ -35,10 +35,6 @@ function Profile() {
             {...(register("password"), { required: false })}
             placeholder="비밀번호(Password)"
           />
-          <input
-            {...(register("password1"), { required: false })}
-            placeholder="비밀번호 확인(Confirm Password)"
-          />
           <input {...register("nickName")} placeholder="닉네임(Nickname)" />
           <button>save</button>
           <button>cancle</button>

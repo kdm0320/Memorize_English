@@ -1,38 +1,69 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
+import { createAccount } from "../api";
+
+interface IForm {
+  firstName: string | null | number;
+  lastName: string | null | number;
+  username: string | null | number;
+  password: string | null | number;
+  nickName: string | null | number;
+  email: string;
+}
+
+const InPut = styled.input.attrs((props) => ({
+  type: props.type || "text",
+}))``;
 
 function SignUp() {
-  const onValid = () => {
-    console.log("OK");
+  const { register, handleSubmit } = useForm<IForm>();
+  const [loading, setLoading] = useState(true);
+  const onValid = async (data: IForm) => {
+    try {
+      await createAccount({
+        username: data.username,
+        password: data.password,
+        first_name: data.firstName,
+        last_name: data.lastName,
+        email: data.email,
+        nickname: data.nickName,
+      });
+    } catch (e) {
+      console.warn(e);
+    } finally {
+      setLoading(false);
+    }
   };
-  const { register, handleSubmit } = useForm();
   return (
     <div>
       <form onSubmit={handleSubmit(onValid)}>
-        <input
-          {...(register("firstName"), { required: true })}
+        <InPut
+          {...register("firstName", { required: true })}
           placeholder="성(First Name)"
         />
-        <input
-          {...(register("lastName"), { required: true })}
+        <InPut
+          {...register("lastName", { required: true })}
           placeholder="이름(Last Name)"
         />
-        <input
-          {...(register("username"), { required: true })}
+        <InPut
+          {...register("username", { required: true })}
           placeholder="아이디(ID)"
+          type="text"
         />
-        <input
-          {...(register("password"), { required: true })}
+        <InPut
+          {...register("email", { required: true })}
+          placeholder="이메일(email)"
+          type="text"
+        />
+        <InPut
+          {...register("password", { required: true })}
           placeholder="비밀번호(Password)"
+          type="password"
         />
-        <input
-          {...(register("password1"), { required: true })}
-          placeholder="비밀번호 확인(Confirm Password)"
-        />
-        <input {...register("nickName")} placeholder="닉네임(Nickname)" />
-        <Link to="/login">
-          <button>Create</button>
-        </Link>
+        <InPut {...register("nickName")} placeholder="닉네임(Nickname)" />
+        <button>Create</button>
       </form>
     </div>
   );

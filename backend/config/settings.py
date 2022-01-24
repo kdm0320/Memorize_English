@@ -25,8 +25,9 @@ SECRET_KEY = "django-insecure-+_ct6av6+5$pjg*43y#1^v2nl7m!u^*$nbvo+!yb0j+so03k35
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+# ALLOWED_HOSTS = ['*']
+CORS_ALLOW_HEADERS = ['*']
+CORS_ORIGIN_WHITELIST = ("http://localhost:3000",)
 
 # Application definition
 DJANGO_APPS = [
@@ -64,9 +65,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "config.urls"
-CORS_ORIGIN_WHITELIST = (
-    'localhost:3000/',
-)
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -140,7 +139,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "users.User"
 
-CORS_ORIGIN_WHITELIST = ("https://localhost:3000",)
+
 
 # Django Rest FrameWork
 
