@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "react-query";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 import { baseUrl } from "../api";
@@ -26,7 +26,7 @@ function SignUp() {
     handleSubmit,
     formState: { errors },
   } = useForm<IForm>();
-
+  const navigate = useNavigate();
   const mutation = useMutation((newUser: IForm) =>
     axios.post(`${baseUrl}/users/`, newUser)
   );
@@ -42,7 +42,7 @@ function SignUp() {
         email: data.email,
         nickname: data.nickname,
       })
-      .then(() => setErrorCode(0))
+      .then(() => navigate("/login"))
       .catch((e) => setErrorCode(e.response["status"]));
   };
   return (
