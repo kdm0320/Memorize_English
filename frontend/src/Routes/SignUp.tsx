@@ -1,15 +1,17 @@
+import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useMutation, useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { createAccount } from "../api";
+import { baseUrl } from "../api";
 
 interface IForm {
-  firstName: string | null | number;
-  lastName: string | null | number;
+  first_name: string | null | number;
+  last_name: string | null | number;
   username: string | null | number;
   password: string | null | number;
-  nickName: string | null | number;
+  nickname: string | null | number;
   email: string;
 }
 
@@ -20,31 +22,35 @@ const InPut = styled.input.attrs((props) => ({
 function SignUp() {
   const { register, handleSubmit } = useForm<IForm>();
   const [loading, setLoading] = useState(true);
+  const mutation = useMutation((newUser: IForm) =>
+    axios.post(`${baseUrl}/users/`, newUser)
+  );
   const onValid = async (data: IForm) => {
     try {
-      await createAccount({
+      mutation.mutateAsync({
         username: data.username,
         password: data.password,
-        first_name: data.firstName,
-        last_name: data.lastName,
+        first_name: data.first_name,
+        last_name: data.last_name,
         email: data.email,
-        nickname: data.nickName,
+        nickname: data.nickname,
       });
-    } catch (e) {
-      console.warn(e);
+      console.log(data);
+    } catch (error) {
+      console.error(error);
     } finally {
-      setLoading(false);
+      console.log("done");
     }
   };
   return (
     <div>
       <form onSubmit={handleSubmit(onValid)}>
         <InPut
-          {...register("firstName", { required: true })}
+          {...register("first_name", { required: true })}
           placeholder="성(First Name)"
         />
         <InPut
-          {...register("lastName", { required: true })}
+          {...register("last_name", { required: true })}
           placeholder="이름(Last Name)"
         />
         <InPut
@@ -62,7 +68,7 @@ function SignUp() {
           placeholder="비밀번호(Password)"
           type="password"
         />
-        <InPut {...register("nickName")} placeholder="닉네임(Nickname)" />
+        <InPut {...register("nickname")} placeholder="닉네임(Nickname)" />
         <button>Create</button>
       </form>
     </div>

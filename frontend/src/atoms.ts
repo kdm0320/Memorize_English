@@ -23,12 +23,15 @@ export const basketState = atom({
   effects_UNSTABLE: [persistAtom],
 });
 
-export const isLogged = atom({
+export const isLoggedAtom = atom({
   key: "isLogged",
   default: false,
 });
 
-export const userPk = atom({
-  key: "userPk",
-  default: "",
+export const userInfoAtom = atom({
+  key: "userInfo",
+  default: {
+    pk: "",
+    id: "",
+  },
 });
