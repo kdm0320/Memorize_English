@@ -13,6 +13,7 @@ class WordSerializer(serializers.ModelSerializer):
         fields = (
             "pk",
             "title",
+            "content",
             "is_learning",
         )
 

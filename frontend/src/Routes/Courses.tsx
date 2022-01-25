@@ -1,7 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { MouseEvent, useRef, useState } from "react";
+import { useMutation, useQuery } from "react-query";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import styled from "styled-components";
+import { fetchWords } from "../api";
 import { basketState, IBasket, OnNoti } from "../atoms";
 import { Noti, WordSet } from "../theme";
 
@@ -40,14 +42,18 @@ const ChosenSet = styled(WordSet)`
   border-radius: ${(props) => props.brdius || "0px"};
 `;
 
-const datas = [
-  { pk: "1", title: "토익", is_learnig: false },
-  { pk: "2", title: "오픽", is_learnig: false },
-  { pk: "3", title: "회화", is_learnig: false },
-  { pk: "4", title: "비즈니스", is_learnig: false },
-  { pk: "5", title: "기초", is_learnig: false },
-];
-
+interface IWordData {
+  pk: number;
+  title: string;
+  content: string[];
+  is_learning: boolean;
+}
+interface IData {
+  count?: number;
+  next?: null;
+  previous?: null;
+  results?: Array<any> | undefined;
+}
 function Courses() {
   const [id, setId] = useState<string | null | undefined>(null);
   const [title, setTitle] = useState<string>("");
@@ -64,6 +70,8 @@ function Courses() {
   const [onNoti, setOnNoti] = useRecoilState(OnNoti);
   const toggleNoti = () => setOnNoti((prev) => !prev);
   const reset = useResetRecoilState(basketState);
+  const { isLoading, data } = useQuery<IData>("allWords", fetchWords);
+  const datas: Array<any> | undefined = data?.results;
 
   const SendData = () => {
     toggleNoti();
@@ -126,7 +134,7 @@ function Courses() {
         <button onClick={deleteBasket}>삭제</button>
       </ChosenBox>
       <div>
-        {datas.map((data) => (
+        {datas?.map((data: IWordData) => (
           <WordSet
             onClick={() => {
               setId(data.pk + "#");
