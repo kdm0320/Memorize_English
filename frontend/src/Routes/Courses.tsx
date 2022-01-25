@@ -66,9 +66,9 @@ function Courses() {
   const reset = useResetRecoilState(basketState);
 
   const SendData = () => {
-    console.log("test");
     toggleNoti();
-    reset();
+    console.log(basket);
+    // reset();
   }; //백엔드와 연결 후 장바구니 데이터를 유저 단어모음으로 보내주고 장바구니 리셋 역할 함수
   const showFuction = (message: string) => {
     return (

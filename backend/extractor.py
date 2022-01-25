@@ -8,9 +8,13 @@ django.setup()
 from words import models
 
 
+base_path = "/Users/gimdongmin/Desktop/memorize_english/datas/words/"
+file_name = "new_기본영어단어1000개.xlsx"
+full_path = f"{base_path}/{file_name}"
+
 def convert_data():
     data = openpyxl.load_workbook(
-        "/Users/gimdongmin/Desktop/memorize_english/datas/words/TOEIC 토익 빈출 영어단어정리 327.xlsx"
+        full_path
 
     )
     ws = data.active

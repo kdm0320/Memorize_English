@@ -8,6 +8,7 @@ config = "*"
 djangorestframework = "*"
 django-cors-headers = "*"
 pyjwt = "*"
+openpyxl = "*"
 
 [dev-packages]
 black = "*"

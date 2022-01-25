@@ -3,10 +3,6 @@ import { useRecoilValue } from "recoil";
 import { isLoggedAtom, userInfoAtom } from "../atoms";
 
 function Loby() {
-  const check = useRecoilValue(isLoggedAtom);
-  const user = useRecoilValue(userInfoAtom);
-  console.log(user);
-  console.log(check);
   return (
     <div>
       <Link to="/achievment">

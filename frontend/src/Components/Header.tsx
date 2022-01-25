@@ -11,6 +11,7 @@ function Header() {
     Logout();
     RestUser();
   };
+
   if (search.pathname === "/") return null;
   if (search.pathname === "/Login" || search.pathname === "/login") return null;
   if (search.pathname === "/signup") return null;
