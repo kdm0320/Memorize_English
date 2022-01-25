@@ -1,20 +1,65 @@
+import axios from "axios";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { useMutation } from "react-query";
+import { Link, useNavigate } from "react-router-dom";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { baseUrl } from "../api";
+import { isLoggedAtom, userInfoAtom } from "../atoms";
+
+interface ILoginForm {
+  username?: string;
+  password?: string;
+}
 
 function Login() {
-  const { register, handleSubmit } = useForm();
-  const onValid = () => {};
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const mutation = useMutation((user: ILoginForm) =>
+    axios.post(`${baseUrl}/users/login/`, user)
+  );
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedAtom);
+  const setUserAtom = useSetRecoilState(userInfoAtom);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoggedIn) navigate("/loby");
+  }, []);
+  const onValid = (data: ILoginForm) => {
+    mutation
+      .mutateAsync({
+        username: data.username,
+        password: data.password,
+      })
+      .then((value) => {
+        setIsLoggedIn(true);
+        setUserAtom({ id: data.username, pk: value.data["id"] });
+        navigate("/loby");
+      });
+  };
+
   return (
     <div>
+      {mutation.isError ? (
+        <div>아이디 혹은 비밀번호 오류입니다 다시 확인해 주십시오</div>
+      ) : null}
       <form onSubmit={handleSubmit(onValid)}>
-        <input {...register("username", { required: true })} placeholder="ID" />
         <input
-          {...register("password", { required: true })}
-          placeholder="Password"
+          {...register("username", { required: "필수 항목입니다." })}
+          placeholder="ID"
         />
-        <Link to="/loby">
-          <button>Log In</button>
-        </Link>
+        <span>{errors.username?.message}</span>
+        <input
+          {...register("password", { required: "필수 항목입니다." })}
+          placeholder="Password"
+          type="password"
+        />
+        <span>{errors.password?.message}</span>
+        <button>Log In</button>
       </form>
       <div>
         Don't have a account?

@@ -1,10 +1,20 @@
 import { Link, useLocation } from "react-router-dom";
+import { useRecoilState, useResetRecoilState } from "recoil";
+import { isLoggedAtom, userInfoAtom } from "../atoms";
 
 function Header() {
   const search = useLocation();
+  const Logout = useResetRecoilState(isLoggedAtom);
+  const RestUser = useResetRecoilState(userInfoAtom);
+
+  const OnClick = () => {
+    Logout();
+    RestUser();
+  };
   if (search.pathname === "/") return null;
   if (search.pathname === "/Login" || search.pathname === "/login") return null;
   if (search.pathname === "/signup") return null;
+
   return (
     <div>
       <Link to="/qna">
@@ -22,7 +32,7 @@ function Header() {
       <Link to="/profile">
         <h2>Profile</h2>
       </Link>
-      <h2>Log out</h2>
+      <h2 onClick={OnClick}>Logout</h2>
       <hr />
     </div>
   );

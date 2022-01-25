@@ -1,6 +1,3 @@
-import axios from "axios";
-import { useMutation } from "react-query";
-
 export interface IForm {
   first_name: string | null | number;
   last_name: string | null | number;

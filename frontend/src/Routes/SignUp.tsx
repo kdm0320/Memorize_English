@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 import { baseUrl } from "../api";
 
-interface IForm {
+interface ISingnUpForm {
   first_name: string | null | number;
   last_name: string | null | number;
   username: string | null | number;
@@ -25,14 +25,14 @@ function SignUp() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IForm>();
+  } = useForm<ISingnUpForm>();
   const navigate = useNavigate();
-  const mutation = useMutation((newUser: IForm) =>
+  const mutation = useMutation((newUser: ISingnUpForm) =>
     axios.post(`${baseUrl}/users/`, newUser)
   );
 
   const [errorCode, setErrorCode] = useState(0);
-  const onValid = (data: IForm) => {
+  const onValid = (data: ISingnUpForm) => {
     mutation
       .mutateAsync({
         username: data.username,
