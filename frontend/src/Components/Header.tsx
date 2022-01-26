@@ -33,7 +33,7 @@ function Header() {
       <Link to="/profile">
         <h2>Profile</h2>
       </Link>
-      <h2 onClick={OnClick}>Logout</h2>
+      <button onClick={OnClick}>Logout</button>
       <hr />
     </div>
   );

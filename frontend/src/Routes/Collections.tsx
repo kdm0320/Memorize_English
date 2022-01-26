@@ -1,8 +1,12 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+import { baseUrl } from "../api";
+import { userInfoAtom } from "../atoms";
 import { Content, IAnswer, TestBox, Word, WordSet } from "../theme";
 
 const datas = [
@@ -57,7 +61,16 @@ function Collection() {
     handleSubmit,
     formState: { errors },
   } = useForm<IAnswer>();
+
+  const userInfo = useRecoilValue(userInfoAtom);
+  const fetchCollection = () => {
+    return fetch(`${baseUrl}/users/${userInfo.pk}/collection`).then(
+      (response) => response.json()
+    );
+  };
+
   const [word, setWord] = useState(0);
+  // const { data } = useQuery("allCollections", fetchCollection);
   const [onTest, setOnTest] = useState(false);
 
   const toggleOnTest = () => {

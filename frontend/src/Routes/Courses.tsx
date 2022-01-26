@@ -1,10 +1,11 @@
+import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 import { MouseEvent, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
-import { useRecoilState, useResetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
 import styled from "styled-components";
-import { fetchWords } from "../api";
-import { basketState, IBasket, OnNoti } from "../atoms";
+import { baseUrl, fetchWords, fetchWordsNew } from "../api";
+import { OnNoti, userInfoAtom } from "../atoms";
 import { Noti, WordSet } from "../theme";
 
 const ChosenBox = styled.div`
@@ -34,14 +35,6 @@ const OverView = styled(motion.div)`
   background-color: white;
 `;
 
-const ChosenSet = styled(WordSet)`
-  background-color: lightblue;
-  width: 50px;
-  height: 50px;
-  border-color: ${(props) => props.bdcolor};
-  border-radius: ${(props) => props.brdius || "0px"};
-`;
-
 interface IWordData {
   pk: number;
   title: string;
@@ -54,91 +47,49 @@ interface IData {
   previous?: null;
   results?: Array<any> | undefined;
 }
+
 function Courses() {
   const [id, setId] = useState<string | null | undefined>(null);
-  const [title, setTitle] = useState<string>("");
-  const [basket, setBaskets] = useRecoilState<IBasket>(basketState);
-  const addBasket = () => {
-    if (Object.keys(basket).includes(title)) return null;
-    setBaskets((prev) => {
-      const newprev = { ...prev };
-      newprev[title] = false;
-      return newprev;
+  const [wordPk, setwordPk] = useState<number>(0);
+  const [isLearning, setIsLearning] = useState(false);
+  const { data } = useQuery<IData>("allWords", async () => {
+    const { data } = await axios.get(`${baseUrl}/words/`, {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
     });
-  };
-
-  const [onNoti, setOnNoti] = useRecoilState(OnNoti);
-  const toggleNoti = () => setOnNoti((prev) => !prev);
-  const reset = useResetRecoilState(basketState);
-  const { isLoading, data } = useQuery<IData>("allWords", fetchWords);
+    return data;
+  });
   const datas: Array<any> | undefined = data?.results;
-
-  const SendData = () => {
-    toggleNoti();
-    console.log(basket);
-    // reset();
-  }; //백엔드와 연결 후 장바구니 데이터를 유저 단어모음으로 보내주고 장바구니 리셋 역할 함수
-  const showFuction = (message: string) => {
-    return (
-      <div>
-        <Noti>
-          {message}
-          <button onClick={SendData}>확인</button>
-          <button onClick={toggleNoti}>취소</button>
-        </Noti>
-      </div>
-    );
-  };
-
-  const chosenSetRef = useRef<HTMLDivElement>(null);
-  const deleteBasket = () => {
-    for (let i in basket) {
-      if (basket[i]) {
-        setBaskets((prev) => {
-          const newprev = { ...prev };
-          delete newprev[i];
-          return newprev;
-        });
+  const userInfo = useRecoilValue(userInfoAtom);
+  const mutation = useMutation(() =>
+    axios.put(
+      `${baseUrl}/users/${userInfo.pk}/collection/`,
+      { pk: wordPk },
+      {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
       }
-    }
+    )
+  );
+
+  const toggleLearning = () => setIsLearning((prev) => !prev);
+  const toggleBasket = async () => {
+    mutation.mutateAsync();
+    toggleLearning();
   };
-  const onChangeClick = (event: MouseEvent) => {
-    setBaskets((prev) => {
-      const newprev = { ...prev };
-      newprev[event.currentTarget.innerHTML] =
-        !newprev[event.currentTarget.innerHTML];
-      return newprev;
-    });
-  };
+
   return (
     <>
-      <ChosenBox>
-        {onNoti ? showFuction("저장하시겠습니까?") : null}
-
-        <div>
-          {Object.keys(basket).length !== 0
-            ? Object.keys(basket).map((set, index) => (
-                <ChosenSet
-                  onClick={onChangeClick}
-                  key={index}
-                  ref={chosenSetRef}
-                  brdius={basket[set] ? "25px" : null}
-                >
-                  {set}
-                </ChosenSet>
-              ))
-            : null}
-        </div>
-        <h3>장바구니</h3>
-        <button onClick={toggleNoti}>저장</button>
-        <button onClick={deleteBasket}>삭제</button>
-      </ChosenBox>
       <div>
         {datas?.map((data: IWordData) => (
           <WordSet
             onClick={() => {
               setId(data.pk + "#");
-              setTitle(data.title);
+              setwordPk(data.pk);
+              setIsLearning(data.is_learning);
+              console.log(data.is_learning);
             }}
             key={data.pk + "#"}
             layoutId={data.pk + "#"}
@@ -153,11 +104,14 @@ function Courses() {
           <Overlay
             onClick={() => {
               setId(null);
+              setIsLearning(false);
             }}
           >
             <OverView layoutId={id}>
               단어 상세내용
-              <button onClick={addBasket}>choose</button>
+              <button onClick={toggleBasket}>
+                {isLearning ? "off" : "on"}
+              </button>
             </OverView>
           </Overlay>
         ) : null}

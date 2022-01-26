@@ -37,7 +37,11 @@ function Login() {
       })
       .then((value) => {
         setIsLoggedIn(true);
-        setUserAtom({ id: data.username, pk: value.data["id"] });
+        setUserAtom({
+          id: data.username,
+          pk: value.data["id"],
+          token: value.data["token"],
+        });
         navigate("/loby");
       });
   };

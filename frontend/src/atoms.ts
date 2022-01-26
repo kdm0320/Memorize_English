@@ -1,14 +1,10 @@
 import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
 
-export interface IBasket {
-  [index: string]: boolean;
-  title: boolean;
-}
-
-interface IUserInfo {
+export interface IUserInfo {
   pk?: string;
   id?: string;
+  token?: string;
   storage?: Storage;
 }
 
@@ -24,12 +20,6 @@ export const OnNoti = atom({
 
 const { persistAtom } = recoilPersist();
 
-export const basketState = atom({
-  key: "basket",
-  default: {},
-  effects_UNSTABLE: [persistAtom],
-});
-
 export const isLoggedAtom = atom<Boolean>({
   key: "isLogged",
   default: false,
@@ -41,6 +31,7 @@ export const userInfoAtom = atom<IUserInfo>({
   default: {
     pk: "",
     id: "",
+    token: "",
   },
   effects_UNSTABLE: [persistAtom],
 });
