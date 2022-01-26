@@ -8,9 +8,7 @@ export interface IProp {
   bdcolor?: string | null;
   brdius?: string | null;
 }
-export interface IAnswer {
-  answer: string;
-}
+
 export const Btn = styled.button`
   align-items: center;
   appearance: none;
@@ -43,6 +41,18 @@ export const Btn = styled.button`
   font-size: 18px;
 `;
 
+export const Overlay = styled(motion.div)`
+  display: flex;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 1;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const Noti = styled(motion.div)`
   width: 300px;
   height: 200px;
@@ -53,17 +63,8 @@ export const Noti = styled(motion.div)`
   border-style: solid;
 `;
 
-export const TestBox = styled(motion.div)`
-  background-color: teal;
-  width: 80vw;
-  height: 90vh;
-  top: 20;
-  right: 0;
-  left: 0;
-  margin: 0 auto;
-`;
-
-export const Content = styled(TestBox)`
+export const Content = styled(motion.div)`
+  display: flex;
   background-color: whitesmoke;
   border-color: black;
   border-style: solid;
@@ -76,7 +77,7 @@ export const WordSet = styled(motion.div)<IProp>`
   position: ${(props) => props.location};
   border-width: 5px;
 `;
-export const Word = styled.input<IProp>`
+export const Word = styled(motion.input)<IProp>`
   border: 0;
   background-color: whitesmoke;
   outline: 0;

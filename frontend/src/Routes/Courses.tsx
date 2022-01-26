@@ -1,12 +1,12 @@
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
-import { MouseEvent, useRef, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQuery } from "react-query";
-import { useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { baseUrl, fetchWords, fetchWordsNew } from "../api";
+import { baseUrl } from "../api";
 import { OnNoti, userInfoAtom } from "../atoms";
-import { Noti, WordSet } from "../theme";
+import { Noti, Overlay, WordSet } from "../theme";
 
 const ChosenBox = styled.div`
   float: right;
@@ -15,18 +15,6 @@ const ChosenBox = styled.div`
   background-color: red;
   border-color: black;
   border-width: 5px;
-`;
-
-const Overlay = styled(motion.div)`
-  display: flex;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 1;
-  align-items: center;
-  justify-content: center;
 `;
 
 const OverView = styled(motion.div)`
@@ -89,7 +77,6 @@ function Courses() {
               setId(data.pk + "#");
               setwordPk(data.pk);
               setIsLearning(data.is_learning);
-              console.log(data.is_learning);
             }}
             key={data.pk + "#"}
             layoutId={data.pk + "#"}

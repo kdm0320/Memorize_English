@@ -2,7 +2,7 @@ import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import { Content, IAnswer, TestBox, Word, WordSet } from "../theme";
+import { Content, Word, WordSet } from "../theme";
 
 const datas = [
   {
@@ -23,11 +23,7 @@ const datas = [
 
 function UserVoca() {
   const navigate = useNavigate();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<IAnswer>();
+
   const { vocaName } = useParams();
   const [onTest, setOnTest] = useState(false);
   const toggleOnTest = () => {
@@ -44,9 +40,7 @@ function UserVoca() {
     if (onTest) toggleOnTest();
     navigate(`/voca`);
   };
-  const onValid = (data: IAnswer) => {
-    console.log(data);
-  };
+
   const [isBlindMean, setIsBlindMean] = useState(false);
   const [isBlindWord, setIsBlindWord] = useState(false);
   const toggleMeanBlind = () => setIsBlindMean((prev) => !prev);
@@ -55,22 +49,6 @@ function UserVoca() {
 
   return (
     <div>
-      <AnimatePresence>
-        {vocaName && onTest ? (
-          <TestBox>
-            {clickedVoca && (
-              <>
-                <span>{errors.answer?.message}</span>
-                <div>{clickedVoca.content[0][0]}</div>
-                <form onSubmit={handleSubmit(onValid)}>
-                  <input></input>
-                </form>
-                <button onClick={onCloseClicked}>close</button>
-              </>
-            )}
-          </TestBox>
-        ) : null}
-      </AnimatePresence>
       <AnimatePresence>
         {vocaName && !onTest ? (
           <Content>
