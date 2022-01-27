@@ -42,20 +42,21 @@ function Collection() {
   const clickedSet = setId && datas?.find((set) => String(set.pk) === setId);
   const mutation = useMutation(putCollection);
 
+  const onSetClicked = (setId: number) => {
+    setwordPk(setId);
+    navigate(`/collection/${setId}`);
+  };
   const onCloseClicked = () => {
     navigate(`/collection`);
   };
   const onDelete = () => {
     mutation.mutate({ userInfo, wordPk });
   };
+  //Pagination
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   let indexOfLast = currentPage * pageSize;
   let indexOfFirst = indexOfLast - pageSize;
-  const onSetClicked = (setId: number) => {
-    setwordPk(setId);
-    navigate(`/collection/${setId}`);
-  };
   const sliceDatas = (list: Array<any>) => {
     let newArray = [];
     newArray = list.slice(indexOfFirst, indexOfLast);
@@ -64,6 +65,7 @@ function Collection() {
 
   const nextClick = () => setCurrentPage((prev) => prev + 1);
   const prevClick = () => setCurrentPage((prev) => prev - 1);
+  //
 
   const ShowWords = ({ list }: { list: Array<any> }) => {
     return (
@@ -85,17 +87,12 @@ function Collection() {
     <div>
       <AnimatePresence>
         {setId ? (
-          // <Overlay onClick={onCloseClicked}>
-          <>
-            <div>
-              {clickedSet && (
-                <ShowWords list={sliceDatas(clickedSet.content)} />
-              )}
+          <div>
+            <button onClick={onCloseClicked}>close</button>
+            {clickedSet && <ShowWords list={sliceDatas(clickedSet.content)} />}
 
-              {indexOfFirst != 0 ? (
-                <button onClick={prevClick}>⬅️</button>
-              ) : null}
-              {/* {clickedSet &&
+            {indexOfFirst != 0 ? <button onClick={prevClick}>⬅️</button> : null}
+            {/* {clickedSet &&
                 Array.from(
                   { length: Math.ceil(clickedSet.content.length / 10) },
                   (v, i) => i + 1
@@ -104,11 +101,10 @@ function Collection() {
                     <span>{page}</span>
                   </>
                 ))} */}
-              {clickedSet && indexOfLast < clickedSet.content.length ? (
-                <button onClick={nextClick}>➡️</button>
-              ) : null}
-            </div>
-          </>
+            {clickedSet && indexOfLast < clickedSet.content.length ? (
+              <button onClick={nextClick}>➡️</button>
+            ) : null}
+          </div>
         ) : null}
       </AnimatePresence>
       <AnimatePresence>

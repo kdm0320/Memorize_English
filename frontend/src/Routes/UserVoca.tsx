@@ -57,42 +57,56 @@ function UserVoca() {
     navigate(`/voca`);
   };
 
+  const [pageSize, setPageSize] = useState(3);
+  const [currentPage, setCurrentPage] = useState(1);
+  let indexOfLast = currentPage * pageSize;
+  let indexOfFirst = indexOfLast - pageSize;
+
+  const sliceDatas = (list: Array<any>) => {
+    let newArray = [];
+    newArray = list.slice(indexOfFirst, indexOfLast);
+    return newArray;
+  };
+
+  const nextClick = () => setCurrentPage((prev) => prev + 1);
+  const prevClick = () => setCurrentPage((prev) => prev - 1);
+
+  const ShowWords = ({ list }: { list: Array<any> }) => {
+    return (
+      <>
+        <button key="close" onClick={onCloseClicked}>
+          close
+        </button>
+        <button key="wordBlind" onClick={toggleWordBlind}>
+          단어 가리기
+        </button>
+        <button key="meanBlind" onClick={toggleMeanBlind}>
+          뜻 가리기
+        </button>
+        {list.map((word, index) => (
+          <div>
+            <span key={index + "#" + word[0]}>{index + 1}</span>
+            <form>
+              <Word key={word[0]} readOnly value={word[0]} />
+              <Word key={String(word[1])} readOnly value={String(word[1])} />
+            </form>
+            <br key={index + word[0] + "br"} />
+          </div>
+        ))}
+      </>
+    );
+  };
   return (
     <div>
       <AnimatePresence>
-        {vocaName && !onTest ? (
-          <Content>
-            {clickedVoca && (
-              <>
-                <button key="test" onClick={() => onTestClicked(vocaName)}>
-                  test
-                </button>
-                <button key="close" onClick={onCloseClicked}>
-                  close
-                </button>
-                <button key="wordBlind" onClick={toggleWordBlind}>
-                  단어 가리기
-                </button>
-                <button key="meanBlind" onClick={toggleMeanBlind}>
-                  뜻 가리기
-                </button>
-                {clickedVoca.map((word, index) => (
-                  <div>
-                    <span key={index + "#" + word[0]}>{index + 1}</span>
-                    <form>
-                      <Word key={word[0]} readOnly value={word[0]} />
-                      <Word
-                        key={String(word[1])}
-                        readOnly
-                        value={String(word[1])}
-                      />
-                    </form>
-                    <br key={index + word[0] + "br"} />
-                  </div>
-                ))}
-              </>
-            )}
-          </Content>
+        {vocaName ? (
+          <div>
+            {clickedVoca && <ShowWords list={sliceDatas(clickedVoca)} />}
+            {indexOfFirst != 0 ? <button onClick={prevClick}>⬅️</button> : null}
+            {clickedVoca && indexOfLast < clickedVoca.length ? (
+              <button onClick={nextClick}>➡️</button>
+            ) : null}
+          </div>
         ) : null}
       </AnimatePresence>
       <AnimatePresence>
