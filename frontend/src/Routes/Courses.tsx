@@ -1,6 +1,6 @@
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
@@ -41,6 +41,7 @@ function Courses() {
   const [wordPk, setwordPk] = useState<number>(0);
   const [isLearning, setIsLearning] = useState(false);
   const userInfo = useRecoilValue(userInfoAtom);
+
   const { data } = useQuery<IData>(["allWords", userInfo], () =>
     fetchWords(userInfo)
   );

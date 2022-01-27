@@ -5,6 +5,7 @@ import { RecoilRoot } from "recoil";
 import { ThemeProvider } from "styled-components";
 import { theme } from "./theme";
 import { QueryClient, QueryClientProvider } from "react-query";
+import Pagination from "rc-pagination";
 
 const queryClient = new QueryClient();
 

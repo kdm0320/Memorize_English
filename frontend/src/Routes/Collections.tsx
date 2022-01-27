@@ -5,9 +5,11 @@ import { useMutation, useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+import Pagination from "rc-pagination";
 import { baseUrl, fetchCollections, putCollection } from "../api";
 import { userInfoAtom } from "../atoms";
 import { Content, Overlay, Word, WordSet } from "../theme";
+import { spawn } from "child_process";
 
 interface IData {
   pk: number;
@@ -39,47 +41,74 @@ function Collection() {
 
   const clickedSet = setId && datas?.find((set) => String(set.pk) === setId);
   const mutation = useMutation(putCollection);
-  const onTestClicked = (setId: string) => {
-    navigate(`/collection/test/${setId}`);
-  };
+
   const onCloseClicked = () => {
     navigate(`/collection`);
   };
+  const onDelete = () => {
+    mutation.mutate({ userInfo, wordPk });
+  };
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  let indexOfLast = currentPage * pageSize;
+  let indexOfFirst = indexOfLast - pageSize;
   const onSetClicked = (setId: number) => {
     setwordPk(setId);
     navigate(`/collection/${setId}`);
   };
-  const onDelete = () => {
-    mutation.mutate({ userInfo, wordPk });
+  const sliceDatas = (list: Array<any>) => {
+    let newArray = [];
+    newArray = list.slice(indexOfFirst, indexOfLast);
+    return newArray;
+  };
+
+  const nextClick = () => setCurrentPage((prev) => prev + 1);
+  const prevClick = () => setCurrentPage((prev) => prev - 1);
+
+  const ShowWords = ({ list }: { list: Array<any> }) => {
+    return (
+      <>
+        {list.map((word) => (
+          <div>
+            <form>
+              <Word key={word[0]} readOnly value={isBlindWord ? "" : word[0]} />
+              <br />
+              <Word key={word[1]} readOnly value={isBlindMean ? "" : word[1]} />
+              <input type="button" value="단어장에 저장" />
+            </form>
+          </div>
+        ))}
+      </>
+    );
   };
   return (
     <div>
       <AnimatePresence>
         {setId ? (
-          <Overlay onClick={onCloseClicked}>
-            <Content>
-              {clickedSet &&
-                clickedSet.content.map((word, index) => (
-                  <div>
-                    <span>{index + 1}</span>
-                    <form>
-                      <Word
-                        key={word[0]}
-                        readOnly
-                        value={isBlindWord ? "" : word[0]}
-                      />
-                      <br />
-                      <Word
-                        key={word[1]}
-                        readOnly
-                        value={isBlindMean ? "" : word[1]}
-                      />
-                      <input type="button" value="단어장에 저장" />
-                    </form>
-                  </div>
-                ))}
-            </Content>
-          </Overlay>
+          // <Overlay onClick={onCloseClicked}>
+          <>
+            <div>
+              {clickedSet && (
+                <ShowWords list={sliceDatas(clickedSet.content)} />
+              )}
+
+              {indexOfFirst != 0 ? (
+                <button onClick={prevClick}>⬅️</button>
+              ) : null}
+              {/* {clickedSet &&
+                Array.from(
+                  { length: Math.ceil(clickedSet.content.length / 10) },
+                  (v, i) => i + 1
+                ).map((page) => (
+                  <>
+                    <span>{page}</span>
+                  </>
+                ))} */}
+              {clickedSet && indexOfLast < clickedSet.content.length ? (
+                <button onClick={nextClick}>➡️</button>
+              ) : null}
+            </div>
+          </>
         ) : null}
       </AnimatePresence>
       <AnimatePresence>
