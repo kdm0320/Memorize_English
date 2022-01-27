@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { baseUrl } from "../api";
+import { baseUrl, fetchWords, putCollection } from "../api";
 import { OnNoti, userInfoAtom } from "../atoms";
 import { Noti, Overlay, WordSet } from "../theme";
 
@@ -40,31 +40,16 @@ function Courses() {
   const [id, setId] = useState<string | null | undefined>(null);
   const [wordPk, setwordPk] = useState<number>(0);
   const [isLearning, setIsLearning] = useState(false);
-  const { data } = useQuery<IData>("allWords", async () => {
-    const { data } = await axios.get(`${baseUrl}/words/`, {
-      headers: {
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    });
-    return data;
-  });
-  const datas: Array<any> | undefined = data?.results;
   const userInfo = useRecoilValue(userInfoAtom);
-  const mutation = useMutation(() =>
-    axios.put(
-      `${baseUrl}/users/${userInfo.pk}/collection/`,
-      { pk: wordPk },
-      {
-        headers: {
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      }
-    )
+  const { data } = useQuery<IData>(["allWords", userInfo], () =>
+    fetchWords(userInfo)
   );
+  const datas: Array<any> | undefined = data?.results;
+  const mutation = useMutation(putCollection);
 
   const toggleLearning = () => setIsLearning((prev) => !prev);
   const toggleBasket = async () => {
-    mutation.mutateAsync();
+    mutation.mutate({ userInfo, wordPk });
     toggleLearning();
   };
 
