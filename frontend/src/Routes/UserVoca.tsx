@@ -1,31 +1,47 @@
 import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { fetchVocas } from "../api";
+import { userInfoAtom } from "../atoms";
 import { Content, Word, WordSet } from "../theme";
 
-const datas = [
-  {
-    title: "단어장1",
-    content: [
-      ["one", "1"],
-      ["two", "2"],
-    ],
-  },
-  {
-    title: "단어장2",
-    content: [
-      ["three", "3"],
-      ["four", "4"],
-    ],
-  },
-];
+interface IVoca {
+  title: string;
+  content: string;
+}
+interface ISingnUpForm {
+  id: number;
+  username: string | null | number;
+  first_name: string | null | number;
+  last_name: string | null | number;
+  email: string;
+  nickname: string | null | number;
+  collection: Array<number>;
+  user_voca: Array<IVoca>;
+}
 
 function UserVoca() {
   const navigate = useNavigate();
+  const userInfo = useRecoilValue(userInfoAtom);
 
+  const { data } = useQuery<ISingnUpForm>(["allVocas", userInfo], () =>
+    fetchVocas(userInfo)
+  );
+  const datas = data?.user_voca;
   const { vocaName } = useParams();
   const [onTest, setOnTest] = useState(false);
+  const [isBlindMean, setIsBlindMean] = useState(false);
+  const [isBlindWord, setIsBlindWord] = useState(false);
+  const toggleMeanBlind = () => setIsBlindMean((prev) => !prev);
+  const toggleWordBlind = () => setIsBlindWord((prev) => !prev);
+  const tempClickedVoca =
+    vocaName && datas?.find((voca) => voca.title === vocaName);
+  const clickedVoca =
+    tempClickedVoca &&
+    Object.entries(JSON.parse(tempClickedVoca.content.replace(/[\']/g, '"')));
   const toggleOnTest = () => {
     setOnTest((prev) => !prev);
   };
@@ -40,12 +56,6 @@ function UserVoca() {
     if (onTest) toggleOnTest();
     navigate(`/voca`);
   };
-
-  const [isBlindMean, setIsBlindMean] = useState(false);
-  const [isBlindWord, setIsBlindWord] = useState(false);
-  const toggleMeanBlind = () => setIsBlindMean((prev) => !prev);
-  const toggleWordBlind = () => setIsBlindWord((prev) => !prev);
-  const clickedVoca = vocaName && datas.find((voca) => voca.title === vocaName);
 
   return (
     <div>
@@ -66,21 +76,16 @@ function UserVoca() {
                 <button key="meanBlind" onClick={toggleMeanBlind}>
                   뜻 가리기
                 </button>
-                {clickedVoca.content.map((word, index) => (
+                {clickedVoca.map((word, index) => (
                   <div>
                     <span key={index + "#" + word[0]}>{index + 1}</span>
                     <form>
+                      <Word key={word[0]} readOnly value={word[0]} />
                       <Word
-                        key={word[0]}
+                        key={String(word[1])}
                         readOnly
-                        value={isBlindWord ? "" : word[0]}
+                        value={String(word[1])}
                       />
-                      <Word
-                        key={word[0]}
-                        readOnly
-                        value={isBlindMean ? "" : word[1]}
-                      />
-                      <input type="button" value="단어장에 저장" />
                     </form>
                     <br key={index + word[0] + "br"} />
                   </div>
@@ -91,7 +96,7 @@ function UserVoca() {
         ) : null}
       </AnimatePresence>
       <AnimatePresence>
-        {datas.map((data) => (
+        {datas?.map((data) => (
           <WordSet
             onClick={() => onSetClicked(data.title)}
             key={data.title + "#"}

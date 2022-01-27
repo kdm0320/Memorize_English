@@ -33,7 +33,7 @@ class UserViewSet(ModelViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         if serializer.is_valid():
             new_user = serializer.save()
-            return Response(UserSerializer(new_user).data,status=status.HTTP_201_CREATED)
+            return Response(UserSerializer(new_user).data, status=status.HTTP_201_CREATED)
        
 
     def get_permissions(self):
@@ -86,6 +86,4 @@ class UserViewSet(ModelViewSet):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class CollectionView(APIView):
 
-    permission_classes = [permissions.IsAuthenticated]
