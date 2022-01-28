@@ -8,10 +8,7 @@ class User(AbstractUser):
     collection = models.ManyToManyField(
         "words.Word", related_name="collection", blank=True
     )
-    user_voca = models.JSONField(default='{}', null=True)
-    finished_collection = models.TextField(blank=True)
-    finished_collection_voca = models.TextField(blank=True)
-    finished_user_voca = models.TextField(blank=True)
+    finished_voca = models.JSONField(default='{}', null=True)
 
     def __str__(self):
         return self.username

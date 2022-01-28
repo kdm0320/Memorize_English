@@ -76,6 +76,7 @@ export const WordSet = styled(motion.div)<IProp>`
   background-color: lightBlue;
   position: ${(props) => props.location};
   border-width: 5px;
+  border-color: ${(props) => props.bdcolor};
 `;
 export const Word = styled(motion.input)<IProp>`
   border: 0;

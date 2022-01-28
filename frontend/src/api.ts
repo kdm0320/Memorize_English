@@ -43,8 +43,8 @@ export async function putCollection({
   );
 }
 
-export async function fetchVocas(userInfo: IUserInfo) {
-  const { data } = await axios.get(`${baseUrl}/users/${userInfo.pk}`, {
+export async function fetchFinished(userInfo: IUserInfo) {
+  const { data } = await axios.get(`${baseUrl}/users/${userInfo.pk}/`, {
     headers: {
       Authorization: `Bearer ${userInfo.token}`,
     },

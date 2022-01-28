@@ -27,7 +27,7 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isLoggedIn) navigate("/loby");
+    if (isLoggedIn) navigate("/collection");
   }, []);
   const onValid = (data: ILoginForm) => {
     mutation

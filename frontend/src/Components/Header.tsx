@@ -21,10 +21,7 @@ function Header() {
       <Link to="/qna">
         <h2>QnA</h2>
       </Link>
-      <Link to="/userBoard">
-        <h2>User Board</h2>
-      </Link>
-      <Link to="/loby">
+      <Link to="/collection">
         <h2>학습관리</h2>
       </Link>
       <Link to="/courses">

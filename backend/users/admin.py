@@ -12,10 +12,7 @@ class UserAdmin(UserAdmin):
                 "fields": (
                     "nickname",
                     "collection",
-                    "user_voca",
-                    "finished_collection",
-                    "finished_collection_voca",
-                    "finished_user_voca",
+                    "finished_voca",
                 )
             },
         ),
