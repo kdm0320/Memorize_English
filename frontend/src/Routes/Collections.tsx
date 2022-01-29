@@ -70,6 +70,7 @@ function Collection() {
   const prevClick = () => setCurrentPage((prev) => prev - 1);
   //단어 성취도 보여주기
   const [onAchievement, setOnAchievement] = useState(false);
+  const [finishedWords, setFinishedWords] = useState(0);
   const toggleAchievement = () => setOnAchievement((prev) => !prev);
   //단어 완료처리
   const finishedData = useQuery(["allFinished", userInfo], () =>
@@ -80,28 +81,22 @@ function Collection() {
   const setCurrentVoca = ({ word, mean }: { word?: any; mean?: string }) => {
     setVocas(JSON.parse(finishedData?.data?.finished_voca));
     const initial: any[] = JSON.parse(finishedData?.data?.finished_voca);
-    if (clickedSet) {
-      if (initial.length != 0) {
-        for (let i in vocas) {
-          if (vocas[i].title === clickedSet.title) {
-            vocas.map((voca: IVoca) => {
-              if (clickedSet) {
-                if (clickedSet.title === voca.title) {
-                  console.log(voca);
-                  voca.content.push({ [word]: mean });
-                  const newFinished: string = JSON.stringify(vocas);
-                  patchFinished({ userInfo, newFinished });
-                }
-              }
-            });
+    if (initial.length != 0) {
+      vocas.map((voca: IVoca) => {
+        if (clickedSet) {
+          if (clickedSet.title === voca.title) {
+            console.log(voca);
+            voca.content.push({ [word]: mean });
+            const newFinished: string = JSON.stringify(vocas);
+            patchFinished({ userInfo, newFinished });
+            setFinishedWords(voca.content.length);
             return;
           }
-          createSet();
         }
-      } else {
-        console.log(`두번 이상이면 initial의 문제`);
-        createSet();
-      }
+      });
+      createSet();
+    } else {
+      createSet();
     }
   };
   const createSet = () => {
@@ -143,7 +138,10 @@ function Collection() {
             <>
               <ReactApexChart
                 type="pie"
-                series={[clickedSet.content.length - 50, 50]}
+                series={[
+                  clickedSet.content.length - finishedWords,
+                  finishedWords,
+                ]}
                 options={{
                   labels: ["남은 단어", "외운 단어"],
                   chart: { width: "100px", height: "100px" },
