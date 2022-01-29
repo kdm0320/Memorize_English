@@ -12,7 +12,6 @@ interface ISingnUpForm {
   last_name: string | null | number;
   username: string | null | number;
   password: string | null | number;
-  nickname: string | null | number;
   email: string;
 }
 
@@ -40,7 +39,6 @@ function SignUp() {
         first_name: data.first_name,
         last_name: data.last_name,
         email: data.email,
-        nickname: data.nickname,
       })
       .then(() => navigate("/login"))
       .catch((e) => setErrorCode(e.response["status"]));
@@ -96,7 +94,6 @@ function SignUp() {
           type="password"
         />
         <span>{errors.password?.message}</span>
-        <InPut {...register("nickname")} placeholder="닉네임(Nickname)" />
         <button>Create</button>
       </form>
     </div>

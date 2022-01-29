@@ -51,3 +51,21 @@ export async function fetchFinished(userInfo: IUserInfo) {
   });
   return data;
 }
+
+export async function patchFinished({
+  userInfo,
+  newFinished,
+}: {
+  userInfo: IUserInfo;
+  newFinished: string;
+}) {
+  axios.patch(
+    `${baseUrl}/users/${userInfo.pk}/`,
+    { finished_voca: newFinished },
+    {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+  );
+}

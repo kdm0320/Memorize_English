@@ -1,17 +1,23 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import ReactApexChart from "react-apexcharts";
-import { fetchCollections, fetchFinished, putCollection } from "../api";
+import {
+  fetchCollections,
+  fetchFinished,
+  patchFinished,
+  putCollection,
+} from "../api";
 import { userInfoAtom } from "../atoms";
 import { Content, Overlay, Word, WordSet } from "../theme";
+import { useForm } from "react-hook-form";
 
 interface IVoca {
   title: string;
-  finished: string;
+  content: any[];
 }
 
 function Collection() {
@@ -33,7 +39,7 @@ function Collection() {
   const [isBlindWord, setIsBlindWord] = useState(false);
   const toggleMeanBlind = () => setIsBlindMean((prev) => !prev);
   const toggleWordBlind = () => setIsBlindWord((prev) => !prev);
-  //클릭단어 세트 알기
+  //단어세트 클릭시 설정
   const { setId } = useParams();
   const clickedSet = setId && datas?.find((set) => String(set.pk) === setId);
   const onSetClicked = (setId: number) => {
@@ -65,37 +71,73 @@ function Collection() {
   //단어 성취도 보여주기
   const [onAchievement, setOnAchievement] = useState(false);
   const toggleAchievement = () => setOnAchievement((prev) => !prev);
-  const [finishedNumbers, setFinishedNumbers] = useState("");
-  const getFinished = () => {
-    fetchFinished(userInfo).then((data) =>
-      data.finished_voca.map((voca: IVoca) => {
-        if (clickedSet) {
-          if (clickedSet.title === voca.title) {
-            setFinishedNumbers(voca.finished);
+  //단어 완료처리
+  const finishedData = useQuery(["allFinished", userInfo], () =>
+    fetchFinished(userInfo)
+  );
+  const isFinishedLoading = finishedData.isLoading;
+  const [vocas, setVocas] = useState<any[]>([]);
+  const setCurrentVoca = ({ word, mean }: { word?: any; mean?: string }) => {
+    setVocas(JSON.parse(finishedData?.data?.finished_voca));
+    const initial: any[] = JSON.parse(finishedData?.data?.finished_voca);
+    if (clickedSet) {
+      if (initial.length != 0) {
+        for (let i in vocas) {
+          if (vocas[i].title === clickedSet.title) {
+            vocas.map((voca: IVoca) => {
+              if (clickedSet) {
+                if (clickedSet.title === voca.title) {
+                  console.log(voca);
+                  voca.content.push({ [word]: mean });
+                  const newFinished: string = JSON.stringify(vocas);
+                  patchFinished({ userInfo, newFinished });
+                }
+              }
+            });
+            return;
           }
+          createSet();
         }
-      })
-    );
-    toggleAchievement();
+      } else {
+        console.log(`두번 이상이면 initial의 문제`);
+        createSet();
+      }
+    }
   };
-
+  const createSet = () => {
+    if (clickedSet) {
+      const newContent = [{ title: clickedSet.title, content: [] }];
+      setVocas((prev) => [...prev, ...newContent]);
+      const newFinished = JSON.stringify(vocas);
+      patchFinished({ userInfo, newFinished });
+    }
+  };
+  const onClick = (index: number) => {
+    const word = document.getElementById(`word${index}`)?.innerText;
+    const mean = document.getElementById(`mean${index}`)?.innerText;
+    setCurrentVoca({ word, mean });
+  };
   //단어 보여주기
-  const ShowWords = ({ list }: { list: Array<any> }) => {
+  const ShowWords = ({ list }: { list: Array<string> }) => {
     return (
       <>
         {list.map((word, index) => (
-          <form key={index}>
-            <Word key={word[0]} readOnly value={isBlindWord ? "" : word[0]} />
-            <br />
-            <Word key={word[1]} readOnly value={isBlindMean ? "" : word[1]} />
-            <button>완료</button>
-          </form>
+          <div key={index}>
+            <Word key={word[0]} id={`word${index}`}>
+              {isBlindWord ? "" : word[0]}
+            </Word>
+            <Word key={word[1]} id={`mean${index}`}>
+              {isBlindWord ? "" : word[1]}
+            </Word>
+            <button onClick={() => onClick(index)}>완료</button>
+          </div>
         ))}
       </>
     );
   };
   return (
     <div>
+      {isFinishedLoading ? <h1>Loading..</h1> : null}
       {onAchievement
         ? clickedSet && (
             <>
@@ -123,7 +165,7 @@ function Collection() {
             <button onClick={toggleWordBlind}>단어 가리기</button>
             <button onClick={toggleMeanBlind}>뜻 가리기</button>
             <button onClick={onCloseClicked}>close</button>
-            <button onClick={() => getFinished()}>성취</button>
+            <button onClick={() => toggleAchievement()}>성취</button>
             <button onClick={onDelete}>delete</button>
             {clickedSet && <ShowWords list={sliceDatas(clickedSet.content)} />}
 

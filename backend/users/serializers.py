@@ -19,7 +19,6 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "email",
-            "nickname",
             "collection",
             "finished_voca",
    

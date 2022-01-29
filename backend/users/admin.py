@@ -10,7 +10,6 @@ class UserAdmin(UserAdmin):
             "Custom Profile",
             {
                 "fields": (
-                    "nickname",
                     "collection",
                     "finished_voca",
                 )
@@ -19,7 +18,6 @@ class UserAdmin(UserAdmin):
     )
     list_display = (
         "username",
-        "nickname",
     )
 
     filter_horizontal = ("collection",)
