@@ -1,6 +1,7 @@
 import axios from "axios";
-import { useRecoilValue } from "recoil";
-import { userInfoAtom, IUserInfo } from "./atoms";
+import { useRecoilState, useSetRecoilState } from "recoil";
+
+import { userInfoAtom, IUserInfo, isAxiosLoadingAtom } from "./atoms";
 
 export const baseUrl = "http://127.0.0.1:8000/api/v1";
 
@@ -14,15 +15,19 @@ export async function fetchWords(userInfo: IUserInfo) {
 }
 
 export async function fetchCollections(userInfo: IUserInfo) {
-  const { data } = await axios.get(
-    `${baseUrl}/users/${userInfo.pk}/collection`,
-    {
-      headers: {
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    }
-  );
-  return data;
+  try {
+    const { data } = await axios.get(
+      `${baseUrl}/users/${userInfo.pk}/collection`,
+      {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function putCollection({
@@ -43,7 +48,7 @@ export async function putCollection({
   );
 }
 
-export async function fetchFinished(userInfo: IUserInfo) {
+export async function fetchUser(userInfo: IUserInfo) {
   const { data } = await axios.get(`${baseUrl}/users/${userInfo.pk}/`, {
     headers: {
       Authorization: `Bearer ${userInfo.token}`,

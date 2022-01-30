@@ -35,3 +35,8 @@ export const userInfoAtom = atom<IUserInfo>({
   },
   effects_UNSTABLE: [persistAtom],
 });
+
+export const isAxiosLoadingAtom = atom({
+  key: "isAxiosLoading",
+  default: false,
+});
