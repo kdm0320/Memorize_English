@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
+    avatar = models.ImageField(blank=True)
     collection = models.ManyToManyField(
         "words.Word", related_name="collection", blank=True
     )

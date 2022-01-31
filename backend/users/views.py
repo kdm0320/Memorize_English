@@ -1,3 +1,5 @@
+import email
+from turtle import update
 from django.contrib.auth import authenticate
 from django.conf import settings
 from rest_framework import status
@@ -21,7 +23,7 @@ class UserViewSet(ModelViewSet):
     serializer_class = UserSerializer
 
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request):
         serializer = UserSerializer(data=request.data)
         userValue = request.data['username']
         emailValue = request.data['email']
@@ -34,7 +36,19 @@ class UserViewSet(ModelViewSet):
         if serializer.is_valid():
             new_user = serializer.save()
             return Response(UserSerializer(new_user).data, status=status.HTTP_201_CREATED)
-       
+    
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        emailValue = request.data['email']
+        exist_email = User.objects.filter(email=emailValue).first()
+        user_email = User.objects.get(username=self.get_object()).email
+        if exist_email == user_email:
+            return self.update(request, *args, **kwargs)
+        if exist_email:
+            return Response(status=status.HTTP_409_CONFLICT)
+        return self.update(request, *args, **kwargs)
+
+
 
     def get_permissions(self):
         permission_classes = []

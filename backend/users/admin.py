@@ -10,6 +10,7 @@ class UserAdmin(UserAdmin):
             "Custom Profile",
             {
                 "fields": (
+                    "avatar",
                     "collection",
                     "finished_voca",
                 )

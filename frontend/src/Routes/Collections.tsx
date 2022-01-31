@@ -32,13 +32,6 @@ interface ICollect {
   content: Array<any>;
 }
 
-interface IClickedSet {
-  pk: number;
-  title: string;
-  content: Array<any>;
-  is_learning: false;
-}
-
 function Collection() {
   const navigate = useNavigate();
   const userInfo = useRecoilValue(userInfoAtom);

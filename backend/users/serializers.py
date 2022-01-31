@@ -15,6 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = models.User
         fields = (
             "id",
+            "avatar",
             "username",
             "first_name",
             "last_name",
@@ -23,4 +24,4 @@ class UserSerializer(serializers.ModelSerializer):
             "finished_voca",
    
         )
-    read_only_fields = ("id",)
+    read_only_fields = ("id","username")
