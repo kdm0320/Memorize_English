@@ -1,5 +1,12 @@
 import { AnimatePresence, motion } from "framer-motion";
-import React, { FormEvent, useEffect, useRef, useState } from "react";
+import React, {
+  ButtonHTMLAttributes,
+  FormEvent,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -19,9 +26,17 @@ import { Content, Overlay, Word, WordSet } from "../theme";
 import { useForm } from "react-hook-form";
 import { Loading } from "../Components/Loading";
 
-interface IVoca {
+interface ICollect {
+  pk: number;
   title: string;
-  content: any[];
+  content: Array<any>;
+}
+
+interface IClickedSet {
+  pk: number;
+  title: string;
+  content: Array<any>;
+  is_learning: false;
 }
 
 function Collection() {
@@ -29,29 +44,18 @@ function Collection() {
   const userInfo = useRecoilValue(userInfoAtom);
   const [wordPk, setwordPk] = useState<number>(0);
   //유저 단어 콜렉션 Fetch 함수
-  const { isLoading, data } = useQuery(["allCollections", userInfo], () =>
-    fetchCollections(userInfo)
+  const { isLoading, data } = useQuery<ICollect[]>(
+    ["allCollections", userInfo],
+    () => fetchCollections(userInfo)
   );
-  const datas: {
-    pk: number;
-    title: string;
-    content: Array<any>;
-  }[] = data;
-  //단어,뜻가리기
+
   const [isBlindMean, setIsBlindMean] = useState(false);
   const [isBlindWord, setIsBlindWord] = useState(false);
   const toggleMeanBlind = () => setIsBlindMean((prev) => !prev);
   const toggleWordBlind = () => setIsBlindWord((prev) => !prev);
   //단어세트 클릭시 설정
   const { setId } = useParams();
-  const clickedSet = setId && datas?.find((set) => String(set.pk) === setId);
-  const onSetClicked = (setId: number) => {
-    setwordPk(setId);
-    navigate(`/collection/${setId}`);
-  };
-  const onCloseClicked = () => {
-    navigate(`/collection`);
-  };
+  const clickedSet = setId && data?.find((set) => String(set.pk) === setId);
   //삭제 관련
   const mutation = useMutation(putCollection);
   const onDelete = () => {
@@ -90,7 +94,6 @@ function Collection() {
       if (clickedSet) {
         for (let i = 0; i < vocas.length; i++) {
           if (clickedSet.title === vocas[i].title) {
-            console.log(vocas[i]);
             vocas[i].content.push({ [word]: mean });
             const newFinished: string = JSON.stringify(vocas);
             finishedMutation.mutate({ userInfo, newFinished });
@@ -100,9 +103,6 @@ function Collection() {
         }
       }
       createSet();
-      console.log(
-        "이게 문제같은데-> 같은거만 누를땐 뜨면 안돼 이건 새로운거 누를때 한번만 떠야하는데"
-      );
     } else {
       createSet();
     }
@@ -115,11 +115,61 @@ function Collection() {
       finishedMutation.mutate({ userInfo, newFinished });
     }
   };
-  const onClick = (index: number) => {
+  //완료=>외움으로 변환도 포함
+  const onClick = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    index: number
+  ) => {
     const word = document.getElementById(`word${index}`)?.innerText;
     const mean = document.getElementById(`mean${index}`)?.innerText;
     setCurrentVoca({ word, mean });
   };
+  //완료된 단어 체크 -> 완료를 외움으로 바꿈
+  function changeInnerText(el: HTMLElement, value: string) {
+    el.innerText = value;
+  }
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const onSetClicked = (setId: number) => {
+    setwordPk(setId);
+    const currSet = setId && data?.find((set) => set.pk === setId);
+    const currentFinished: { title: string; content: any[] }[] = JSON.parse(
+      userData?.data?.finished_voca
+    );
+    // console.log(currSet);
+    // console.log(currentFinished);
+    if (currSet && currentFinished) {
+      if (currentFinished.length != 0) {
+        for (let i = 0; i < currentFinished.length; i++) {
+          if (currSet.title === currentFinished[i].title) {
+            for (let j = 0; i < pageSize; i++) {
+              const word: string | undefined = document.getElementById(
+                `word${j}`
+              )?.innerText;
+              const mean: any = document.getElementById(`mean${j}`)?.innerText;
+              console.log(word);
+              console.log(mean);
+              // for (let k = 0; k < currentFinished[i].content.length; k++) {
+              //   if (
+              //     !Object.keys(currentFinished[i].content[k]).includes(word) &&
+              //     !Object.values(currentFinished[i].content[k]).includes(mean)
+              //   ) {
+              //     if (null !== buttonRef.current) {
+              //       changeInnerText(buttonRef.current, "외움");
+              //     }
+              //   }
+              // }
+            }
+          }
+        }
+      }
+    }
+    navigate(`/collection/${setId}`);
+  };
+
+  const onCloseClicked = () => {
+    navigate(`/collection`);
+  };
+
   //단어 보여주기
   const testSkeleton = false;
   const ShowWords = ({ list }: { list: Array<string> }) => {
@@ -127,6 +177,7 @@ function Collection() {
       <>
         {list.map((word, index) => (
           <div key={index}>
+            {/* {checkFinished(word[0], word[1])} */}
             {!isLoading ? (
               <Word key={word[0]} id={`word${index}`}>
                 {isBlindWord ? "" : word[0]}
@@ -138,15 +189,16 @@ function Collection() {
             )}
             {!isLoading ? (
               <Word key={word[1]} id={`mean${index}`}>
-                {isBlindWord ? "" : word[1]}
+                {isBlindMean ? "" : word[1]}
               </Word>
             ) : (
               <SkeletonTheme baseColor="black" width="50%">
                 <Skeleton />
               </SkeletonTheme>
             )}
-
-            <button onClick={() => onClick(index)}>완료</button>
+            <button onClick={(e) => onClick(e, index)} ref={buttonRef}>
+              완료
+            </button>
           </div>
         ))}
       </>
@@ -160,7 +212,9 @@ function Collection() {
         <ReactLoading type="spin" color="black" />
         <h3>Loading</h3>
       </>
-      {isPatchFinishLoading || isUserDataLoading ? <Loading /> : null}
+      {isPatchFinishLoading || isUserDataLoading || isLoading ? (
+        <Loading />
+      ) : null}
       {onAchievement
         ? clickedSet && (
             <>
@@ -179,14 +233,15 @@ function Collection() {
           )
         : null}
       <AnimatePresence>
-        {setId ? (
-          <div
+        {clickedSet ? (
+          <motion.div
             style={{
               width: "300px",
               height: "500px",
               backgroundColor: "whitesmoke",
               borderStyle: "solid",
             }}
+            layoutId={String(clickedSet.pk)}
           >
             <button onClick={toggleWordBlind}>단어 가리기</button>
             <button onClick={toggleMeanBlind}>뜻 가리기</button>
@@ -209,14 +264,20 @@ function Collection() {
             {clickedSet && indexOfLast < clickedSet.content.length ? (
               <button onClick={nextClick}>➡️</button>
             ) : null}
-          </div>
+          </motion.div>
         ) : null}
       </AnimatePresence>
       <AnimatePresence>
-        {datas?.map((data) => (
-          <WordSet key={data.pk} layoutId={String(data.pk)}>
-            {data.title}
-            <button onClick={() => onSetClicked(data.pk)}>내용보기</button>
+        {data?.map((collection) => (
+          <WordSet key={collection.pk} layoutId={String(collection.pk)}>
+            {collection.title}
+            <button
+              onClick={() => {
+                onSetClicked(collection.pk);
+              }}
+            >
+              내용보기
+            </button>
           </WordSet>
         ))}
       </AnimatePresence>
