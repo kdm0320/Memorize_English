@@ -23,7 +23,7 @@ import {
 } from "../api";
 import { isAxiosLoadingAtom, userInfoAtom } from "../atoms";
 import { Content, Overlay, Word, WordSet } from "../theme";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { Loading } from "../Components/Loading";
 
 interface ICollect {
@@ -48,6 +48,12 @@ function Collection() {
     ["allCollections", userInfo],
     () => fetchCollections(userInfo)
   );
+  const unregist = () => {
+    for (let i = 0; i < 10; i++) {
+      unregister(`word${i}`);
+      unregister(`mean${i}`);
+    }
+  };
 
   const [isBlindMean, setIsBlindMean] = useState(false);
   const [isBlindWord, setIsBlindWord] = useState(false);
@@ -56,6 +62,16 @@ function Collection() {
   //단어세트 클릭시 설정
   const { setId } = useParams();
   const clickedSet = setId && data?.find((set) => String(set.pk) === setId);
+  const onSetClicked = (setId: number) => {
+    setwordPk(setId);
+    navigate(`/collection/${setId}`);
+  };
+
+  const onCloseClicked = () => {
+    unregist();
+    setCurrentPage(1);
+    navigate(`/collection`);
+  };
   //삭제 관련
   const mutation = useMutation(putCollection);
   const onDelete = () => {
@@ -73,8 +89,18 @@ function Collection() {
     newArray = list.slice(indexOfFirst, indexOfLast);
     return newArray;
   };
-  const nextClick = () => setCurrentPage((prev) => prev + 1);
-  const prevClick = () => setCurrentPage((prev) => prev - 1);
+  const nextClick = () => {
+    unregist();
+    setIsInFinished(Array(pageSize).fill(false));
+    mounted.current = false;
+    setCurrentPage((prev) => prev + 1);
+  };
+  const prevClick = () => {
+    unregist();
+    setIsInFinished(Array(pageSize).fill(false));
+    mounted.current = false;
+    setCurrentPage((prev) => prev - 1);
+  };
   //단어 성취도 보여주기
   const [onAchievement, setOnAchievement] = useState(false);
   const [finishedWords, setFinishedWords] = useState(0);
@@ -115,92 +141,79 @@ function Collection() {
       finishedMutation.mutate({ userInfo, newFinished });
     }
   };
-  //완료=>외움으로 변환도 포함
-  const onClick = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    index: number
-  ) => {
-    const word = document.getElementById(`word${index}`)?.innerText;
-    const mean = document.getElementById(`mean${index}`)?.innerText;
+  const onFinishedClick = (index: number) => {
+    const word = getValues(`word${index}`);
+    const mean = getValues(`mean${index}`);
     setCurrentVoca({ word, mean });
   };
-  //완료된 단어 체크 -> 완료를 외움으로 바꿈
   function changeInnerText(el: HTMLElement, value: string) {
     el.innerText = value;
   }
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const onSetClicked = (setId: number) => {
-    setwordPk(setId);
-    const currSet = setId && data?.find((set) => set.pk === setId);
+
+  //단어 보여주기 //완료된 단어 체크 -> 완료를 외움으로 바꿈
+  const testSkeleton = false;
+  const { getValues, register, unregister } = useForm();
+  const [isInFinished, setIsInFinished] = useState(Array(pageSize).fill(false));
+
+  const checkFinshed = (list: Array<string>) => {
     const currentFinished: { title: string; content: any[] }[] = JSON.parse(
       userData?.data?.finished_voca
     );
-    // console.log(currSet);
-    // console.log(currentFinished);
-    if (currSet && currentFinished) {
-      if (currentFinished.length != 0) {
-        for (let i = 0; i < currentFinished.length; i++) {
-          if (currSet.title === currentFinished[i].title) {
-            for (let j = 0; i < pageSize; i++) {
-              const word: string | undefined = document.getElementById(
-                `word${j}`
-              )?.innerText;
-              const mean: any = document.getElementById(`mean${j}`)?.innerText;
-              console.log(word);
-              console.log(mean);
-              // for (let k = 0; k < currentFinished[i].content.length; k++) {
-              //   if (
-              //     !Object.keys(currentFinished[i].content[k]).includes(word) &&
-              //     !Object.values(currentFinished[i].content[k]).includes(mean)
-              //   ) {
-              //     if (null !== buttonRef.current) {
-              //       changeInnerText(buttonRef.current, "외움");
-              //     }
-              //   }
-              // }
+    if (clickedSet) {
+      currentFinished.map((voca, index) => {
+        if (voca.title === clickedSet.title) {
+          for (let i = 0; i < pageSize; i++) {
+            for (let j = 0; j < voca.content.length; j++) {
+              if (
+                Object.keys(voca.content[j]).includes(list[i][0]) &&
+                Object.values(voca.content[j]).includes(list[i][1])
+              ) {
+                setIsInFinished((prev) =>
+                  prev.map((tf, idx) => (idx === i ? true : tf))
+                );
+                break;
+              }
             }
           }
+          return;
         }
-      }
+      });
     }
-    navigate(`/collection/${setId}`);
   };
+  const mounted = useRef(false);
 
-  const onCloseClicked = () => {
-    navigate(`/collection`);
-  };
-
-  //단어 보여주기
-  const testSkeleton = false;
   const ShowWords = ({ list }: { list: Array<string> }) => {
+    if (!mounted.current) {
+      checkFinshed(list);
+      mounted.current = true;
+    } else {
+      //pass
+    }
     return (
       <>
         {list.map((word, index) => (
           <div key={index}>
-            {/* {checkFinished(word[0], word[1])} */}
-            {!isLoading ? (
-              <Word key={word[0]} id={`word${index}`}>
-                {isBlindWord ? "" : word[0]}
-              </Word>
+            <Word
+              key={word[0]}
+              readOnly
+              {...register(`word${index}`)}
+              value={isBlindWord ? "" : word[0]}
+            />
+            <Word
+              key={word[1]}
+              readOnly
+              {...register(`mean${index}`)}
+              value={isBlindMean ? "" : word[1]}
+            />
+            {isInFinished[index] ? (
+              <button>외운거다</button>
             ) : (
-              <SkeletonTheme width="30%">
-                <Skeleton />
-              </SkeletonTheme>
+              <button onClick={() => onFinishedClick(index)}>완료</button>
             )}
-            {!isLoading ? (
-              <Word key={word[1]} id={`mean${index}`}>
-                {isBlindMean ? "" : word[1]}
-              </Word>
-            ) : (
-              <SkeletonTheme baseColor="black" width="50%">
-                <Skeleton />
-              </SkeletonTheme>
-            )}
-            <button onClick={(e) => onClick(e, index)} ref={buttonRef}>
-              완료
-            </button>
           </div>
         ))}
+        {/* {console.log(getValues(`word0`))}
+        {console.log(getValues(`mean0`))} */}
       </>
     );
   };
@@ -241,14 +254,25 @@ function Collection() {
               backgroundColor: "whitesmoke",
               borderStyle: "solid",
             }}
-            layoutId={String(clickedSet.pk)}
+            layoutId={String(clickedSet.pk) + "3"}
           >
-            <button onClick={toggleWordBlind}>단어 가리기</button>
-            <button onClick={toggleMeanBlind}>뜻 가리기</button>
-            <button onClick={onCloseClicked}>close</button>
-            <button onClick={() => toggleAchievement()}>성취</button>
-            <button onClick={onDelete}>delete</button>
+            <button type="button" onClick={toggleWordBlind}>
+              단어 가리기
+            </button>
+            <button type="button" onClick={toggleMeanBlind}>
+              뜻 가리기
+            </button>
+            <button type="button" onClick={onCloseClicked}>
+              close
+            </button>
+            <button type="button" onClick={() => toggleAchievement()}>
+              성취
+            </button>
+            <button type="button" onClick={onDelete}>
+              delete
+            </button>
             {clickedSet && <ShowWords list={sliceDatas(clickedSet.content)} />}
+
             {indexOfFirst != 0 ? (
               <button onClick={prevClick}> ⬅️</button>
             ) : null}
@@ -272,6 +296,7 @@ function Collection() {
           <WordSet key={collection.pk} layoutId={String(collection.pk)}>
             {collection.title}
             <button
+              type="button"
               onClick={() => {
                 onSetClicked(collection.pk);
               }}

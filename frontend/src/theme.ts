@@ -78,7 +78,9 @@ export const WordSet = styled(motion.div)<IProp>`
   border-width: 5px;
   border-color: ${(props) => props.bdcolor};
 `;
-export const Word = styled(motion.span)<IProp>`
+export const Word = styled(motion.input)<IProp>`
   border: 0;
   background-color: whitesmoke;
+  outline: 0;
+  cursor: default;
 `;
