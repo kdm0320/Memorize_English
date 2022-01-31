@@ -69,6 +69,8 @@ function Collection() {
 
   const onCloseClicked = () => {
     unregist();
+    mounted.current = false;
+    setIsInFinished(Array(pageSize).fill(false));
     setCurrentPage(1);
     navigate(`/collection`);
   };
@@ -146,10 +148,6 @@ function Collection() {
     const mean = getValues(`mean${index}`);
     setCurrentVoca({ word, mean });
   };
-  function changeInnerText(el: HTMLElement, value: string) {
-    el.innerText = value;
-  }
-
   //단어 보여주기 //완료된 단어 체크 -> 완료를 외움으로 바꿈
   const testSkeleton = false;
   const { getValues, register, unregister } = useForm();
