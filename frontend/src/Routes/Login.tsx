@@ -3,14 +3,45 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 import { Link, useNavigate } from "react-router-dom";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { baseUrl } from "../api";
 import { isLoggedAtom, userInfoAtom } from "../atoms";
+import styled, { keyframes } from "styled-components";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface ILoginForm {
   username?: string;
   password?: string;
 }
+const Wrapper = styled.div`
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`;
+
+const welcomeAnimation = keyframes`
+  0%{
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100%{
+    opacity: 1;
+  }
+`;
+
+const WelcomePhrase = styled.header`
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: 100px;
+  animation: ${welcomeAnimation} 1s linear;
+  justify-content: center;
+  text-align: center;
+  margin-top: 70px;
+`;
+
+const LoginForm = styled(motion.form)``;
 
 function Login() {
   const {
@@ -42,7 +73,7 @@ function Login() {
           pk: value.data["id"],
           token: value.data["token"],
         });
-        navigate("/loby");
+        navigate("/collection");
       });
   };
 
@@ -51,7 +82,10 @@ function Login() {
       {mutation.isError ? (
         <div>아이디 혹은 비밀번호 오류입니다 다시 확인해 주십시오</div>
       ) : null}
-      <form onSubmit={handleSubmit(onValid)}>
+
+      <WelcomePhrase>Welcome to this site!!</WelcomePhrase>
+
+      <LoginForm onSubmit={handleSubmit(onValid)}>
         <input
           {...register("username", { required: "필수 항목입니다." })}
           placeholder="ID"
@@ -64,7 +98,7 @@ function Login() {
         />
         <span>{errors.password?.message}</span>
         <button>Log In</button>
-      </form>
+      </LoginForm>
       <div>
         Don't have a account?
         <Link to="/signup">

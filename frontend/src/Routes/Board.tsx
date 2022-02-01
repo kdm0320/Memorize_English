@@ -1,9 +1,10 @@
+import { useEffect } from "react";
 import { useQuery } from "react-query";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { fetchAllUser, fetchBoards, fetchUser } from "../api";
-import { IUserInfo, userInfoAtom } from "../atoms";
+import { isLoggedAtom, IUserInfo, userInfoAtom } from "../atoms";
 import Write from "./Write";
 
 interface IContent {
@@ -37,7 +38,11 @@ const Content = styled.span<IContent>`
 function Board() {
   const { data } = useQuery("allQnA", fetchBoards);
   const BoardDatas: IBoard[] = data?.results;
-
+  const isLogged = useRecoilValue(isLoggedAtom);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!isLogged) navigate("/");
+  }, [isLogged]);
   return (
     <div>
       <Head>QnA</Head>

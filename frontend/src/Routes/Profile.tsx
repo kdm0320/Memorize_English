@@ -1,11 +1,12 @@
 import axios from "axios";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Loading from "react-loading";
 import { useMutation, useQuery } from "react-query";
+import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { baseUrl, fetchUser } from "../api";
-import { IUserInfo, userInfoAtom } from "../atoms";
+import { isLoggedAtom, IUserInfo, userInfoAtom } from "../atoms";
 
 interface IProFileInfo {
   avatar: string;
@@ -21,6 +22,11 @@ interface IProfileForm {
 }
 
 function Profile() {
+  const isLogged = useRecoilValue(isLoggedAtom);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!isLogged) navigate("/");
+  }, [isLogged]);
   const userInfo = useRecoilValue(userInfoAtom);
   const {
     register,

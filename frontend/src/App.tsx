@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./Components/Header";
 import Courses from "./Routes/Courses";
-import Gate from "./Routes/Gate";
 import Login from "./Routes/Login";
 import Profile from "./Routes/Profile";
 import SignUp from "./Routes/SignUp";
@@ -14,8 +13,7 @@ function App() {
     <Router>
       <Header />
       <Routes>
-        <Route path="/" element={<Gate />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         {["/collection", "/collection/:setId"].map((path, index) => {
           return <Route path={path} element={<Collection />} key={index} />;

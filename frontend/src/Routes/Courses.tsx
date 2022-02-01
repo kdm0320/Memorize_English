@@ -2,10 +2,11 @@ import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
+import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { baseUrl, fetchWords, putCollection } from "../api";
-import { OnNoti, userInfoAtom } from "../atoms";
+import { isLoggedAtom, OnNoti, userInfoAtom } from "../atoms";
 import { Noti, Overlay, WordSet } from "../theme";
 
 const ChosenBox = styled.div`
@@ -37,6 +38,11 @@ interface IData {
 }
 
 function Courses() {
+  const isLogged = useRecoilValue(isLoggedAtom);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!isLogged) navigate("/");
+  }, [isLogged]);
   const [id, setId] = useState<string | null | undefined>(null);
   const [wordPk, setwordPk] = useState<number>(0);
   const [isLearning, setIsLearning] = useState(false);

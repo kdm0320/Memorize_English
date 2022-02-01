@@ -1,15 +1,48 @@
-import { Link, useLocation } from "react-router-dom";
-import { useRecoilState, useResetRecoilState } from "recoil";
+import { motion } from "framer-motion";
+import { useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
+import styled from "styled-components";
 import { isLoggedAtom, userInfoAtom } from "../atoms";
+
+const Nav = styled(motion.nav)`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+`;
+
+const Items = styled.ul`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const Item = styled.li`
+  display: flex;
+  justify-content: center;
+  padding: 0px 50px;
+  width: 100px;
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  span {
+    :hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+`;
 
 function Header() {
   const search = useLocation();
   const Logout = useResetRecoilState(isLoggedAtom);
-  const RestUser = useResetRecoilState(userInfoAtom);
+  const ResetUser = useResetRecoilState(userInfoAtom);
 
   const OnClick = () => {
     Logout();
-    RestUser();
+    ResetUser();
   };
 
   if (search.pathname === "/") return null;
@@ -18,19 +51,33 @@ function Header() {
 
   return (
     <div>
-      <Link to="/qna">
-        <h2>QnA</h2>
-      </Link>
-      <Link to="/collection">
-        <h2>학습관리</h2>
-      </Link>
-      <Link to="/courses">
-        <h2>단어모음</h2>
-      </Link>
-      <Link to="/profile">
-        <h2>Profile</h2>
-      </Link>
-      <button onClick={OnClick}>Logout</button>
+      <Nav>
+        <Items>
+          <Item>
+            <Link to="/qna">
+              <span>QnA</span>
+            </Link>
+          </Item>
+          <Item>
+            <Link to="/collection">
+              <span>학습관리</span>
+            </Link>
+          </Item>
+          <Item>
+            <Link to="/courses">
+              <span>단어모음</span>
+            </Link>
+          </Item>
+          <Item>
+            <Link to="/profile">
+              <span>Profile</span>
+            </Link>
+          </Item>
+          <Item>
+            <span onClick={OnClick}>Logout</span>
+          </Item>
+        </Items>
+      </Nav>
       <hr />
     </div>
   );

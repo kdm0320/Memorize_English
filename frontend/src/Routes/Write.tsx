@@ -1,9 +1,11 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
+import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { postBoards } from "../api";
-import { userInfoAtom } from "../atoms";
+import { isLoggedAtom, userInfoAtom } from "../atoms";
 
 interface IFormData {
   title: string;
@@ -45,8 +47,12 @@ const Img = styled.img`
 const Choice = styled.span``;
 
 function Write() {
-  const userInfo = useRecoilValue(userInfoAtom);
   const writeMutate = useMutation(postBoards);
+  const isLogged = useRecoilValue(isLoggedAtom);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!isLogged) navigate("/");
+  }, [isLogged]);
   const {
     register,
     handleSubmit,

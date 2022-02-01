@@ -1,12 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import React, {
-  ButtonHTMLAttributes,
-  FormEvent,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -21,9 +14,9 @@ import {
   patchFinished,
   putCollection,
 } from "../api";
-import { isAxiosLoadingAtom, userInfoAtom } from "../atoms";
+import { isLoggedAtom, userInfoAtom } from "../atoms";
 import { Content, Overlay, Word, WordSet } from "../theme";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Loading } from "../Components/Loading";
 
 interface ICollect {
@@ -33,7 +26,11 @@ interface ICollect {
 }
 
 function Collection() {
+  const isLogged = useRecoilValue(isLoggedAtom);
   const navigate = useNavigate();
+  useEffect(() => {
+    if (!isLogged) navigate("/");
+  }, [isLogged]);
   const userInfo = useRecoilValue(userInfoAtom);
   const [wordPk, setwordPk] = useState<number>(0);
   //유저 단어 콜렉션 Fetch 함수
