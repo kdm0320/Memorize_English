@@ -12,4 +12,6 @@ class NoticeSerializer(serializers.ModelSerializer):
             "writer",
             "views",
             "is_solved",
+            "created",
         )
+    read_only_fields = ("pk","created")

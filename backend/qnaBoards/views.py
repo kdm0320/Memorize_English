@@ -15,7 +15,8 @@ class QnaBoardViewSet(ModelViewSet):
         if self.action == "list" or self.action == "retrieve":
             permission_classes = [permissions.AllowAny]
         elif self.action == "create":
-            permission_classes = [permissions.IsAuthenticated]
+            permission_classes = [permissions.AllowAny]
         else:
             permission_classes = [IsWriter]
         return [permission() for permission in permission_classes]
+

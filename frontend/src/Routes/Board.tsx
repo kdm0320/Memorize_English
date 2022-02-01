@@ -1,11 +1,24 @@
-import { Link, Route, Routes, useLocation } from "react-router-dom";
+import { useQuery } from "react-query";
+import { Link } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+import { fetchAllUser, fetchBoards, fetchUser } from "../api";
+import { IUserInfo, userInfoAtom } from "../atoms";
 import Write from "./Write";
 
 interface IContent {
   bdstyle: string;
 }
 
+interface IBoard {
+  content: string;
+  created: string;
+  is_solved: boolean;
+  pk: number;
+  title: string;
+  views: number;
+  writer: string;
+}
 const Head = styled.h1``;
 
 const MenuBar = styled.div`
@@ -22,10 +35,12 @@ const Content = styled.span<IContent>`
 `;
 
 function Board() {
-  const search = useLocation();
+  const { data } = useQuery("allQnA", fetchBoards);
+  const BoardDatas: IBoard[] = data?.results;
+
   return (
     <div>
-      <Head>{search.pathname === "/qna" ? "QnA" : "User Board"}</Head>
+      <Head>QnA</Head>
       <hr />
       <MenuBar>
         <Content bdstyle="solid">No.</Content>
@@ -35,23 +50,19 @@ function Board() {
         <Content bdstyle="solid">조회수</Content>
       </MenuBar>
       <ContentBar>
-        <Content bdstyle="dotted">1.</Content>
-        <Content bdstyle="dotted">Test</Content>
-        <Content bdstyle="dotted">admin</Content>
-        <Content bdstyle="dotted">오늘</Content>
-        <Content bdstyle="dotted">0</Content>
+        {BoardDatas?.map((data, index) => (
+          <div>
+            <Content bdstyle="dotted">{index}</Content>
+            <Content bdstyle="dotted">{data.title}</Content>
+            <Content bdstyle="dotted">{data.writer}</Content>
+            <Content bdstyle="dotted">{data.created}</Content>
+            <Content bdstyle="dotted">{data.views}</Content>
+          </div>
+        ))}
       </ContentBar>
-      <div>
-        {search.pathname === "/qna" ? (
-          <Link to="/qna/write">
-            <button>글쓰기</button>
-          </Link>
-        ) : (
-          <Link to="/userBoard/write">
-            <button>글쓰기</button>
-          </Link>
-        )}
-      </div>
+      <Link to="/qna/write">
+        <button>글쓰기</button>
+      </Link>
     </div>
   );
 }

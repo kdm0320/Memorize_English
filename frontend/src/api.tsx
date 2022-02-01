@@ -57,6 +57,15 @@ export async function fetchUser(userInfo: IUserInfo) {
   return data;
 }
 
+export async function fetchAllUser(userInfo: IUserInfo) {
+  const { data } = await axios.get(`${baseUrl}/users/`, {
+    headers: {
+      Authorization: `Bearer ${userInfo.token}`,
+    },
+  });
+  return data;
+}
+
 export async function patchFinished({
   userInfo,
   newFinished,
@@ -73,4 +82,27 @@ export async function patchFinished({
       },
     }
   );
+}
+export async function fetchBoards() {
+  const { data } = await axios.get(`${baseUrl}/qnaboards/`);
+  return data;
+}
+
+export async function postBoards({
+  formdata,
+}: {
+  formdata: {
+    title: string;
+    content: string;
+    isSolved: boolean;
+    writer: string;
+  };
+}) {
+  axios.post(`${baseUrl}/qnaboards/`, {
+    title: formdata.title,
+    content: formdata.content,
+    writer: formdata.writer,
+    views: 0,
+    is_solved: formdata.isSolved,
+  });
 }

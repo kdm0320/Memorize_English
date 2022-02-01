@@ -1,7 +1,18 @@
-import { Link, useLocation } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useMutation } from "react-query";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+import { postBoards } from "../api";
+import { userInfoAtom } from "../atoms";
 
-const Title = styled.div`
+interface IFormData {
+  title: string;
+  content: string;
+  writer: string;
+  isSolved: boolean;
+}
+
+const Title = styled.input`
   width: 90%;
   height: 30px;
   border-color: black;
@@ -34,33 +45,55 @@ const Img = styled.img`
 const Choice = styled.span``;
 
 function Write() {
-  const search = useLocation();
-
+  const userInfo = useRecoilValue(userInfoAtom);
+  const writeMutate = useMutation(postBoards);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IFormData>();
+  const onSubmit = (data: {
+    title: string;
+    content: string;
+    writer: string;
+  }) => {
+    const formdata: IFormData = {
+      title: data.title,
+      content: data.content,
+      writer: data.writer,
+      isSolved: false,
+    };
+    console.log(formdata);
+    writeMutate.mutate({ formdata });
+  };
   return (
-    <div>
-      <h1>{search.pathname === "/qna/write" ? "버그리포트" : "유저리포트"}</h1>
-      <Title>제목</Title>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <h1>버그리포트</h1>
+      <Title
+        {...register("title", { required: "필수 입력 항목입니다." })}
+        placeholder="제목"
+      />
+      <div>{errors?.title?.message}</div>
       <Content>
         <input
+          {...register("content", { required: "필수 입력 항목입니다." })}
           placeholder="내용을 입력하세요"
           style={{ border: "0", outline: "0" }}
         />
       </Content>
+      <div>{errors?.content?.message}</div>
       <span>
+        <input
+          {...register("writer", { required: false })}
+          defaultValue="Unknown"
+          style={{ borderStyle: "solid" }}
+        />
+      </span>
+      {/* <span>
         <Img></Img>
-      </span>
-      <span>
-        <Choice>
-          <label>
-            공개
-            <input type="radio" name="isopen" id="open" value="공개" />
-            비공개
-            <input type="radio" name="isopen" id="close" value="비공개" />
-          </label>
-        </Choice>
-      </span>
+      </span> */}
       <button>작성</button>
-    </div>
+    </form>
   );
 }
 

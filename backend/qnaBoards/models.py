@@ -5,10 +5,7 @@ from core.models import CoreModel
 class QnaBoard(CoreModel):
     title = models.CharField(max_length=30)
     content = models.TextField()
-    writer = models.ForeignKey(
-        "users.User", on_delete=models.CASCADE, related_name="qna"
-    )
-    photo = models.ImageField(null=True, blank=True)
+    writer = models.CharField(max_length=30,default="Unknown")
     views = models.IntegerField(default=0)
     is_solved = models.BooleanField(default=False)
 
