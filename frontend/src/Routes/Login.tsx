@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,40 +8,43 @@ import { baseUrl } from "../api";
 import { isLoggedAtom, userInfoAtom } from "../atoms";
 import styled, { keyframes } from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
+import {
+  Box,
+  Btn,
+  Error,
+  Form,
+  Input,
+  LeftBox,
+  Phrase,
+  RightBox,
+  Wrapper,
+} from "../Components/Others";
 
 interface ILoginForm {
   username?: string;
   password?: string;
 }
-const Wrapper = styled.div`
-  display: flex;
-  height: 100vh;
-  width: 100vw;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-`;
 
-const welcomeAnimation = keyframes`
-  0%{
-    opacity: 0;
-    transform: translateY(10px);
+const PhraseVariant = {
+  start: {
+    opacity: 1,
+  },
+  end: {
+    opacity: 0,
+  },
+};
+
+const SignupText = styled(motion.span)`
+  color: rgba(225, 112, 85, 1);
+  :hover {
+    text-decoration: underline;
+    cursor: pointer;
   }
-  100%{
-    opacity: 1;
-  }
 `;
 
-const WelcomePhrase = styled.header`
-  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-  font-size: 100px;
-  animation: ${welcomeAnimation} 1s linear;
-  justify-content: center;
-  text-align: center;
-  margin-top: 70px;
+const IsAccount = styled(motion.span)`
+  margin-right: 15px;
 `;
-
-const LoginForm = styled(motion.form)``;
 
 function Login() {
   const {
@@ -76,36 +79,79 @@ function Login() {
         navigate("/collection");
       });
   };
+  const [isSignup, setIsSignup] = useState(false);
 
+  const test = () => {
+    setIsSignup((prev) => !prev);
+  };
+  const signUpClick = () => {
+    test();
+    setTimeout(() => {
+      navigate("/signup");
+    }, 400);
+  };
   return (
-    <div>
+    <Wrapper>
       {mutation.isError ? (
         <div>아이디 혹은 비밀번호 오류입니다 다시 확인해 주십시오</div>
       ) : null}
-
-      <WelcomePhrase>Welcome to this site!!</WelcomePhrase>
-
-      <LoginForm onSubmit={handleSubmit(onValid)}>
-        <input
-          {...register("username", { required: "필수 항목입니다." })}
-          placeholder="ID"
-        />
-        <span>{errors.username?.message}</span>
-        <input
-          {...register("password", { required: "필수 항목입니다." })}
-          placeholder="Password"
-          type="password"
-        />
-        <span>{errors.password?.message}</span>
-        <button>Log In</button>
-      </LoginForm>
-      <div>
-        Don't have a account?
-        <Link to="/signup">
-          <button>Sign up</button>
-        </Link>
-      </div>
-    </div>
+      <Box>
+        <LeftBox>
+          <Phrase
+            variants={isSignup ? PhraseVariant : undefined}
+            initial="start"
+            animate="end"
+          >
+            Welcome!
+          </Phrase>
+        </LeftBox>
+        <RightBox>
+          <Form onSubmit={handleSubmit(onValid)}>
+            <Input
+              {...register("username", { required: "필수 항목입니다." })}
+              placeholder="ID"
+              variants={isSignup ? PhraseVariant : undefined}
+              initial="start"
+              animate="end"
+            />
+            <Error>{errors.username?.message}</Error>
+            <Input
+              {...register("password", { required: "필수 항목입니다." })}
+              placeholder="Password"
+              type="password"
+              variants={isSignup ? PhraseVariant : undefined}
+              initial="start"
+              animate="end"
+            />
+            <Error>{errors.password?.message}</Error>
+            <Btn
+              variants={isSignup ? PhraseVariant : undefined}
+              initial="start"
+              animate="end"
+            >
+              LOGIN
+            </Btn>
+          </Form>
+          <div>
+            <IsAccount
+              variants={isSignup ? PhraseVariant : undefined}
+              initial="start"
+              animate="end"
+            >
+              Don't have a account?
+            </IsAccount>
+            <SignupText
+              onClick={signUpClick}
+              variants={isSignup ? PhraseVariant : undefined}
+              initial="start"
+              animate="end"
+            >
+              Sign up
+            </SignupText>
+          </div>
+        </RightBox>
+      </Box>
+    </Wrapper>
   );
 }
 
