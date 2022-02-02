@@ -11,12 +11,12 @@ export const Wrapper = styled.div`
   align-items: center;
   flex-direction: column;
   background: linear-gradient(
-      to right,
-      rgba(20, 20, 20, 0.1) 10%,
-      rgba(20, 20, 20, 0.7) 70%,
-      rgba(20, 20, 20, 1)
-    ),
-    url("https://source.unsplash.com/random/1920x1080?gradient");
+    135deg,
+    rgba(198, 217, 241, 0.1),
+    rgba(170, 203, 241, 0.7),
+    rgba(40, 124, 241, 1)
+  );
+  /* url("https://source.unsplash.com/random/1920x1080?gradient"); */
   background-size: cover;
 `;
 

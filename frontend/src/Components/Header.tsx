@@ -10,28 +10,39 @@ const Nav = styled(motion.nav)`
   justify-content: space-around;
   align-items: center;
   width: 100%;
+  height: 70px;
+  background-color: rgb(241, 241, 241);
 `;
 
 const Items = styled.ul`
   display: flex;
+  width: 100%;
+  height: 100%;
   align-items: center;
+  text-align: center;
   justify-content: space-between;
+  border-bottom: 1px solid;
 `;
 
 const Item = styled.li`
-  display: flex;
+  color: rgb(39, 123, 133);
+
+  display: inline-block;
   justify-content: center;
-  padding: 0px 50px;
-  width: 100px;
+  width: 100%;
+  height: 100%;
+  line-height: 70px;
+  :hover {
+    font-weight: bolder;
+  }
   a {
+    display: block;
     text-decoration: none;
     color: inherit;
   }
-  span {
-    :hover {
-      cursor: pointer;
-      text-decoration: underline;
-    }
+  :hover {
+    cursor: pointer;
+    border-bottom: 3px solid rgb(113, 186, 194);
   }
 `;
 
@@ -54,31 +65,20 @@ function Header() {
       <Nav>
         <Items>
           <Item>
-            <Link to="/qna">
-              <span>QnA</span>
-            </Link>
+            <Link to="/qna">QnA</Link>
           </Item>
           <Item>
-            <Link to="/collection">
-              <span>학습관리</span>
-            </Link>
+            <Link to="/collection">학습관리</Link>
           </Item>
           <Item>
-            <Link to="/courses">
-              <span>단어모음</span>
-            </Link>
+            <Link to="/courses">단어모음</Link>
           </Item>
           <Item>
-            <Link to="/profile">
-              <span>Profile</span>
-            </Link>
+            <Link to="/profile">Profile</Link>
           </Item>
-          <Item>
-            <span onClick={OnClick}>Logout</span>
-          </Item>
+          <Item onClick={OnClick}>Logout</Item>
         </Items>
       </Nav>
-      <hr />
     </div>
   );
 }
