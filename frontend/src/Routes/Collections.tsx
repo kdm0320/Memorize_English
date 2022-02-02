@@ -15,9 +15,10 @@ import {
   putCollection,
 } from "../api";
 import { isLoggedAtom, userInfoAtom } from "../atoms";
-import { Content, Overlay, Word, WordSet } from "../theme";
+import { Content, Overlay, Word } from "../theme";
 import { useForm } from "react-hook-form";
 import { Loading } from "../Components/Loading";
+import { WordSet } from "../Components/Others";
 
 interface ICollect {
   pk: number;

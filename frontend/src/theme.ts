@@ -38,14 +38,6 @@ export const Content = styled(motion.div)`
   border-style: solid;
 `;
 
-export const WordSet = styled(motion.div)<IProp>`
-  width: 100px;
-  height: 100px;
-  background-color: lightBlue;
-  position: ${(props) => props.location};
-  border-width: 5px;
-  border-color: ${(props) => props.bdcolor};
-`;
 export const Word = styled(motion.input)<IProp>`
   border: 0;
   background-color: whitesmoke;

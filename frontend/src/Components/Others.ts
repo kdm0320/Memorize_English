@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
+import { IProp } from "../theme";
 
 export const Error = styled.span``;
 
@@ -80,4 +81,20 @@ export const Btn = styled(motion.button)`
   color: white;
   margin-bottom: 20px;
   place-self: center;
+`;
+
+export const BackGround = styled.div`
+  height: 100vh;
+  width: 100vw;
+  background-color: rgb(220, 221, 218);
+`;
+export const WordSet = styled(motion.div)<IProp>`
+  width: 250px;
+  height: 180px;
+  background-color: white;
+  position: ${(props) => props.location};
+  border-width: 5px;
+  border-color: ${(props) => props.bdcolor};
+  margin: 10px;
+  margin-top: 30px;
 `;

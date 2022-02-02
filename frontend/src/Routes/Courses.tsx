@@ -7,21 +7,12 @@ import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { baseUrl, fetchWords, putCollection } from "../api";
 import { isLoggedAtom, OnNoti, userInfoAtom } from "../atoms";
-import { Noti, Overlay, WordSet } from "../theme";
+import { BackGround, WordSet } from "../Components/Others";
 
-const ChosenBox = styled.div`
-  float: right;
-  width: 300px;
-  height: 400px;
-  background-color: red;
-  border-color: black;
-  border-width: 5px;
-`;
-
-const OverView = styled(motion.div)`
-  width: 200px;
-  height: 200px;
-  background-color: white;
+const WordSetBox = styled.div`
+  display: flex;
+  margin: 5px 5px 30px 85px;
+  width: 90%;
 `;
 
 interface IWordData {
@@ -43,7 +34,6 @@ function Courses() {
   useEffect(() => {
     if (!isLogged) navigate("/");
   }, [isLogged]);
-  const [id, setId] = useState<string | null | undefined>(null);
   const [wordPk, setwordPk] = useState<number>(0);
   const [isLearning, setIsLearning] = useState(false);
   const userInfo = useRecoilValue(userInfoAtom);
@@ -59,43 +49,33 @@ function Courses() {
     mutation.mutate({ userInfo, wordPk });
     toggleLearning();
   };
-
   return (
-    <>
-      <div>
-        {datas?.map((data: IWordData) => (
-          <WordSet
-            onClick={() => {
-              setId(data.pk + "#");
-              setwordPk(data.pk);
-              setIsLearning(data.is_learning);
-            }}
-            key={data.pk + "#"}
-            layoutId={data.pk + "#"}
-          >
-            {data.title}
-          </WordSet>
-        ))}
-      </div>
-
-      <AnimatePresence>
-        {id ? (
-          <Overlay
-            onClick={() => {
-              setId(null);
-              setIsLearning(false);
-            }}
-          >
-            <OverView layoutId={id}>
-              단어 상세내용
+    <BackGround>
+      <WordSetBox>
+        {datas?.map((data: IWordData, index) => (
+          <div key={index}>
+            <WordSet
+              onClick={() => {
+                setwordPk(data.pk);
+                setIsLearning(data.is_learning);
+              }}
+              key={data.pk + "#"}
+              layoutId={data.pk + "#"}
+            >
+              {data.title}
               <button onClick={toggleBasket}>
                 {isLearning ? "off" : "on"}
               </button>
-            </OverView>
-          </Overlay>
-        ) : null}
-      </AnimatePresence>
-    </>
+              <i className="far fa-heart" style={{ color: "pink" }}></i>
+            </WordSet>
+
+            {(index + 1) % 4 === 0 ? <br /> : null}
+          </div>
+        ))}
+      </WordSetBox>
+
+      <AnimatePresence></AnimatePresence>
+    </BackGround>
   );
 }
 
