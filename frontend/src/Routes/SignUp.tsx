@@ -55,7 +55,7 @@ function SignUp() {
         last_name: data.last_name,
         email: data.email,
       })
-      .then(() => navigate("/login"))
+      .then(() => navigate("/"))
       .catch((e) => setErrorCode(e.response["status"]));
   };
   return (
@@ -129,6 +129,7 @@ function SignUp() {
               initial="start"
               animate="end"
               placeholder="비밀번호(Password)"
+              type="password"
             />
             <Error>{errors.password?.message}</Error>
             <Btn variants={PhraseVariant} initial="start" animate="end">

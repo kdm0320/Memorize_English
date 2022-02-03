@@ -7,10 +7,6 @@ import { fetchAllUser, fetchBoards, fetchUser } from "../api";
 import { isLoggedAtom, IUserInfo, userInfoAtom } from "../atoms";
 import Write from "./Write";
 
-interface IContent {
-  bdstyle: string;
-}
-
 interface IBoard {
   content: string;
   created: string;
@@ -20,21 +16,82 @@ interface IBoard {
   views: number;
   writer: string;
 }
+
 const Head = styled.h1``;
+const Title = styled.div`
+  display: flex;
+  width: 100%;
+  margin-bottom: 40px;
+  ${Head} {
+    margin: auto;
+    text-align: center;
+    width: 70%;
+    font-size: 30px;
+    font-weight: bold;
+    padding: 50px 0;
+    border-bottom: 3px solid rgb(2, 97, 114);
+  }
+`;
 
+const Menu = styled.span``;
 const MenuBar = styled.div`
-  border-width: 2px;
+  display: flex;
+  margin: auto;
+  width: 80%;
+  ${Menu} {
+    margin: auto;
+    margin-bottom: 30px;
+  }
+`;
+const ContentBox = styled.div`
+  display: flex;
+  margin: auto;
+  flex-direction: column;
+  width: 80%;
+`;
+const ContentNo = styled.span``;
+const ContentTitle = styled.span``;
+const Writer = styled.span``;
+const CreatedDate = styled.span``;
+const Views = styled.span``;
+const ContentBar = styled.div`
+  display: flex;
+  width: 100%;
+  margin: auto;
+  padding-left: 100px;
+  margin-bottom: 10px;
+  margin-bottom: 20px;
+  ${ContentNo} {
+    margin-right: 200px;
+    text-align: left;
+  }
+  ${ContentTitle} {
+    margin-right: 200px;
+    text-align: left;
+  }
+  ${Writer} {
+    margin-right: 150px;
+    text-align: left;
+  }
+  ${CreatedDate} {
+    margin-right: 200px;
+  }
+  ${Views} {
+  }
+`;
+const WriteButton = styled.button`
+  all: unset;
+  width: 60px;
+  height: 30px;
+  text-align: center;
+  border-radius: 15px;
   border-style: solid;
+  border-color: rgb(12, 151, 175);
+  background-color: transparent;
+  color: rgb(12, 151, 175);
+  margin-top: 30px;
+  margin-left: 1170px;
 `;
-
-const ContentBar = styled.div``;
-
-const Content = styled.span<IContent>`
-  border-width: 1px;
-  border-style: ${(props) => props.bdstyle};
-  font-size: 15px;
-`;
-
 function Board() {
   const { data } = useQuery("allQnA", fetchBoards);
   const BoardDatas: IBoard[] = data?.results;
@@ -45,28 +102,29 @@ function Board() {
   }, [isLogged]);
   return (
     <div>
-      <Head>QnA</Head>
-      <hr />
+      <Title>
+        <Head>QnA</Head>
+      </Title>
       <MenuBar>
-        <Content bdstyle="solid">No.</Content>
-        <Content bdstyle="solid">제목</Content>
-        <Content bdstyle="solid">작성자</Content>
-        <Content bdstyle="solid">작성일</Content>
-        <Content bdstyle="solid">조회수</Content>
+        <Menu>No.</Menu>
+        <Menu>제목</Menu>
+        <Menu>작성자</Menu>
+        <Menu>작성일</Menu>
+        <Menu>조회수</Menu>
       </MenuBar>
-      <ContentBar>
+      <ContentBox>
         {BoardDatas?.map((data, index) => (
-          <div>
-            <Content bdstyle="dotted">{index}</Content>
-            <Content bdstyle="dotted">{data.title}</Content>
-            <Content bdstyle="dotted">{data.writer}</Content>
-            <Content bdstyle="dotted">{data.created}</Content>
-            <Content bdstyle="dotted">{data.views}</Content>
-          </div>
+          <ContentBar>
+            <ContentNo>{index}</ContentNo>
+            <ContentTitle>{data.title}</ContentTitle>
+            <Writer>{data.writer}</Writer>
+            <CreatedDate>{data.created.substring(0, 9)}</CreatedDate>
+            <Views>{data.views}</Views>
+          </ContentBar>
         ))}
-      </ContentBar>
-      <Link to="/qna/write">
-        <button>글쓰기</button>
+      </ContentBox>
+      <Link to="/qna/write" style={{ all: "unset" }}>
+        <WriteButton>글쓰기</WriteButton>
       </Link>
     </div>
   );

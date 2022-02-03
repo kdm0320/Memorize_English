@@ -31,7 +31,7 @@ const ProfileLabel = styled.div`
   margin-left: 30px;
   margin-right: 50px;
   margin-top: 30px;
-  padding-bottom: 10px;
+  padding-bottom: 13px;
   ${LabelHead} {
     font-size: 30px;
     font-weight: bold;
