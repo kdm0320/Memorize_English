@@ -33,31 +33,32 @@ function Collection() {
     if (!isLogged) navigate("/");
   }, [isLogged]);
   const userInfo = useRecoilValue(userInfoAtom);
-  const [wordPk, setwordPk] = useState<number>(0);
+  // const [wordPk, setwordPk] = useState<number>(0);
   //유저 단어 콜렉션 Fetch 함수
-  const { isLoading, data } = useQuery<ICollect[]>(
-    ["allCollections", userInfo],
-    () => fetchCollections(userInfo)
-  );
+  const [collections, setCollections] = useState<any[]>([]);
+  useEffect(() => {
+    fetchCollections(userInfo).then((value) => setCollections(value));
+  }, []);
+  //Pagination 교체를 위한 word,mean unregist함수
   const unregist = () => {
     for (let i = 0; i < 10; i++) {
       unregister(`word${i}`);
       unregister(`mean${i}`);
     }
   };
-
+  //단어,뜻가리기 state
   const [isBlindMean, setIsBlindMean] = useState(false);
   const [isBlindWord, setIsBlindWord] = useState(false);
   const toggleMeanBlind = () => setIsBlindMean((prev) => !prev);
   const toggleWordBlind = () => setIsBlindWord((prev) => !prev);
   //단어세트 클릭시 설정
   const { setId } = useParams();
-  const clickedSet = setId && data?.find((set) => String(set.pk) === setId);
+  const clickedSet =
+    setId && collections.find((set) => String(set.pk) === setId);
   const onSetClicked = (setId: number) => {
-    setwordPk(setId);
+    // setwordPk(setId);
     navigate(`/collection/${setId}`);
   };
-
   const onCloseClicked = () => {
     unregist();
     mounted.current = false;
@@ -67,11 +68,10 @@ function Collection() {
   };
   //삭제 관련
   const mutation = useMutation(putCollection);
-  const onDelete = () => {
+  const onDelete = (wordPk: number) => {
+    setCollections((prev) => prev.filter((set) => set.pk != wordPk));
     mutation.mutate({ userInfo, wordPk });
-    navigate(`/collection`);
   };
-
   //Pagination
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -207,9 +207,7 @@ function Collection() {
 
   return (
     <BackGround>
-      {isPatchFinishLoading || isUserDataLoading || isLoading ? (
-        <Loading />
-      ) : null}
+      {isPatchFinishLoading || isUserDataLoading ? <Loading /> : null}
       {onAchievement
         ? clickedSet && (
             <>
@@ -250,9 +248,6 @@ function Collection() {
             <button type="button" onClick={() => toggleAchievement()}>
               성취
             </button>
-            <button type="button" onClick={onDelete}>
-              delete
-            </button>
             {clickedSet && <ShowWords list={sliceDatas(clickedSet.content)} />}
 
             {indexOfFirst != 0 ? (
@@ -275,16 +270,24 @@ function Collection() {
       </AnimatePresence>
       <AnimatePresence>
         <WordSetBox>
-          {data?.map((collection) => (
+          {collections.map((collection) => (
             <WordSet key={collection.pk} layoutId={String(collection.pk)}>
+              {console.log(collections)}
               {collection.title}
               <button
+                key={collection.pk + "showCon"}
                 type="button"
                 onClick={() => {
                   onSetClicked(collection.pk);
                 }}
               >
                 내용보기
+              </button>
+              <button
+                key={"delete" + collection.pk}
+                onClick={() => onDelete(collection.pk)}
+              >
+                삭제
               </button>
             </WordSet>
           ))}
