@@ -87,13 +87,10 @@ class UserViewSet(ModelViewSet):
     def add_collection(self, request, pk):
         pk = request.data.get("pk", None)
         user = self.get_object()
-        print(user)
-        print(pk)
         if pk is not None:
             try:
                 word = Word.objects.get(pk=pk)
                 if word in user.collection.all():
-                    print(user.collection)
 
                     user.collection.remove(word)
                 else:

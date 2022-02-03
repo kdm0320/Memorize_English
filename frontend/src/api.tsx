@@ -1,7 +1,6 @@
 import axios from "axios";
-import { useRecoilState, useSetRecoilState } from "recoil";
 
-import { userInfoAtom, IUserInfo, isAxiosLoadingAtom } from "./atoms";
+import { IUserInfo } from "./atoms";
 
 export const baseUrl = "http://127.0.0.1:8000/api/v1";
 

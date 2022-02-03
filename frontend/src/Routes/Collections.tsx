@@ -67,11 +67,11 @@ function Collection() {
   };
   //삭제 관련
   const mutation = useMutation(putCollection);
-  // const onDelete = () => {
-  //   mutation.mutate({ userInfo, wordPk });
-  //   navigate(`/collection`);
-  //   window.location.replace("/collection");
-  // };
+  const onDelete = () => {
+    mutation.mutate({ userInfo, wordPk });
+    navigate(`/collection`);
+  };
+
   //Pagination
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -201,8 +201,6 @@ function Collection() {
             )}
           </div>
         ))}
-        {/* {console.log(getValues(`word0`))}
-        {console.log(getValues(`mean0`))} */}
       </>
     );
   };
@@ -252,9 +250,9 @@ function Collection() {
             <button type="button" onClick={() => toggleAchievement()}>
               성취
             </button>
-            {/* <button type="button" onClick={onDelete}>
+            <button type="button" onClick={onDelete}>
               delete
-            </button> */}
+            </button>
             {clickedSet && <ShowWords list={sliceDatas(clickedSet.content)} />}
 
             {indexOfFirst != 0 ? (

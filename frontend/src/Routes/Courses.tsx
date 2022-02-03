@@ -1,15 +1,13 @@
-import axios from "axios";
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { baseUrl, fetchUser, fetchWords, putCollection } from "../api";
-import { isLoggedAtom, OnNoti, userInfoAtom } from "../atoms";
+import { fetchUser, fetchWords, putCollection } from "../api";
+import { isLoggedAtom, userInfoAtom } from "../atoms";
 import { BackGround, WordSet, WordSetBox } from "../Components/Others";
 import { IoHeartOutline, IoHeartSharp } from "react-icons/io5";
-import { useRef } from "react";
 interface IWordData {
   pk: number;
   title: string;
@@ -44,16 +42,15 @@ function Courses() {
   useEffect(() => {
     if (!isLogged) navigate("/");
   }, [isLogged]);
-  // const [wordPk, setwordPk] = useState<number>(0);
-  const [isLearning, setIsLearning] = useState<any[]>([]);
+
   const userInfo = useRecoilValue(userInfoAtom);
 
   const { data } = useQuery<IData>(["allWords", userInfo], () =>
     fetchWords(userInfo)
   );
   const datas: Array<any> | undefined = data?.results;
+  //하트 구현
   const mutation = useMutation(putCollection);
-
   const [isFinished, setIsFinished] = useState<any[]>([]);
   useEffect(() => {
     fetchUser(userInfo).then((value: IValue) => {
@@ -69,6 +66,7 @@ function Courses() {
     setIsFinished((prev) => prev.filter((set) => set != wordPk));
     mutation.mutate({ userInfo, wordPk });
   };
+  //
   return (
     <BackGround>
       <WordSetBox>
