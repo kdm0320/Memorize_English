@@ -5,8 +5,10 @@ import Loading from "react-loading";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
+import styled from "styled-components";
 import { baseUrl, fetchUser } from "../api";
 import { isLoggedAtom, IUserInfo, userInfoAtom } from "../atoms";
+import { Input } from "../Components/Others";
 
 interface IProFileInfo {
   avatar: string;
@@ -21,6 +23,61 @@ interface IProfileForm {
   email: string;
 }
 
+const LabelHead = styled.h3``;
+const LabelEx = styled.p``;
+
+const ProfileLabel = styled.div`
+  width: 80%;
+  margin-left: 30px;
+  margin-right: 50px;
+  margin-top: 30px;
+  padding-bottom: 10px;
+  ${LabelHead} {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  ${LabelEx} {
+    margin-top: 20px;
+    font-size: 15px;
+    color: grey;
+  }
+  border-bottom: 3px solid rgb(22, 175, 202);
+`;
+const ProfileInput = styled.input``;
+const SaveButton = styled.button``;
+const ProfileForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  padding: 20px 50px 20px 30px;
+  ${ProfileInput} {
+    width: 20%;
+    margin-left: 20px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    background-color: transparent;
+    outline: 0;
+  }
+  p {
+    margin-bottom: 20px;
+    font-size: 20px;
+  }
+  ${SaveButton} {
+    all: unset;
+    text-align: center;
+    color: rgb(244, 244, 244);
+    background-color: rgb(22, 175, 202);
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 80px;
+    height: 40px;
+    border-radius: 20px;
+    border: 2px solid rgb(22, 175, 202);
+  }
+`;
 function Profile() {
   const isLogged = useRecoilValue(isLoggedAtom);
   const navigate = useNavigate();
@@ -76,36 +133,35 @@ function Profile() {
       .then(() => toggleIsUpdate())
       .catch((e) => setErrorCode(e.response["status"]));
   };
-  const avatarMutate = useMutation(
-    ({ userInfo, formData }: { userInfo: IUserInfo; formData: any }) =>
-      axios.patch(
-        `${baseUrl}/users/${userInfo.pk}/`,
-        { avatar: formData },
-        {
-          headers: {
-            Authorization: `Bearer ${userInfo.token}`,
-            "content-type": "multipart/form-data",
-          },
-        }
-      )
-  );
+  // const avatarMutate = useMutation(
+  //   ({ userInfo, formData }: { userInfo: IUserInfo; formData: any }) =>
+  //     axios.patch(
+  //       `${baseUrl}/users/${userInfo.pk}/`,
+  //       { avatar: formData },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${userInfo.token}`,
+  //           "content-type": "multipart/form-data",
+  //         },
+  //       }
+  //     )
+  // );
   const [file, setFile] = useState<any>("");
   const onImgChange = async (event: FormEvent<HTMLInputElement>) => {
     const files: any = event.currentTarget.files;
     setFile(files);
-    console.log(event.currentTarget.files);
   };
-  const uploadAvatar = () => {
-    const formData = new FormData();
-    formData.append("uploadImage", file[0]);
-    avatarMutate
-      .mutateAsync({ userInfo, formData })
-      .then(() => {
-        toggleIsUpdate();
-        console.log("Fuck");
-      })
-      .catch((e) => console.log(e));
-  };
+  // const uploadAvatar = () => {
+  //   const formData = new FormData();
+  //   formData.append("uploadImage", file[0]);
+  //   avatarMutate
+  //     .mutateAsync({ userInfo, formData })
+  //     .then(() => {
+  //       toggleIsUpdate();
+  //       console.log("Fuck");
+  //     })
+  //     .catch((e) => console.log(e));
+  // };
   return (
     <>
       {isLoading || profileMutate.isLoading ? <Loading /> : null}
@@ -115,32 +171,35 @@ function Profile() {
           <button onClick={toggleIsUpdate}>완료</button>
         </div>
       ) : null}
-      <div>
+      {/* <div>
         <h3>Avatar</h3>
-        <input type="file" onChange={onImgChange} />
+        <ProfileInput type="file" onChange={onImgChange} />
         <button onClick={uploadAvatar}>Save</button>
         <button>Delete</button>
-      </div>
+      </div> */}
       <div>
-        <h3>Info</h3>
-
-        <hr />
-        <form onSubmit={handleSubmit(onValid)}>
-          <input
+        <ProfileLabel>
+          <LabelHead>Profile settings</LabelHead>
+          <LabelEx>Update your name or Email</LabelEx>
+        </ProfileLabel>
+        <ProfileForm onSubmit={handleSubmit(onValid)}>
+          <p>Your Name</p>
+          <ProfileInput
             {...register("firstName", {
               required: "필수 입력 항목입니다.",
             })}
             defaultValue={data?.first_name}
-            placeholder="성(First Name)"
+            placeholder="이름(First Name)"
           />
           <span>{errors.firstName?.message}</span>
-          <input
+          <ProfileInput
             {...register("lastName", { required: "필수 입력 항목입니다." })}
-            placeholder="이름(Last Name)"
+            placeholder="성(Last Name)"
             defaultValue={data?.last_name}
           />
           <span>{errors.lastName?.message}</span>
-          <input
+          <p>Your Email</p>
+          <ProfileInput
             {...register("email", {
               required: "필수 입력 항목입니다.",
               pattern: {
@@ -153,8 +212,8 @@ function Profile() {
           />
           {errorCode === 409 ? <span>이미 존재하는 이메일입니다</span> : null}
           <span>{errors.email?.message}</span>
-          <button>save</button>
-        </form>
+          <SaveButton>save</SaveButton>
+        </ProfileForm>
       </div>
     </>
   );
