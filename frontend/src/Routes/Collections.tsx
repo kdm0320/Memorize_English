@@ -18,7 +18,7 @@ import { isLoggedAtom, userInfoAtom } from "../atoms";
 import { Content, Overlay, Word } from "../theme";
 import { useForm } from "react-hook-form";
 import { Loading } from "../Components/Loading";
-import { WordSet } from "../Components/Others";
+import { BackGround, WordSet, WordSetBox } from "../Components/Others";
 
 interface ICollect {
   pk: number;
@@ -67,11 +67,11 @@ function Collection() {
   };
   //삭제 관련
   const mutation = useMutation(putCollection);
-  const onDelete = () => {
-    mutation.mutate({ userInfo, wordPk });
-    navigate(`/collection`);
-    window.location.replace("/collection");
-  };
+  // const onDelete = () => {
+  //   mutation.mutate({ userInfo, wordPk });
+  //   navigate(`/collection`);
+  //   window.location.replace("/collection");
+  // };
   //Pagination
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -208,12 +208,7 @@ function Collection() {
   };
 
   return (
-    <div>
-      <>
-        <Skeleton />
-        <ReactLoading type="spin" color="black" />
-        <h3>Loading</h3>
-      </>
+    <BackGround>
       {isPatchFinishLoading || isUserDataLoading || isLoading ? (
         <Loading />
       ) : null}
@@ -257,9 +252,9 @@ function Collection() {
             <button type="button" onClick={() => toggleAchievement()}>
               성취
             </button>
-            <button type="button" onClick={onDelete}>
+            {/* <button type="button" onClick={onDelete}>
               delete
-            </button>
+            </button> */}
             {clickedSet && <ShowWords list={sliceDatas(clickedSet.content)} />}
 
             {indexOfFirst != 0 ? (
@@ -281,21 +276,23 @@ function Collection() {
         ) : null}
       </AnimatePresence>
       <AnimatePresence>
-        {data?.map((collection) => (
-          <WordSet key={collection.pk} layoutId={String(collection.pk)}>
-            {collection.title}
-            <button
-              type="button"
-              onClick={() => {
-                onSetClicked(collection.pk);
-              }}
-            >
-              내용보기
-            </button>
-          </WordSet>
-        ))}
+        <WordSetBox>
+          {data?.map((collection) => (
+            <WordSet key={collection.pk} layoutId={String(collection.pk)}>
+              {collection.title}
+              <button
+                type="button"
+                onClick={() => {
+                  onSetClicked(collection.pk);
+                }}
+              >
+                내용보기
+              </button>
+            </WordSet>
+          ))}
+        </WordSetBox>
       </AnimatePresence>
-    </div>
+    </BackGround>
   );
 }
 

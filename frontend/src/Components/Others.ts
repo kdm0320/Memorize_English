@@ -88,6 +88,13 @@ export const BackGround = styled.div`
   width: 100vw;
   background-color: rgb(220, 221, 218);
 `;
+
+export const WordSetBox = styled.div`
+  display: flex;
+  margin: 5px 5px 30px 85px;
+  width: 90%;
+`;
+
 export const WordSet = styled(motion.div)<IProp>`
   width: 250px;
   height: 180px;
