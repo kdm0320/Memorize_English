@@ -114,12 +114,14 @@ function Board() {
       </MenuBar>
       <ContentBox>
         {BoardDatas?.map((data, index) => (
-          <ContentBar>
-            <ContentNo>{index}</ContentNo>
-            <ContentTitle>{data.title}</ContentTitle>
-            <Writer>{data.writer}</Writer>
-            <CreatedDate>{data.created.substring(0, 9)}</CreatedDate>
-            <Views>{data.views}</Views>
+          <ContentBar key={data.pk}>
+            <ContentNo key={data.title + data.pk + "num"}>{index}</ContentNo>
+            <ContentTitle key={data.title + data.pk}>{data.title}</ContentTitle>
+            <Writer key={data.writer + data.pk}>{data.writer}</Writer>
+            <CreatedDate key={data.created}>
+              {data.created.substring(0, 9)}
+            </CreatedDate>
+            <Views key={data.title + "view"}>{data.views}</Views>
           </ContentBar>
         ))}
       </ContentBox>
