@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -21,7 +21,6 @@ import { Loading } from "../Components/Loading";
 import { BackGround, WordSet, WordSetBox } from "../Components/Others";
 
 interface ICollect {
-  pk: number;
   title: string;
   content: Array<any>;
 }
@@ -61,7 +60,6 @@ function Collection() {
   };
   const onCloseClicked = () => {
     unregist();
-    mounted.current = false;
     setIsInFinished(Array(pageSize).fill(false));
     setCurrentPage(1);
     navigate(`/collection`);
@@ -85,13 +83,11 @@ function Collection() {
   const nextClick = () => {
     unregist();
     setIsInFinished(Array(pageSize).fill(false));
-    mounted.current = false;
     setCurrentPage((prev) => prev + 1);
   };
   const prevClick = () => {
     unregist();
     setIsInFinished(Array(pageSize).fill(false));
-    mounted.current = false;
     setCurrentPage((prev) => prev - 1);
   };
   //단어 성취도 보여주기
@@ -99,85 +95,104 @@ function Collection() {
   const [finishedWords, setFinishedWords] = useState(0);
   const toggleAchievement = () => setOnAchievement((prev) => !prev);
   //단어 완료처리
-  const userData = useQuery(["allFinished", userInfo], () =>
-    fetchUser(userInfo)
-  );
-  const isUserDataLoading = userData.isLoading;
   const finishedMutation = useMutation(patchFinished);
-  const isPatchFinishLoading = finishedMutation.isLoading;
-  const [vocas, setVocas] = useState<any[]>([]);
-  const setCurrentVoca = ({ word, mean }: { word?: any; mean?: string }) => {
-    setVocas(JSON.parse(userData?.data?.finished_voca));
-    const initial: any[] = JSON.parse(userData?.data?.finished_voca);
-    if (initial.length != 0) {
-      if (clickedSet) {
-        for (let i = 0; i < vocas.length; i++) {
-          if (clickedSet.title === vocas[i].title) {
-            vocas[i].content.push({ [word]: mean });
-            const newFinished: string = JSON.stringify(vocas);
-            finishedMutation.mutate({ userInfo, newFinished });
-            setFinishedWords(vocas[i].content.length);
-            return;
-          }
-        }
-      }
-      createSet();
-    } else {
-      createSet();
-    }
+  const [isChangeFinished, SetIsChangeFinished] = useState(false);
+  const [showFinished, setShowFinished] = useState<any[]>([]);
+  const toggleIsChanged = () => {
+    SetIsChangeFinished((prev) => !prev);
   };
-  const createSet = () => {
+  const curAllFinishedRef = useRef<any[]>([]); //Ref 전체 finised
+  const curFinishedRef = useRef<any[]>([]);
+
+  useEffect(() => {
+    fetchUser(userInfo).then((value) => {
+      const temp: ICollect[] = JSON.parse(value.finished_voca);
+      curAllFinishedRef.current = temp;
+    });
+  }, [isChangeFinished]); //전체 finished_voca 양식 저장
+
+  useEffect(() => {
+    fetchUser(userInfo).then((value) => {
+      const temp: ICollect[] = JSON.parse(value.finished_voca);
+      if (clickedSet) {
+        temp.map((set) => {
+          if (set.title === clickedSet.title) {
+            curFinishedRef.current = set.content;
+            setShowFinished(set.content);
+          }
+        });
+      }
+    });
+  }, [setId]);
+  const newCreateSet = (word: string, mean: string) => {
     if (clickedSet) {
-      const newContent = [{ title: clickedSet.title, content: [] }];
-      setVocas((prev) => [...prev, ...newContent]);
-      const newFinished = JSON.stringify(vocas);
+      const newContent = {
+        title: clickedSet.title,
+        content: [{ [word]: mean }],
+      };
+      curAllFinishedRef.current.push(newContent);
+      setShowFinished((prev) => [...prev, newContent]);
+      const newFinished: string = JSON.stringify(curAllFinishedRef.current);
       finishedMutation.mutate({ userInfo, newFinished });
     }
   };
-  const onFinishedClick = (index: number) => {
+  const isFinished = (word: string, mean: string) => {
+    for (let i = 0; i < showFinished.length; i++) {
+      if (
+        Object.keys(showFinished[i]).includes(word) &&
+        Object.values(showFinished[i]).includes(mean)
+      ) {
+        return true;
+      }
+    }
+    return false;
+  };
+  const addFinished = (index: number) => {
+    toggleIsChanged();
     const word = getValues(`word${index}`);
     const mean = getValues(`mean${index}`);
-    setCurrentVoca({ word, mean });
+    if (curFinishedRef.current.length === 0) {
+      newCreateSet(word, mean);
+    } else {
+      curFinishedRef.current.push({ [word]: mean });
+      setShowFinished((prev) => [...prev, { [word]: mean }]);
+      curAllFinishedRef.current.map((set) => {
+        if (set.title === clickedSet.title) {
+          set.content = curFinishedRef.current;
+        }
+      });
+      const newFinished: string = JSON.stringify(curAllFinishedRef.current);
+      finishedMutation.mutate({ userInfo, newFinished });
+    }
+  };
+  const deleteFinished = (index: number) => {
+    toggleIsChanged();
+    const word = getValues(`word${index}`);
+    const mean = getValues(`mean${index}`);
+    curFinishedRef.current = curFinishedRef.current.filter(
+      (voca) =>
+        !Object.keys(voca).includes(word) && !Object.values(voca).includes(mean)
+    );
+    setShowFinished((prev) =>
+      prev.filter(
+        (voca) =>
+          !Object.keys(voca).includes(word) &&
+          !Object.values(voca).includes(mean)
+      )
+    );
+    curAllFinishedRef.current.map((set) => {
+      if (set.title === clickedSet.title) {
+        set.content = curFinishedRef.current;
+      }
+    });
+    const newFinished: string = JSON.stringify(curAllFinishedRef.current);
+    finishedMutation.mutate({ userInfo, newFinished });
   };
   //단어 보여주기 //완료된 단어 체크 -> 완료를 외움으로 바꿈
-  const testSkeleton = false;
   const { getValues, register, unregister } = useForm();
   const [isInFinished, setIsInFinished] = useState(Array(pageSize).fill(false));
 
-  const checkFinshed = (list: Array<string>) => {
-    const currentFinished: { title: string; content: any[] }[] = JSON.parse(
-      userData?.data?.finished_voca
-    );
-    if (clickedSet) {
-      currentFinished.map((voca, index) => {
-        if (voca.title === clickedSet.title) {
-          for (let i = 0; i < pageSize; i++) {
-            for (let j = 0; j < voca.content.length; j++) {
-              if (
-                Object.keys(voca.content[j]).includes(list[i][0]) &&
-                Object.values(voca.content[j]).includes(list[i][1])
-              ) {
-                setIsInFinished((prev) =>
-                  prev.map((tf, idx) => (idx === i ? true : tf))
-                );
-                break;
-              }
-            }
-          }
-          return;
-        }
-      });
-    }
-  };
-  const mounted = useRef(false);
-
   const ShowWords = ({ list }: { list: Array<string> }) => {
-    if (!mounted.current) {
-      checkFinshed(list);
-      mounted.current = true;
-    } else {
-      //pass
-    }
     return (
       <>
         {list.map((word, index) => (
@@ -194,10 +209,21 @@ function Collection() {
               {...register(`mean${index}`)}
               value={isBlindMean ? "" : word[1]}
             />
-            {isInFinished[index] ? (
-              <button>외운거다</button>
+            {isFinished(word[0], word[1]) ? (
+              <button
+                key={"finished" + word[0] + index}
+                onClick={() => deleteFinished(index)}
+              >
+                외운거다
+              </button>
             ) : (
-              <button onClick={() => onFinishedClick(index)}>완료</button>
+              <button
+                key={"add" + word[0] + index}
+                onClick={() => addFinished(index)}
+                // onClick={() => onFinishedClick(index)}
+              >
+                완료
+              </button>
             )}
           </div>
         ))}
@@ -207,7 +233,6 @@ function Collection() {
 
   return (
     <BackGround>
-      {isPatchFinishLoading || isUserDataLoading ? <Loading /> : null}
       {onAchievement
         ? clickedSet && (
             <>
@@ -272,7 +297,6 @@ function Collection() {
         <WordSetBox>
           {collections.map((collection) => (
             <WordSet key={collection.pk} layoutId={String(collection.pk)}>
-              {console.log(collections)}
               {collection.title}
               <button
                 key={collection.pk + "showCon"}

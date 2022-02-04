@@ -38,16 +38,22 @@ class UserViewSet(ModelViewSet):
             return Response(UserSerializer(new_user).data, status=status.HTTP_201_CREATED)
     
     def partial_update(self, request, *args, **kwargs):
-        kwargs['partial'] = True
-        emailValue = request.data['email']
-        exist_email = User.objects.filter(email=emailValue).first()
-        user_email = User.objects.get(username=self.get_object()).email
-        if exist_email == user_email:
+        finisehd_voca = request.data.get("finished_voca", None)
+        if finisehd_voca is None:
+            kwargs['partial'] = True
+            emailValue = request.data['email']
+            exist_email = User.objects.filter(email=emailValue).first()
+            user_email = User.objects.get(username=self.get_object()).email
+            if exist_email == user_email:
+                return self.update(request, *args, **kwargs)
+            if exist_email:
+                return Response(status=status.HTTP_409_CONFLICT)
             return self.update(request, *args, **kwargs)
-        if exist_email:
-            return Response(status=status.HTTP_409_CONFLICT)
-        return self.update(request, *args, **kwargs)
+        else:
+            kwargs['partial'] = True
+            return self.update(request, *args, **kwargs)
 
+        # return Response(status=status.HTTP_201_CREATED)
 
 
     def get_permissions(self):
@@ -100,5 +106,4 @@ class UserViewSet(ModelViewSet):
                 return Response(status=status.HTTP_404_NOT_FOUND)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-
-
+    
