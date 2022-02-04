@@ -68,9 +68,13 @@ function Collection() {
   };
   //삭제 관련
   const mutation = useMutation(putCollection);
-  const onDelete = (wordPk: number) => {
+  const onDelete = (wordPk: number, title: string) => {
     setCollections((prev) => prev.filter((set) => set.pk != wordPk));
+    console.log(curAllFinishedRef.current);
+    const temp = curAllFinishedRef.current.filter((set) => set.title != title);
     mutation.mutate({ userInfo, wordPk });
+    const newFinished = JSON.stringify(temp);
+    finishedMutation.mutate({ userInfo, newFinished });
   };
   //Pagination
   const [pageSize, setPageSize] = useState(10);
@@ -91,14 +95,14 @@ function Collection() {
     setCurrentPage((prev) => prev - 1);
   };
   //단어 성취도 보여주기
-  const [curColelction, setCurCollection] = useState<any[]>([]);
+  const [curCollection, setCurCollection] = useState<any>({});
   const [onAchievement, setOnAchievement] = useState(false);
   const [finishedWords, setFinishedWords] = useState(0);
   const toggleAchievement = () => setOnAchievement((prev) => !prev);
   const showAchievement = (wordTitle: string, pk: number) => {
-    setCurCollection(collections.filter((set) => set.pk === pk));
+    const temp = collections.filter((set) => set.pk === pk);
+    setCurCollection(temp[0]);
     setFinishedWords(curFinishedRef.current.length);
-
     toggleAchievement();
   };
   //단어 완료처리
@@ -138,7 +142,7 @@ function Collection() {
         content: [{ [word]: mean }],
       };
       curAllFinishedRef.current.push(newContent);
-      setShowFinished((prev) => [...prev, newContent]);
+      setShowFinished((prev) => [...prev, ...newContent.content]);
       const newFinished: string = JSON.stringify(curAllFinishedRef.current);
       finishedMutation.mutate({ userInfo, newFinished });
     }
@@ -244,7 +248,7 @@ function Collection() {
           height="30%"
           type="pie"
           series={[
-            curColelction[0].content.length - finishedWords,
+            curCollection?.content.length - finishedWords,
             finishedWords,
           ]}
           options={{
@@ -316,7 +320,7 @@ function Collection() {
               </button>
               <button
                 key={"delete" + collection.pk}
-                onClick={() => onDelete(collection.pk)}
+                onClick={() => onDelete(collection.pk, collection.title)}
               >
                 삭제
               </button>
