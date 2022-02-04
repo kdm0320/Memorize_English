@@ -36,7 +36,9 @@ function Collection() {
   //유저 단어 콜렉션 Fetch 함수
   const [collections, setCollections] = useState<any[]>([]);
   useEffect(() => {
-    fetchCollections(userInfo).then((value) => setCollections(value));
+    fetchCollections(userInfo).then((value) => {
+      setCollections(value);
+    });
   }, []);
   //Pagination 교체를 위한 word,mean unregist함수
   const unregist = () => {
@@ -60,8 +62,8 @@ function Collection() {
   };
   const onCloseClicked = () => {
     unregist();
-    setIsInFinished(Array(pageSize).fill(false));
     setCurrentPage(1);
+    toggleAchievement();
     navigate(`/collection`);
   };
   //삭제 관련
@@ -82,18 +84,23 @@ function Collection() {
   };
   const nextClick = () => {
     unregist();
-    setIsInFinished(Array(pageSize).fill(false));
     setCurrentPage((prev) => prev + 1);
   };
   const prevClick = () => {
     unregist();
-    setIsInFinished(Array(pageSize).fill(false));
     setCurrentPage((prev) => prev - 1);
   };
   //단어 성취도 보여주기
+  const [curColelction, setCurCollection] = useState<any[]>([]);
   const [onAchievement, setOnAchievement] = useState(false);
   const [finishedWords, setFinishedWords] = useState(0);
   const toggleAchievement = () => setOnAchievement((prev) => !prev);
+  const showAchievement = (wordTitle: string, pk: number) => {
+    setCurCollection(collections.filter((set) => set.pk === pk));
+    setFinishedWords(curFinishedRef.current.length);
+
+    toggleAchievement();
+  };
   //단어 완료처리
   const finishedMutation = useMutation(patchFinished);
   const [isChangeFinished, SetIsChangeFinished] = useState(false);
@@ -101,7 +108,7 @@ function Collection() {
   const toggleIsChanged = () => {
     SetIsChangeFinished((prev) => !prev);
   };
-  const curAllFinishedRef = useRef<any[]>([]); //Ref 전체 finised
+  const curAllFinishedRef = useRef<any[]>([]);
   const curFinishedRef = useRef<any[]>([]);
 
   useEffect(() => {
@@ -188,9 +195,8 @@ function Collection() {
     const newFinished: string = JSON.stringify(curAllFinishedRef.current);
     finishedMutation.mutate({ userInfo, newFinished });
   };
-  //단어 보여주기 //완료된 단어 체크 -> 완료를 외움으로 바꿈
+  //단어 보여주기
   const { getValues, register, unregister } = useForm();
-  const [isInFinished, setIsInFinished] = useState(Array(pageSize).fill(false));
 
   const ShowWords = ({ list }: { list: Array<string> }) => {
     return (
@@ -233,23 +239,19 @@ function Collection() {
 
   return (
     <BackGround>
-      {onAchievement
-        ? clickedSet && (
-            <>
-              <ReactApexChart
-                type="pie"
-                series={[
-                  clickedSet.content.length - finishedWords,
-                  finishedWords,
-                ]}
-                options={{
-                  labels: ["남은 단어", "외운 단어"],
-                  chart: { width: "100px", height: "100px" },
-                }}
-              />
-            </>
-          )
-        : null}
+      {onAchievement ? (
+        <ReactApexChart
+          height="30%"
+          type="pie"
+          series={[
+            curColelction[0].content.length - finishedWords,
+            finishedWords,
+          ]}
+          options={{
+            labels: ["남은 단어", "외운 단어"],
+          }}
+        />
+      ) : null}
       <AnimatePresence>
         {clickedSet ? (
           <motion.div
@@ -270,9 +272,7 @@ function Collection() {
             <button type="button" onClick={onCloseClicked}>
               close
             </button>
-            <button type="button" onClick={() => toggleAchievement()}>
-              성취
-            </button>
+
             {clickedSet && <ShowWords list={sliceDatas(clickedSet.content)} />}
 
             {indexOfFirst != 0 ? (
@@ -306,6 +306,13 @@ function Collection() {
                 }}
               >
                 내용보기
+              </button>
+              <button
+                key={"Achievement" + collection.pk}
+                type="button"
+                onClick={() => showAchievement(collection.title, collection.pk)}
+              >
+                성취
               </button>
               <button
                 key={"delete" + collection.pk}
