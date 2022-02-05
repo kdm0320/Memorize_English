@@ -18,16 +18,24 @@ import { isLoggedAtom, userInfoAtom } from "../atoms";
 import { IProp } from "../theme";
 import { useForm } from "react-hook-form";
 import { Loading } from "../Components/Loading";
-import { BackGround, Overlay, WordSet, WordSetBox } from "../Components/Others";
-
+import { BackGround, Overlay, WordSetBox } from "../Components/Others";
+import {
+  IoArrowForwardCircleSharp,
+  IoArrowBackCircleSharp,
+  IoEllipseOutline,
+  IoCheckmarkSharp,
+  IoArrowForwardSharp,
+  IoCloseCircleSharp,
+} from "react-icons/io5";
 interface ICollect {
   title: string;
   content: Array<any>;
 }
 
 const CollectionSet = styled(motion.div)`
-  width: 125px;
-  height: 90px;
+  display: flex;
+  width: 145px;
+  height: 100px;
   background-color: rgb(237, 235, 222);
   border-color: rgb(86, 182, 194);
   box-shadow: 5px 5px 5px;
@@ -36,6 +44,26 @@ const CollectionSet = styled(motion.div)`
   border-radius: 15px;
   margin: 30px;
   margin-top: 40px;
+  justify-content: space-around;
+  text-align: center;
+  span {
+    margin-top: 25px;
+    margin-left: 20px;
+    justify-self: center;
+    font-weight: bold;
+    font-size: 15px;
+  }
+`;
+
+const DeleteButton = styled.p`
+  width: 30px;
+  height: 30px;
+  background-color: transparent;
+  margin-top: 5px;
+  margin-right: 8px;
+  font-size: 20px;
+  color: rgb(203, 0, 22);
+  cursor: pointer;
 `;
 
 const ContentBox = styled(motion.div)`
@@ -47,6 +75,7 @@ const ContentBox = styled(motion.div)`
   border-color: rgb(86, 182, 194);
   border-style: solid;
   border-width: 2px;
+  border-radius: 50px;
   justify-content: space-between;
 `;
 const LeftContentBox = styled.div`
@@ -57,31 +86,79 @@ const LeftContentBox = styled.div`
   flex-direction: column;
 `;
 
-const ContentHeader = styled.div``;
+const ContentHeader = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding-left: 60px;
+  span {
+    padding-top: 10px;
+    text-justify: center;
+    text-align: center;
+  }
+`;
+
+const Blind = styled.button`
+  position: fixed;
+  all: unset;
+  width: 100px;
+  height: 30px;
+  text-justify: center;
+  text-align: center;
+  background-color: rgb(241, 174, 45);
+
+  border-width: 2px;
+  border-color: white;
+  border-style: solid;
+  border-radius: 10px;
+  text-align: center;
+
+  cursor: pointer;
+`;
 
 const Content = styled(motion.div)`
   display: flex;
-  width: 40%;
-  height: 90%;
-  margin-top: 50px;
+  width: 90%;
+  height: 85%;
+  margin-top: 20px;
   margin-left: 50px;
   background-color: rgb(232, 220, 192);
   border-radius: 20px;
   border-style: solid;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-content: space-evenly;
+  padding-top: 20px;
+  padding-left: 70px;
+`;
+const WordBox = styled.div`
+  display: flex;
+  border-style: dotted;
+  border-width: 0 0 3px 0;
+  border-color: #aaa6a6;
 `;
 const Word = styled.input<IProp>`
   border: 0;
+  border-bottom: 1px;
   background-color: transparent;
   outline: 0;
   cursor: default;
   visibility: ${(props) => props.visiblity};
   justify-self: center;
   font-size: 20px;
+  margin-left: 10px;
 `;
-
+const Finished = styled.div`
+  margin-top: 10px;
+  margin-left: 50px;
+  font-size: 25px;
+`;
+const Paginator = styled.div`
+  display: flex;
+  color: rgb(75, 165, 177);
+  margin-bottom: 10px;
+  font-size: 30px;
+`;
 const RightContentBox = styled.div`
   display: flex;
   width: 50%;
@@ -92,19 +169,34 @@ const RightContentBox = styled.div`
 `;
 
 const AchievementHeader = styled.div`
+  display: flex;
   position: fixed;
+  padding-top: 20px;
+  padding-left: 200px;
 `;
 
 const Graph = styled.div`
   display: flex;
-  width: 50%;
-  height: 80%;
+  flex-direction: column;
+  width: 60%;
+  height: 70%;
   margin-top: 80px;
   margin-left: 200px;
   border-radius: 30px;
   background-color: rgb(241, 191, 169);
-  justify-content: center;
-  align-items: center;
+  p {
+    display: flex;
+    margin-top: 10px;
+    margin-left: 370px;
+    color: rgb(47, 54, 64);
+    font-size: 50px;
+  }
+  div {
+    margin-top: 50px;
+    margin-right: 20px;
+    margin-left: 10px;
+    padding-bottom: 10px;
+  }
 `;
 
 function Collection() {
@@ -296,35 +388,39 @@ function Collection() {
     return (
       <>
         {list.map((word, index) => (
-          <div key={index}>
-            <Word
-              key={word[0]}
-              readOnly
-              {...register(`word${index}`)}
-              value={word[0]}
-              visiblity={isBlindWord ? "hidden" : "visible"}
-            />
-            <Word
-              key={word[1]}
-              readOnly
-              {...register(`mean${index}`)}
-              visiblity={isBlindMean ? "hidden" : "visible"}
-              value={word[1]}
-            />
+          <div key={index} style={{ display: "flex" }}>
+            <WordBox key={word[0] + "div"}>
+              <Word
+                key={word[0]}
+                readOnly
+                {...register(`word${index}`)}
+                value={word[0]}
+                visiblity={isBlindWord ? "hidden" : "visible"}
+              />
+              <Word
+                key={word[1]}
+                readOnly
+                {...register(`mean${index}`)}
+                visiblity={isBlindMean ? "hidden" : "visible"}
+                value={word[1]}
+                style={{ marginLeft: "90px" }}
+              />
+            </WordBox>
             {isFinished(word[0], word[1]) ? (
-              <button
-                key={"finished" + word[0] + index}
-                onClick={() => deleteFinished(index)}
-              >
-                외운거다
-              </button>
+              <Finished>
+                <IoCheckmarkSharp
+                  key={"finished" + word[0] + index}
+                  onClick={() => deleteFinished(index)}
+                  style={{ color: "green" }}
+                />
+              </Finished>
             ) : (
-              <button
-                key={"add" + word[0] + index}
-                onClick={() => addFinished(index)}
-              >
-                완료
-              </button>
+              <Finished>
+                <IoEllipseOutline
+                  key={"add" + word[0] + index}
+                  onClick={() => addFinished(index)}
+                />
+              </Finished>
             )}
           </div>
         ))}
@@ -340,58 +436,85 @@ function Collection() {
             <ContentBox layoutId={String(clickedSet.pk)}>
               <LeftContentBox>
                 <ContentHeader>
-                  <button type="button" onClick={toggleWordBlind}>
+                  <Blind
+                    onClick={toggleWordBlind}
+                    style={{ marginRight: "90px" }}
+                  >
                     단어 가리기
-                  </button>
-                  <button type="button" onClick={toggleMeanBlind}>
-                    뜻 가리기
-                  </button>
-                  <button type="button" onClick={onCloseClicked}>
-                    close
-                  </button>
+                  </Blind>
+                  <Blind onClick={toggleMeanBlind}>뜻 가리기</Blind>
+                  <span>완료체크</span>
                 </ContentHeader>
                 <Content>
                   {clickedSet && (
                     <ShowWords list={sliceDatas(clickedSet.content)} />
                   )}
-
-                  {indexOfFirst != 0 ? (
-                    <button onClick={prevClick}> ⬅️</button>
-                  ) : null}
-                  {clickedSet && indexOfLast < clickedSet.content.length ? (
-                    <button onClick={nextClick}>➡️</button>
-                  ) : null}
+                  <Paginator>
+                    {indexOfFirst != 0 ? (
+                      <IoArrowBackCircleSharp
+                        onClick={prevClick}
+                        style={{ marginRight: "10px", cursor: "pointer" }}
+                      />
+                    ) : null}
+                    {clickedSet && indexOfLast < clickedSet.content.length ? (
+                      <IoArrowForwardCircleSharp
+                        onClick={nextClick}
+                        style={{ marginLeft: "10px", cursor: "pointer" }}
+                      />
+                    ) : null}
+                  </Paginator>
                 </Content>
               </LeftContentBox>
               <RightContentBox>
                 <AchievementHeader>
-                  {" "}
-                  <button
-                    type="button"
+                  <Blind
                     onClick={() =>
                       showAchievement(clickedSet.title, Number(setId))
                     }
                   >
-                    성취
-                  </button>
+                    성취도 보기
+                  </Blind>
                 </AchievementHeader>
                 <Graph>
                   {onAchievement ? (
-                    <ReactApexChart
-                      height="100%"
-                      width="400px"
-                      type="pie"
-                      series={[
-                        curCollection?.content?.length - finishedWords,
-                        finishedWords,
-                      ]}
-                      options={{
-                        labels: ["남은 단어", "외운 단어"],
-                      }}
-                    />
+                    <div>
+                      <ReactApexChart
+                        height="150%"
+                        width="110%"
+                        type="pie"
+                        series={[
+                          curCollection?.content?.length - finishedWords,
+                          finishedWords,
+                        ]}
+                        options={{
+                          labels: ["남은단어", "외운단어"],
+                          tooltip: {
+                            fillSeriesColor: false,
+                            marker: {
+                              show: false,
+                            },
+                          },
+                          plotOptions: {
+                            pie: {
+                              expandOnClick: true,
+                            },
+                          },
+                        }}
+                      />
+                    </div>
                   ) : null}
                 </Graph>
               </RightContentBox>
+              <IoArrowForwardSharp
+                style={{
+                  marginTop: "10px",
+                  marginRight: "15px",
+                  color: "navy",
+                  fontSize: "50px",
+                  cursor: "pointer",
+                }}
+                onClick={() => onCloseClicked()}
+              />
             </ContentBox>
           </Overlay>
         ) : null}
@@ -406,14 +529,13 @@ function Collection() {
                 onSetClicked(collection.pk);
               }}
             >
-              {collection.title}
-
-              <button
-                key={"delete" + collection.pk}
-                onClick={() => onDelete(collection.pk, collection.title)}
-              >
-                삭제
-              </button>
+              <span key={collection.title}>{collection.title}</span>
+              <DeleteButton key={"deleteBox" + collection.pk}>
+                <IoCloseCircleSharp
+                  key={"delete" + collection.pk}
+                  onClick={() => onDelete(collection.pk, collection.title)}
+                />
+              </DeleteButton>
             </CollectionSet>
           ))}
         </WordSetBox>

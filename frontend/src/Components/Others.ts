@@ -94,27 +94,6 @@ export const WordSetBox = styled.div`
   width: 90%;
 `;
 
-export const WordSet = styled(motion.div)<IProp>`
-  display: flex;
-  width: 250px;
-  height: 180px;
-  background-color: white;
-  position: ${(props) => props.location};
-  border-width: 5px;
-  border-color: ${(props) => props.bdcolor};
-  margin: 10px;
-  margin-top: 30px;
-  box-shadow: 5px 5px 5px;
-  border-radius: 30px;
-  flex-direction: row-reverse;
-  justify-content: space-around;
-  span {
-    margin-top: 50px;
-    margin-left: 50px;
-    justify-self: center;
-  }
-`;
-
 export const Overlay = styled(motion.div)`
   display: flex;
   position: fixed;

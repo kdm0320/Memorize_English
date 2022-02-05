@@ -18,7 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
 
    
         )
-    read_only_fields = ("id","username")
+    read_only_fields = ("id","username","password")
 
     def create(self, validated_data):
         password = validated_data.get("password")

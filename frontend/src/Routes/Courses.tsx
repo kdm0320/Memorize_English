@@ -1,4 +1,4 @@
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
@@ -6,8 +6,9 @@ import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { fetchUser, fetchWords, putCollection } from "../api";
 import { isLoggedAtom, userInfoAtom } from "../atoms";
-import { BackGround, WordSet, WordSetBox } from "../Components/Others";
+import { BackGround, WordSetBox } from "../Components/Others";
 import { IoHeartOutline, IoHeartSharp } from "react-icons/io5";
+import { IProp } from "../theme";
 interface IWordData {
   pk: number;
   title: string;
@@ -32,6 +33,32 @@ const FavButton = styled.div`
   background-color: transparent;
   margin-top: 5px;
   margin-right: 10px;
+`;
+
+const WordSet = styled(motion.div)<IProp>`
+  display: flex;
+  width: 250px;
+  height: 180px;
+  background-color: rgb(237, 235, 222);
+  border-width: 3px;
+  border-style: solid;
+  border-color: rgb(86, 182, 194);
+  position: ${(props) => props.location};
+  border-color: ${(props) => props.bdcolor};
+  margin: 10px;
+  margin-top: 30px;
+  box-shadow: 5px 5px 5px;
+  border-radius: 30px;
+  flex-direction: row-reverse;
+  justify-content: space-around;
+  text-align: center;
+  span {
+    margin-top: 50px;
+    margin-left: 50px;
+    justify-self: center;
+    font-weight: bold;
+    font-size: 20px;
+  }
 `;
 
 function Courses() {
