@@ -29,11 +29,9 @@ interface IValue {
 const FavButton = styled.div`
   width: 30px;
   height: 30px;
-  background-color: white;
-  border-radius: 30px;
-  float: right;
+  background-color: transparent;
   margin-top: 5px;
-  margin-right: 5px;
+  margin-right: 10px;
 `;
 
 function Courses() {
@@ -89,7 +87,7 @@ function Courses() {
                   />
                 )}
               </FavButton>
-              {data.title}
+              <span>{data.title}</span>
             </WordSet>
 
             {(index + 1) % 4 === 0 ? <br /> : null}

@@ -17,7 +17,6 @@ export const Wrapper = styled.div`
     rgba(170, 203, 241, 0.7),
     rgba(40, 124, 241, 1)
   );
-  /* url("https://source.unsplash.com/random/1920x1080?gradient"); */
   background-size: cover;
 `;
 
@@ -96,6 +95,7 @@ export const WordSetBox = styled.div`
 `;
 
 export const WordSet = styled(motion.div)<IProp>`
+  display: flex;
   width: 250px;
   height: 180px;
   background-color: white;
@@ -104,4 +104,25 @@ export const WordSet = styled(motion.div)<IProp>`
   border-color: ${(props) => props.bdcolor};
   margin: 10px;
   margin-top: 30px;
+  box-shadow: 5px 5px 5px;
+  border-radius: 30px;
+  flex-direction: row-reverse;
+  justify-content: space-around;
+  span {
+    margin-top: 50px;
+    margin-left: 50px;
+    justify-self: center;
+  }
+`;
+
+export const Overlay = styled(motion.div)`
+  display: flex;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 1;
+  align-items: center;
+  justify-content: center;
 `;

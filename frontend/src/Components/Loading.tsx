@@ -1,5 +1,5 @@
-import { Overlay } from "../theme";
 import ReactLoading from "react-loading";
+import { Overlay } from "./Others";
 
 export function Loading() {
   return (

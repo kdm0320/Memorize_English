@@ -17,11 +17,20 @@ class UserSerializer(serializers.ModelSerializer):
             "id",
             "avatar",
             "username",
+            "password",
             "first_name",
             "last_name",
             "email",
             "collection",
             "finished_voca",
+
    
         )
     read_only_fields = ("id","username")
+
+    def create(self, validated_data):
+        password = validated_data.get("password")
+        user = super().create(validated_data)
+        user.set_password(password)
+        user.save()
+        return user

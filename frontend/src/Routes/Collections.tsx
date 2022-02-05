@@ -15,24 +15,109 @@ import {
   putCollection,
 } from "../api";
 import { isLoggedAtom, userInfoAtom } from "../atoms";
-import { Content, Overlay, Word } from "../theme";
+import { IProp } from "../theme";
 import { useForm } from "react-hook-form";
 import { Loading } from "../Components/Loading";
-import { BackGround, WordSet, WordSetBox } from "../Components/Others";
+import { BackGround, Overlay, WordSet, WordSetBox } from "../Components/Others";
 
 interface ICollect {
   title: string;
   content: Array<any>;
 }
 
+const CollectionSet = styled(motion.div)`
+  width: 125px;
+  height: 90px;
+  background-color: rgb(237, 235, 222);
+  border-color: rgb(86, 182, 194);
+  box-shadow: 5px 5px 5px;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 15px;
+  margin: 30px;
+  margin-top: 40px;
+`;
+
+const ContentBox = styled(motion.div)`
+  display: flex;
+  width: 80%;
+  height: 80%;
+  flex-direction: row;
+  background-color: rgb(237, 235, 222);
+  border-color: rgb(86, 182, 194);
+  border-style: solid;
+  border-width: 2px;
+  justify-content: space-between;
+`;
+const LeftContentBox = styled.div`
+  display: flex;
+  width: 50%;
+  height: 100%;
+  justify-content: center;
+  flex-direction: column;
+`;
+
+const ContentHeader = styled.div``;
+
+const Content = styled(motion.div)`
+  display: flex;
+  width: 40%;
+  height: 90%;
+  margin-top: 50px;
+  margin-left: 50px;
+  background-color: rgb(232, 220, 192);
+  border-radius: 20px;
+  border-style: solid;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-content: space-evenly;
+`;
+const Word = styled.input<IProp>`
+  border: 0;
+  background-color: transparent;
+  outline: 0;
+  cursor: default;
+  visibility: ${(props) => props.visiblity};
+  justify-self: center;
+  font-size: 20px;
+`;
+
+const RightContentBox = styled.div`
+  display: flex;
+  width: 50%;
+  height: 100%;
+  flex-direction: space-evenly;
+  align-content: ceter;
+  justify-content: center;
+`;
+
+const AchievementHeader = styled.div`
+  position: fixed;
+`;
+
+const Graph = styled.div`
+  display: flex;
+  width: 50%;
+  height: 80%;
+  margin-top: 80px;
+  margin-left: 200px;
+  border-radius: 30px;
+  background-color: rgb(241, 191, 169);
+  justify-content: center;
+  align-items: center;
+`;
+
 function Collection() {
+  //로그인 여부 판단
   const isLogged = useRecoilValue(isLoggedAtom);
   const navigate = useNavigate();
   useEffect(() => {
     if (!isLogged) navigate("/");
   }, [isLogged]);
+
+  //유저 정보
   const userInfo = useRecoilValue(userInfoAtom);
-  // const [wordPk, setwordPk] = useState<number>(0);
+
   //유저 단어 콜렉션 Fetch 함수
   const [collections, setCollections] = useState<any[]>([]);
   useEffect(() => {
@@ -40,18 +125,7 @@ function Collection() {
       setCollections(value);
     });
   }, []);
-  //Pagination 교체를 위한 word,mean unregist함수
-  const unregist = () => {
-    for (let i = 0; i < 10; i++) {
-      unregister(`word${i}`);
-      unregister(`mean${i}`);
-    }
-  };
-  //단어,뜻가리기 state
-  const [isBlindMean, setIsBlindMean] = useState(false);
-  const [isBlindWord, setIsBlindWord] = useState(false);
-  const toggleMeanBlind = () => setIsBlindMean((prev) => !prev);
-  const toggleWordBlind = () => setIsBlindWord((prev) => !prev);
+
   //단어세트 클릭시 설정
   const { setId } = useParams();
   const clickedSet =
@@ -63,10 +137,11 @@ function Collection() {
   const onCloseClicked = () => {
     unregist();
     setCurrentPage(1);
-    toggleAchievement();
+    setOnAchievement(false);
     navigate(`/collection`);
   };
-  //삭제 관련
+
+  //세트 삭제 관련
   const mutation = useMutation(putCollection);
   const onDelete = (wordPk: number, title: string) => {
     setCollections((prev) => prev.filter((set) => set.pk != wordPk));
@@ -76,6 +151,7 @@ function Collection() {
     const newFinished = JSON.stringify(temp);
     finishedMutation.mutate({ userInfo, newFinished });
   };
+
   //Pagination
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -94,6 +170,19 @@ function Collection() {
     unregist();
     setCurrentPage((prev) => prev - 1);
   };
+  //Pagination 교체를 위한 word,mean unregist함수
+  const unregist = () => {
+    for (let i = 0; i < 10; i++) {
+      unregister(`word${i}`);
+      unregister(`mean${i}`);
+    }
+  };
+  //단어,뜻가리기 state
+  const [isBlindMean, setIsBlindMean] = useState(false);
+  const [isBlindWord, setIsBlindWord] = useState(false);
+  const toggleMeanBlind = () => setIsBlindMean((prev) => !prev);
+  const toggleWordBlind = () => setIsBlindWord((prev) => !prev);
+
   //단어 성취도 보여주기
   const [curCollection, setCurCollection] = useState<any>({});
   const [onAchievement, setOnAchievement] = useState(false);
@@ -105,7 +194,8 @@ function Collection() {
     setFinishedWords(curFinishedRef.current.length);
     toggleAchievement();
   };
-  //단어 완료처리
+
+  //외운 단어 체크 처리 관련
   const finishedMutation = useMutation(patchFinished);
   const [isChangeFinished, SetIsChangeFinished] = useState(false);
   const [showFinished, setShowFinished] = useState<any[]>([]);
@@ -199,9 +289,9 @@ function Collection() {
     const newFinished: string = JSON.stringify(curAllFinishedRef.current);
     finishedMutation.mutate({ userInfo, newFinished });
   };
+
   //단어 보여주기
   const { getValues, register, unregister } = useForm();
-
   const ShowWords = ({ list }: { list: Array<string> }) => {
     return (
       <>
@@ -211,13 +301,15 @@ function Collection() {
               key={word[0]}
               readOnly
               {...register(`word${index}`)}
-              value={isBlindWord ? "" : word[0]}
+              value={word[0]}
+              visiblity={isBlindWord ? "hidden" : "visible"}
             />
             <Word
               key={word[1]}
               readOnly
               {...register(`mean${index}`)}
-              value={isBlindMean ? "" : word[1]}
+              visiblity={isBlindMean ? "hidden" : "visible"}
+              value={word[1]}
             />
             {isFinished(word[0], word[1]) ? (
               <button
@@ -230,7 +322,6 @@ function Collection() {
               <button
                 key={"add" + word[0] + index}
                 onClick={() => addFinished(index)}
-                // onClick={() => onFinishedClick(index)}
               >
                 완료
               </button>
@@ -240,91 +331,90 @@ function Collection() {
       </>
     );
   };
-
+  //
   return (
     <BackGround>
-      {onAchievement ? (
-        <ReactApexChart
-          height="30%"
-          type="pie"
-          series={[
-            curCollection?.content.length - finishedWords,
-            finishedWords,
-          ]}
-          options={{
-            labels: ["남은 단어", "외운 단어"],
-          }}
-        />
-      ) : null}
       <AnimatePresence>
         {clickedSet ? (
-          <motion.div
-            style={{
-              width: "300px",
-              height: "500px",
-              backgroundColor: "whitesmoke",
-              borderStyle: "solid",
-            }}
-            layoutId={String(clickedSet.pk) + "3"}
-          >
-            <button type="button" onClick={toggleWordBlind}>
-              단어 가리기
-            </button>
-            <button type="button" onClick={toggleMeanBlind}>
-              뜻 가리기
-            </button>
-            <button type="button" onClick={onCloseClicked}>
-              close
-            </button>
+          <Overlay>
+            <ContentBox layoutId={String(clickedSet.pk)}>
+              <LeftContentBox>
+                <ContentHeader>
+                  <button type="button" onClick={toggleWordBlind}>
+                    단어 가리기
+                  </button>
+                  <button type="button" onClick={toggleMeanBlind}>
+                    뜻 가리기
+                  </button>
+                  <button type="button" onClick={onCloseClicked}>
+                    close
+                  </button>
+                </ContentHeader>
+                <Content>
+                  {clickedSet && (
+                    <ShowWords list={sliceDatas(clickedSet.content)} />
+                  )}
 
-            {clickedSet && <ShowWords list={sliceDatas(clickedSet.content)} />}
-
-            {indexOfFirst != 0 ? (
-              <button onClick={prevClick}> ⬅️</button>
-            ) : null}
-            {/* {clickedSet &&
-                Array.from(
-                  { length: Math.ceil(clickedSet.content.length / 10) },
-                  (v, i) => i + 1
-                ).map((page) => (
-                  <>
-                    <span>{page}</span>
-                  </>
-                ))} */}
-            {clickedSet && indexOfLast < clickedSet.content.length ? (
-              <button onClick={nextClick}>➡️</button>
-            ) : null}
-          </motion.div>
+                  {indexOfFirst != 0 ? (
+                    <button onClick={prevClick}> ⬅️</button>
+                  ) : null}
+                  {clickedSet && indexOfLast < clickedSet.content.length ? (
+                    <button onClick={nextClick}>➡️</button>
+                  ) : null}
+                </Content>
+              </LeftContentBox>
+              <RightContentBox>
+                <AchievementHeader>
+                  {" "}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      showAchievement(clickedSet.title, Number(setId))
+                    }
+                  >
+                    성취
+                  </button>
+                </AchievementHeader>
+                <Graph>
+                  {onAchievement ? (
+                    <ReactApexChart
+                      height="100%"
+                      width="400px"
+                      type="pie"
+                      series={[
+                        curCollection?.content?.length - finishedWords,
+                        finishedWords,
+                      ]}
+                      options={{
+                        labels: ["남은 단어", "외운 단어"],
+                      }}
+                    />
+                  ) : null}
+                </Graph>
+              </RightContentBox>
+            </ContentBox>
+          </Overlay>
         ) : null}
       </AnimatePresence>
       <AnimatePresence>
         <WordSetBox>
           {collections.map((collection) => (
-            <WordSet key={collection.pk} layoutId={String(collection.pk)}>
+            <CollectionSet
+              key={collection.pk}
+              layoutId={String(collection.pk)}
+              onClick={() => {
+                onSetClicked(collection.pk);
+              }}
+            >
               {collection.title}
-              <button
-                key={collection.pk + "showCon"}
-                type="button"
-                onClick={() => {
-                  onSetClicked(collection.pk);
-                }}
-              >
-                내용보기
-              </button>
-              <button
-                key={"Achievement" + collection.pk}
-                type="button"
-                onClick={() => showAchievement(collection.title, collection.pk)}
-              >
-                성취
-              </button>
+
               <button
                 key={"delete" + collection.pk}
                 onClick={() => onDelete(collection.pk, collection.title)}
               >
                 삭제
               </button>
-            </WordSet>
+            </CollectionSet>
           ))}
         </WordSetBox>
       </AnimatePresence>
