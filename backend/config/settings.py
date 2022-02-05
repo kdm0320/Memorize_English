@@ -42,7 +42,6 @@ PROJECT_APPS = [
     "core.apps.CoreConfig",
     "users.apps.UsersConfig",
     "qnaBoards.apps.QnaBoardsConfig",
-    "userBoards.apps.UserBoardsConfig",
     "words.apps.WordsConfig",
 ]
 THIRD_PARTY_APPS = [

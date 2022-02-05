@@ -133,35 +133,7 @@ function Profile() {
       .then(() => toggleIsUpdate())
       .catch((e) => setErrorCode(e.response["status"]));
   };
-  // const avatarMutate = useMutation(
-  //   ({ userInfo, formData }: { userInfo: IUserInfo; formData: any }) =>
-  //     axios.patch(
-  //       `${baseUrl}/users/${userInfo.pk}/`,
-  //       { avatar: formData },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${userInfo.token}`,
-  //           "content-type": "multipart/form-data",
-  //         },
-  //       }
-  //     )
-  // );
-  const [file, setFile] = useState<any>("");
-  const onImgChange = async (event: FormEvent<HTMLInputElement>) => {
-    const files: any = event.currentTarget.files;
-    setFile(files);
-  };
-  // const uploadAvatar = () => {
-  //   const formData = new FormData();
-  //   formData.append("uploadImage", file[0]);
-  //   avatarMutate
-  //     .mutateAsync({ userInfo, formData })
-  //     .then(() => {
-  //       toggleIsUpdate();
-  //       console.log("Fuck");
-  //     })
-  //     .catch((e) => console.log(e));
-  // };
+
   return (
     <>
       {isLoading || profileMutate.isLoading ? <Loading /> : null}
@@ -171,12 +143,6 @@ function Profile() {
           <button onClick={toggleIsUpdate}>완료</button>
         </div>
       ) : null}
-      {/* <div>
-        <h3>Avatar</h3>
-        <ProfileInput type="file" onChange={onImgChange} />
-        <button onClick={uploadAvatar}>Save</button>
-        <button>Delete</button>
-      </div> */}
       <div>
         <ProfileLabel>
           <LabelHead>Profile settings</LabelHead>
