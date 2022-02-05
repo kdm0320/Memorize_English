@@ -4,9 +4,6 @@ import styled, { DefaultTheme } from "styled-components";
 export const theme: DefaultTheme = {};
 
 export interface IProp {
-  location?: string;
-  bdcolor?: string | null;
-  brdius?: string | null;
   visiblity?: string;
 }
 

@@ -43,8 +43,6 @@ const WordSet = styled(motion.div)<IProp>`
   border-width: 3px;
   border-style: solid;
   border-color: rgb(86, 182, 194);
-  position: ${(props) => props.location};
-  border-color: ${(props) => props.bdcolor};
   margin: 10px;
   margin-top: 30px;
   box-shadow: 5px 5px 5px;
