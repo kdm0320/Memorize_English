@@ -8,7 +8,7 @@ import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { baseUrl, fetchUser } from "../api";
 import { isLoggedAtom, IUserInfo, userInfoAtom } from "../atoms";
-import { Input } from "../Components/Others";
+import { BackGround, Input } from "../Components/Others";
 
 interface IProFileInfo {
   avatar: string;

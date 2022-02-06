@@ -90,7 +90,7 @@ const ContentHeader = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-around;
-  padding-left: 60px;
+  padding-left: 2vw;
   span {
     padding-top: 10px;
     text-justify: center;
@@ -105,6 +105,7 @@ const Blind = styled.button`
   height: 30px;
   text-justify: center;
   text-align: center;
+  padding-top: 3px;
   background-color: rgb(241, 174, 45);
 
   border-width: 2px;
@@ -129,7 +130,7 @@ const Content = styled(motion.div)`
   justify-content: space-between;
   align-content: space-evenly;
   padding-top: 20px;
-  padding-left: 70px;
+  padding-left: 2vw;
 `;
 const WordBox = styled.div`
   display: flex;
@@ -145,7 +146,7 @@ const Word = styled.input<IProp>`
   cursor: default;
   visibility: ${(props) => props.visiblity};
   justify-self: center;
-  font-size: 20px;
+  font-size: 1.04vw;
   margin-left: 10px;
 `;
 const Finished = styled.div`
@@ -171,8 +172,20 @@ const RightContentBox = styled.div`
 const AchievementHeader = styled.div`
   display: flex;
   position: fixed;
-  padding-top: 20px;
-  padding-left: 200px;
+  padding-top: 1.5vw;
+  padding-left: 17vw;
+`;
+const CloseBox = styled.div`
+  display: flex;
+  width: 3%;
+  padding-left: 10%;
+  justify-self: right;
+  p {
+    margin-top: 0.01vw;
+    padding-left: 7vw;
+    font-size: 3vw;
+    justify-self: right;
+  }
 `;
 
 const Graph = styled.div`
@@ -180,22 +193,17 @@ const Graph = styled.div`
   flex-direction: column;
   width: 60%;
   height: 70%;
-  margin-top: 80px;
-  margin-left: 200px;
+  margin-top: 6vw;
+  margin-left: 14vw;
+  margin-right: 5vw;
   border-radius: 30px;
   background-color: rgb(241, 191, 169);
-  p {
-    display: flex;
-    margin-top: 10px;
-    margin-left: 370px;
-    color: rgb(47, 54, 64);
-    font-size: 50px;
-  }
+
   div {
-    margin-top: 50px;
-    margin-right: 20px;
-    margin-left: 10px;
-    padding-bottom: 10px;
+    margin-top: 4vw;
+    margin-right: 0.4vw;
+    margin-left: 0.2vw;
+    padding-bottom: 1vw;
   }
 `;
 
@@ -223,7 +231,6 @@ function Collection() {
   const clickedSet =
     setId && collections.find((set) => String(set.pk) === setId);
   const onSetClicked = (setId: number) => {
-    // setwordPk(setId);
     navigate(`/collection/${setId}`);
   };
   const onCloseClicked = () => {
@@ -474,6 +481,16 @@ function Collection() {
                   >
                     성취도 보기
                   </Blind>
+                  <CloseBox>
+                    <p>
+                      <IoArrowForwardSharp
+                        style={{
+                          cursor: "pointer",
+                        }}
+                        onClick={() => onCloseClicked()}
+                      />
+                    </p>
+                  </CloseBox>
                 </AchievementHeader>
                 <Graph>
                   {onAchievement ? (
@@ -505,16 +522,6 @@ function Collection() {
                   ) : null}
                 </Graph>
               </RightContentBox>
-              <IoArrowForwardSharp
-                style={{
-                  marginTop: "10px",
-                  marginRight: "15px",
-                  color: "navy",
-                  fontSize: "50px",
-                  cursor: "pointer",
-                }}
-                onClick={() => onCloseClicked()}
-              />
             </ContentBox>
           </Overlay>
         ) : null}

@@ -21,7 +21,9 @@ function App() {
         })}
         <Route path="/courses" element={<Courses />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/qna" element={<Board />} />
+        {["/qna", "/qna/:postId"].map((path, index) => {
+          return <Route path={path} element={<Board />} key={index} />;
+        })}
         <Route path="/qna/write" element={<Write />} />
       </Routes>
       {/* <Footer /> */}

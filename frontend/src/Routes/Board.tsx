@@ -1,10 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { fetchAllUser, fetchBoards, fetchUser } from "../api";
 import { isLoggedAtom, IUserInfo, userInfoAtom } from "../atoms";
+import { Overlay } from "../Components/Others";
 import Write from "./Write";
 
 interface IBoard {
@@ -32,99 +33,121 @@ const Title = styled.div`
     border-bottom: 3px solid rgb(2, 97, 114);
   }
 `;
+const Table = styled.table`
+  width: 70%;
+  margin: auto;
+`;
 
-const Menu = styled.span``;
-const MenuBar = styled.div`
-  display: flex;
-  margin: auto;
-  width: 80%;
-  ${Menu} {
-    margin: auto;
-    margin-bottom: 30px;
-  }
+const Menu = styled.th``;
+const MenuBar = styled.tr`
+  height: 40px;
 `;
-const ContentBox = styled.div`
-  display: flex;
-  margin: auto;
-  flex-direction: column;
-  width: 80%;
-`;
-const ContentNo = styled.span``;
-const ContentTitle = styled.span``;
-const Writer = styled.span``;
-const CreatedDate = styled.span``;
-const Views = styled.span``;
-const ContentBar = styled.div`
-  display: flex;
-  width: 100%;
-  margin: auto;
-  padding-left: 100px;
-  margin-bottom: 10px;
-  margin-bottom: 20px;
+const MenuBox = styled.thead``;
+
+const ContentBox = styled.tbody``;
+const ContentNo = styled.td``;
+const ContentTitle = styled.td``;
+const Writer = styled.td``;
+const CreatedDate = styled.td``;
+const Views = styled.td``;
+const ContentBar = styled.tr`
+  text-align: center;
+  height: 40px;
+
   ${ContentNo} {
-    margin-right: 200px;
-    text-align: left;
   }
   ${ContentTitle} {
-    margin-right: 200px;
-    text-align: left;
+    span {
+      cursor: pointer;
+    }
   }
   ${Writer} {
-    margin-right: 150px;
-    text-align: left;
   }
   ${CreatedDate} {
-    margin-right: 200px;
   }
   ${Views} {
   }
 `;
-const WriteButton = styled.button`
+export const WriteButton = styled.button`
   all: unset;
   width: 60px;
   height: 30px;
   text-align: center;
-  border-radius: 15px;
-  border-style: solid;
-  border-color: rgb(12, 151, 175);
-  background-color: transparent;
   color: rgb(12, 151, 175);
+  border-radius: 15px;
+  border: 2px solid;
+  background-color: transparent;
   margin-top: 30px;
-  margin-left: 1170px;
+  margin-left: 80%;
+  cursor: pointer;
 `;
+
+const PostBox = styled.div`
+  width: 300px;
+  height: 300px;
+  background-color: white;
+`;
+
 function Board() {
   const { data } = useQuery("allQnA", fetchBoards);
   const BoardDatas: IBoard[] = data?.results;
   const isLogged = useRecoilValue(isLoggedAtom);
-  const navigate = useNavigate();
   useEffect(() => {
     if (!isLogged) navigate("/");
   }, [isLogged]);
+
+  //게시물 보여주기
+  const navigate = useNavigate();
+  const { postId } = useParams();
+  const [onPost, setOnPost] = useState(false);
+  const toggleOnPost = () => setOnPost((prev) => !prev);
+  const onPostClick = (postId: number) => {
+    toggleOnPost();
+    navigate(`/qna/${postId}`);
+  };
+  //
   return (
     <div>
+      {onPost ? (
+        <Overlay>
+          <PostBox></PostBox>
+        </Overlay>
+      ) : null}
       <Title>
         <Head>QnA</Head>
       </Title>
-      <MenuBar>
-        <Menu>No.</Menu>
-        <Menu>제목</Menu>
-        <Menu>작성자</Menu>
-        <Menu>작성일</Menu>
-        <Menu>조회수</Menu>
-      </MenuBar>
-      <ContentBox>
-        {BoardDatas?.map((data, index) => (
-          <ContentBar key={data.pk}>
-            <ContentNo key={data.title + data.pk + "num"}>{index}</ContentNo>
-            <ContentTitle key={data.title + data.pk}>{data.title}</ContentTitle>
-            <Writer key={data.writer + data.pk}>{data.writer}</Writer>
-            <CreatedDate key={data.created}>
-              {data.created.substring(0, 9)}
-            </CreatedDate>
-            <Views key={data.title + "view"}>{data.views}</Views>
-          </ContentBar>
-        ))}
-      </ContentBox>
+      <Table>
+        <MenuBox>
+          <MenuBar>
+            <Menu>No.</Menu>
+            <Menu>제목</Menu>
+            <Menu>작성자</Menu>
+            <Menu>작성일</Menu>
+            <Menu>조회수</Menu>
+          </MenuBar>
+        </MenuBox>
+        <ContentBox>
+          {BoardDatas?.map((data, index) => (
+            <ContentBar key={data.pk}>
+              <ContentNo key={data.title + data.pk + "num"}>{index}</ContentNo>
+              <ContentTitle key={data.title + data.pk}>
+                <span
+                  key={"forClick" + data.title}
+                  onClick={() => onPostClick(data.pk)}
+                >
+                  {data.title}
+                </span>
+              </ContentTitle>
+              <Writer key={data.writer + data.pk}>{data.writer}</Writer>
+              <CreatedDate key={data.created}>
+                {data.created.substring(0, 10)}
+              </CreatedDate>
+              <Views key={data.title + "view"}>{data.views}</Views>
+            </ContentBar>
+          ))}
+        </ContentBox>
+      </Table>
+
       <Link to="/qna/write" style={{ all: "unset" }}>
         <WriteButton>글쓰기</WriteButton>
       </Link>
