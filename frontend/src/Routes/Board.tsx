@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
@@ -6,7 +6,9 @@ import styled from "styled-components";
 import { fetchAllUser, fetchBoards, fetchUser } from "../api";
 import { isLoggedAtom, IUserInfo, userInfoAtom } from "../atoms";
 import { Overlay } from "../Components/Others";
-import Write from "./Write";
+import { IoCloseCircleSharp } from "react-icons/io5";
+import { useForm } from "react-hook-form";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface IBoard {
   content: string;
@@ -16,6 +18,11 @@ interface IBoard {
   title: string;
   views: number;
   writer: string;
+}
+
+interface IEditForm {
+  title: string;
+  content: string;
 }
 
 const Head = styled.h1``;
@@ -81,36 +88,228 @@ export const WriteButton = styled.button`
   margin-left: 80%;
   cursor: pointer;
 `;
-
-const PostBox = styled.div`
-  width: 300px;
-  height: 300px;
-  background-color: white;
+const TopBox = styled.div``;
+const PostBox = styled(motion.div)`
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  height: 30%;
+  border: 2px solid rgb(86, 182, 194);
+  border-radius: 15px;
+  background-color: rgb(237, 235, 222);
+  ${TopBox} {
+    display: flex;
+    justify-content: space-between;
+    h2 {
+      padding: 1.5% 0 1.5% 3%;
+      font-size: 1.2vw;
+      font-weight: bolder;
+    }
+  }
+`;
+const PostTable = styled.table`
+  border: 1px 0 1px 0 solid;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  background-color: rgb(237, 235, 222);
+`;
+const PostHeader = styled.thead`
+  align-content: center;
+  justify-content: center;
+  height: 20%;
+`;
+const TitleLabel = styled.th`
+  text-align: center;
+  padding-top: 2%;
+  text-justify: center;
+  border-top: 1px solid;
+  border-right: 1px solid;
+  border-bottom: 1px solid;
+  height: 100%;
+  width: 20%;
+`;
+const PostTitle = styled.th`
+  justify-self: center;
+  width: 50%;
+  text-align: center;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+`;
+const PostBody = styled.tbody`
+  height: 100%;
+`;
+const PostContent = styled.td`
+  height: 100%;
+  padding-top: 10%;
+  text-align: center;
+`;
+const EditBox = styled(motion.div)`
+  flex-direction: column;
+  height: 70%;
+  width: 50%;
+  border: 2px solid rgb(86, 182, 194);
+  border-radius: 15px;
+  background-color: rgb(237, 235, 222);
+`;
+const EditForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  height: 80%;
+  margin-top: 10%;
+  justify-content: space-between;
+`;
+const EditTitleBox = styled.div`
+  display: flex;
+  height: 10%;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+`;
+const EditTitleLabel = styled.div`
+  width: 50%;
+  height: 70%;
+  padding-top: 1.8%;
+  text-align: center;
+  border-right: 1px solid;
+`;
+const EditTitle = styled.input`
+  background-color: transparent;
+  border: 0;
+  width: 100%;
+  text-align: center;
+`;
+const EditContentBox = styled.div`
+  width: 100%;
+  height: 90%;
+`;
+const EditContent = styled.input`
+  background-color: transparent;
+  border: 0;
+  border-bottom: 1px solid;
+  width: 99%;
+  height: 100%;
+  text-align: center;
 `;
 
+const EditBtnBox = styled.div`
+  margin-top: 2%;
+  height: 10%;
+`;
+const EditBtn = styled.button`
+  all: unset;
+  float: right;
+  border: 1px solid;
+  color: rgb(12, 151, 175);
+  border-radius: 10%;
+  width: 10%;
+  height: 60%;
+  text-align: center;
+  padding-top: 0.8%;
+  padding-bottom: 0.3%;
+  margin-right: 1%;
+  margin-bottom: 0.4%;
+  cursor: pointer;
+`;
 function Board() {
-  const { data } = useQuery("allQnA", fetchBoards);
-  const BoardDatas: IBoard[] = data?.results;
+  const userInfo = useRecoilValue(userInfoAtom);
+  const [users, setUsers] = useState<any[]>([]);
+  const [posts, setPosts] = useState<any[]>([]);
+  useEffect(() => {
+    fetchBoards().then((value) => {
+      setPosts(value.results);
+    });
+    fetchAllUser(userInfo).then((value) => {
+      setUsers(value.results);
+    });
+  }, []);
   const isLogged = useRecoilValue(isLoggedAtom);
   useEffect(() => {
     if (!isLogged) navigate("/");
   }, [isLogged]);
-
-  //게시물 보여주기
+  //각 게시물 보여주기
   const navigate = useNavigate();
   const { postId } = useParams();
   const [onPost, setOnPost] = useState(false);
+  const clickedPost = postId && posts.find((set) => String(set.pk) === postId);
   const toggleOnPost = () => setOnPost((prev) => !prev);
   const onPostClick = (postId: number) => {
     toggleOnPost();
     navigate(`/qna/${postId}`);
   };
-  //
+  const onCloseClick = () => {
+    toggleOnPost();
+    unregister("title");
+    unregister("content");
+    navigate(`/qna`);
+  };
+
+  //게시물 수정
+  const { register, handleSubmit, unregister, getValues } = useForm();
+  const [onEdit, setOnEdit] = useState(false);
+  const toggleOnEdit = () => {
+    setOnEdit((prev) => !prev);
+  };
+  const onCancleEdit = () => {
+    toggleOnEdit();
+    console.log(getValues("title"));
+    console.log(getValues("content"));
+  };
+
   return (
     <div>
       {onPost ? (
         <Overlay>
-          <PostBox></PostBox>
+          {!onEdit ? (
+            <PostBox layoutId="Edit">
+              <TopBox>
+                <h2>상세내용</h2>
+                <IoCloseCircleSharp
+                  onClick={onCloseClick}
+                  style={{
+                    fontSize: "2vw",
+                    color: "rgb(252,70,70)",
+                    cursor: "pointer",
+                  }}
+                />
+              </TopBox>
+              <PostTable>
+                <PostHeader>
+                  <tr>
+                    <TitleLabel>제목</TitleLabel>
+                    <PostTitle>{clickedPost.title}</PostTitle>
+                  </tr>
+                </PostHeader>
+                <PostBody>
+                  <tr>
+                    <PostContent colSpan={2}>{clickedPost.content}</PostContent>
+                  </tr>
+                </PostBody>
+              </PostTable>
+              <div>
+                {clickedPost?.writer === userInfo.pk ? (
+                  <EditBtn onClick={toggleOnEdit}>수정</EditBtn>
+                ) : null}
+              </div>
+            </PostBox>
+          ) : (
+            <EditBox layoutId="Ediition">
+              <EditForm>
+                <EditTitleBox>
+                  <EditTitleLabel>제목</EditTitleLabel>
+                  <EditTitle {...register("title")} defaultValue="Fuck" />
+                </EditTitleBox>
+                <EditContentBox>
+                  <EditContent {...register("content")} defaultValue="You" />
+                </EditContentBox>
+                <EditBtnBox>
+                  <EditBtn type="button" onClick={() => onCancleEdit()}>
+                    취소
+                  </EditBtn>
+                  <EditBtn type="button">수정</EditBtn>
+                </EditBtnBox>
+              </EditForm>
+            </EditBox>
+          )}
         </Overlay>
       ) : null}
       <Title>
@@ -127,22 +326,28 @@ function Board() {
           </MenuBar>
         </MenuBox>
         <ContentBox>
-          {BoardDatas?.map((data, index) => (
-            <ContentBar key={data.pk}>
-              <ContentNo key={data.title + data.pk + "num"}>{index}</ContentNo>
-              <ContentTitle key={data.title + data.pk}>
+          {posts?.map((post, index) => (
+            <ContentBar key={post.pk}>
+              <ContentNo key={post.title + post.pk + "num"}>{index}</ContentNo>
+              <ContentTitle key={post.title + post.pk}>
                 <span
-                  key={"forClick" + data.title}
-                  onClick={() => onPostClick(data.pk)}
+                  key={"forClick" + post.title}
+                  onClick={() => onPostClick(post.pk)}
                 >
-                  {data.title}
+                  {post.title}
                 </span>
               </ContentTitle>
-              <Writer key={data.writer + data.pk}>{data.writer}</Writer>
-              <CreatedDate key={data.created}>
-                {data.created.substring(0, 10)}
+              {users.map((user) => {
+                if (user.id === post.writer) {
+                  return (
+                    <Writer key={post.writer + post.pk}>{user.username}</Writer>
+                  );
+                }
+              })}
+              <CreatedDate key={post.created}>
+                {post.created.substring(0, 10)}
               </CreatedDate>
-              <Views key={data.title + "view"}>{data.views}</Views>
+              <Views key={post.title + "view"}>{post.views}</Views>
             </ContentBar>
           ))}
         </ContentBox>
