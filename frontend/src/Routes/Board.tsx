@@ -1,9 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { fetchAllUser, fetchBoards, fetchUser } from "../api";
+import {
+  deleteBoards,
+  fetchAllUser,
+  fetchBoards,
+  fetchUser,
+  patchBoard,
+  putAddBoardViews,
+} from "../api";
 import { isLoggedAtom, IUserInfo, userInfoAtom } from "../atoms";
 import { Overlay } from "../Components/Others";
 import { IoCloseCircleSharp } from "react-icons/io5";
@@ -232,27 +239,46 @@ function Board() {
   const [onPost, setOnPost] = useState(false);
   const clickedPost = postId && posts.find((set) => String(set.pk) === postId);
   const toggleOnPost = () => setOnPost((prev) => !prev);
-  const onPostClick = (postId: number) => {
+  const [views, setViews] = useState(0); // 조회수 설정
+  const onPostClick = (postId: number, views: number) => {
     toggleOnPost();
+    setViews(views);
+    if (clickedPost?.writer != userInfo.pk) {
+      setViews((prev) => views + 1);
+    }
     navigate(`/qna/${postId}`);
   };
-  const onCloseClick = () => {
-    toggleOnPost();
+
+  const addViewsMutate = useMutation(putAddBoardViews);
+  const onCloseClick = (postId: number) => {
     unregister("title");
     unregister("content");
+    addViewsMutate.mutate({ userInfo, postId, views });
+    toggleOnPost();
     navigate(`/qna`);
   };
-
   //게시물 수정
-  const { register, handleSubmit, unregister, getValues } = useForm();
+  const { register, unregister, getValues } = useForm();
   const [onEdit, setOnEdit] = useState(false);
+  const editMutate = useMutation(patchBoard);
   const toggleOnEdit = () => {
     setOnEdit((prev) => !prev);
   };
+  const onConfirmEdit = (noticePk: number) => {
+    const title = getValues("title");
+    const content = getValues("content");
+    editMutate.mutate({ userInfo, noticePk, title, content });
+    clickedPost.title = title;
+    clickedPost.content = content;
+    toggleOnEdit();
+  };
+  const deleteMutate = useMutation(deleteBoards);
   const onCancleEdit = () => {
     toggleOnEdit();
-    console.log(getValues("title"));
-    console.log(getValues("content"));
+  };
+
+  const onDelete = (noticePk: number) => {
+    deleteMutate.mutate({ userInfo, noticePk });
   };
 
   return (
@@ -264,7 +290,7 @@ function Board() {
               <TopBox>
                 <h2>상세내용</h2>
                 <IoCloseCircleSharp
-                  onClick={onCloseClick}
+                  onClick={() => onCloseClick(clickedPost.pk)}
                   style={{
                     fontSize: "2vw",
                     color: "rgb(252,70,70)",
@@ -285,27 +311,44 @@ function Board() {
                   </tr>
                 </PostBody>
               </PostTable>
-              <div>
-                {clickedPost?.writer === userInfo.pk ? (
+              {clickedPost?.writer === userInfo.pk ? (
+                <div>
+                  <EditBtn
+                    type="button"
+                    onClick={() => onDelete(clickedPost.pk)}
+                  >
+                    삭제
+                  </EditBtn>
                   <EditBtn onClick={toggleOnEdit}>수정</EditBtn>
-                ) : null}
-              </div>
+                </div>
+              ) : null}
             </PostBox>
           ) : (
-            <EditBox layoutId="Ediition">
+            <EditBox layoutId="Edit">
               <EditForm>
                 <EditTitleBox>
                   <EditTitleLabel>제목</EditTitleLabel>
-                  <EditTitle {...register("title")} defaultValue="Fuck" />
+                  <EditTitle
+                    {...register("title")}
+                    defaultValue={clickedPost.title}
+                  />
                 </EditTitleBox>
                 <EditContentBox>
-                  <EditContent {...register("content")} defaultValue="You" />
+                  <EditContent
+                    {...register("content")}
+                    defaultValue={clickedPost.content}
+                  />
                 </EditContentBox>
                 <EditBtnBox>
                   <EditBtn type="button" onClick={() => onCancleEdit()}>
                     취소
                   </EditBtn>
-                  <EditBtn type="button">수정</EditBtn>
+                  <EditBtn
+                    type="button"
+                    onClick={() => onConfirmEdit(clickedPost.pk)}
+                  >
+                    수정
+                  </EditBtn>
                 </EditBtnBox>
               </EditForm>
             </EditBox>
@@ -328,11 +371,13 @@ function Board() {
         <ContentBox>
           {posts?.map((post, index) => (
             <ContentBar key={post.pk}>
-              <ContentNo key={post.title + post.pk + "num"}>{index}</ContentNo>
+              <ContentNo key={post.title + post.pk + "num"}>
+                {index + 1}
+              </ContentNo>
               <ContentTitle key={post.title + post.pk}>
                 <span
                   key={"forClick" + post.title}
-                  onClick={() => onPostClick(post.pk)}
+                  onClick={() => onPostClick(post.pk, post.views)}
                 >
                   {post.title}
                 </span>
@@ -353,9 +398,7 @@ function Board() {
         </ContentBox>
       </Table>
 
-      <Link to="/qna/write" style={{ all: "unset" }}>
-        <WriteButton>글쓰기</WriteButton>
-      </Link>
+      <WriteButton onClick={() => navigate("/qna/write")}>글쓰기</WriteButton>
     </div>
   );
 }
