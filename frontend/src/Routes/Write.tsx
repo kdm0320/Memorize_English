@@ -69,7 +69,6 @@ function Write() {
       writer: data.writer,
       isSolved: false,
     };
-    console.log(formdata);
     writeMutate.mutate({ formdata });
   };
   return (
@@ -95,9 +94,6 @@ function Write() {
           style={{ borderStyle: "solid" }}
         />
       </span>
-      {/* <span>
-        <Img></Img>
-      </span> */}
       <button>작성</button>
     </form>
   );
