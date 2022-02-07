@@ -8,6 +8,50 @@ export const Error = styled.span`
   color: rgb(183, 61, 65);
 `;
 
+export const Noti = styled(motion.div)`
+  display: flex;
+  width: 20vw;
+  height: 20vh;
+  background-color: rgb(237, 235, 222);
+  font-size: 15px;
+  border-color: rgba(74, 105, 189, 1);
+  border-width: 3px;
+  border-style: solid;
+  border-radius: 15px;
+  flex-direction: column;
+
+  div {
+    width: 100%;
+    height: 20%;
+    margin-bottom: 4%;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    background-color: rgba(74, 105, 189, 1);
+  }
+
+  h3 {
+    align-self: center;
+    padding-top: 5%;
+    padding-bottom: 10%;
+    font-size: 3vh;
+  }
+  button {
+    all: unset;
+    width: 17%;
+    height: 16%;
+    margin-bottom: 6%;
+    padding-top: 1%;
+    align-self: center;
+    text-align: center;
+    border: 1px solid;
+    border-color: transparent;
+    border-radius: 15px;
+    color: white;
+    background-color: rgba(235, 47, 6, 1);
+    cursor: pointer;
+  }
+`;
+
 export const Wrapper = styled.div`
   display: flex;
   height: 100vh;

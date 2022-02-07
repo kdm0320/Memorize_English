@@ -6,8 +6,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { baseUrl } from "../api";
 import { isLoggedAtom, userInfoAtom } from "../atoms";
-import styled, { keyframes } from "styled-components";
-import { AnimatePresence, motion } from "framer-motion";
+import styled from "styled-components";
+import { motion } from "framer-motion";
 import {
   Box,
   Btn,

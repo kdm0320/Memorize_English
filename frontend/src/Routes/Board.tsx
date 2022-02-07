@@ -1,36 +1,20 @@
-import { useEffect, useRef, useState } from "react";
-import { useMutation, useQuery } from "react-query";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useMutation } from "react-query";
+import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import {
   deleteBoards,
   fetchAllUser,
   fetchBoards,
-  fetchUser,
   patchBoard,
   putAddBoardViews,
 } from "../api";
-import { isLoggedAtom, IUserInfo, userInfoAtom } from "../atoms";
+import { isLoggedAtom, userInfoAtom } from "../atoms";
 import { Overlay } from "../Components/Others";
 import { IoCloseCircleSharp } from "react-icons/io5";
 import { useForm } from "react-hook-form";
-import { motion, AnimatePresence } from "framer-motion";
-
-interface IBoard {
-  content: string;
-  created: string;
-  is_solved: boolean;
-  pk: number;
-  title: string;
-  views: number;
-  writer: string;
-}
-
-interface IEditForm {
-  title: string;
-  content: string;
-}
+import { motion } from "framer-motion";
 
 const Head = styled.h1``;
 const Title = styled.div`

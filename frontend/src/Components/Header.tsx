@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
-import { useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
+import { Link, useLocation } from "react-router-dom";
+import { useResetRecoilState } from "recoil";
 import styled from "styled-components";
 import { isLoggedAtom, userInfoAtom } from "../atoms";
 
@@ -10,7 +9,7 @@ const Nav = styled(motion.nav)`
   justify-content: space-around;
   align-items: center;
   width: 100%;
-  height: 70px;
+  height: 6%;
   background-color: rgb(241, 241, 241);
 `;
 

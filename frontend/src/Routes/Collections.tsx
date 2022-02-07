@@ -1,12 +1,10 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useEffect, useRef, useState } from "react";
+import { useMutation } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import ReactApexChart from "react-apexcharts";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import ReactLoading from "react-loading";
 import "react-loading-skeleton/dist/skeleton.css";
 import {
   fetchCollections,
@@ -128,11 +126,20 @@ const Content = styled(motion.div)`
   flex-direction: column;
   justify-content: space-between;
   align-content: space-evenly;
-  padding-top: 20px;
+  padding-top: 2%;
   padding-left: 2vw;
+  overflow: auto;
+`;
+const AllWordBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  justify-content: space-between;
 `;
 const WordBox = styled.div`
   display: flex;
+  width: 80%;
   border-style: dotted;
   border-width: 0 0 3px 0;
   border-color: #aaa6a6;
@@ -147,17 +154,20 @@ const Word = styled.input<IProp>`
   justify-self: center;
   font-size: 1.04vw;
   margin-left: 10px;
+  overflow: hidden;
 `;
 const Finished = styled.div`
-  margin-top: 10px;
-  margin-left: 50px;
+  margin-top: 2%;
+  margin-left: 10%;
   font-size: 25px;
+  overflow: hidden;
 `;
 const Paginator = styled.div`
   display: flex;
   color: rgb(75, 165, 177);
-  margin-bottom: 10px;
-  font-size: 30px;
+  margin-top: 2%;
+  margin-bottom: 1%;
+  font-size: 170%;
 `;
 const RightContentBox = styled.div`
   display: flex;
@@ -172,18 +182,32 @@ const AchievementHeader = styled.div`
   display: flex;
   position: fixed;
   padding-top: 1.5vw;
-  padding-left: 18vw;
+  padding-left: 15vw;
   width: 20%;
   height: 5%;
 `;
+const OnShowAchievement = styled.button`
+  all: unset;
+  text-justify: center;
+  text-align: center;
+  padding-top: 3px;
+  border: 2px solid;
+  border-radius: 10px;
+  border-color: white;
+  width: 50%;
+  background-color: rgb(241, 174, 45);
+  overflow: hidden;
+  cursor: pointer;
+`;
 const CloseBox = styled.div`
   display: flex;
-  width: 3%;
-  padding-left: 5%;
+  width: 1%;
+  padding-left: 3%;
   justify-self: right;
+
   p {
     margin-top: 0.01vw;
-    padding-left: 7vw;
+    padding-left: 6vw;
     font-size: 3vw;
     justify-self: right;
   }
@@ -199,6 +223,7 @@ const Graph = styled.div`
   margin-right: 5vw;
   border-radius: 30px;
   background-color: rgb(241, 191, 169);
+  overflow: hidden;
 
   div {
     margin-top: 4vw;
@@ -245,7 +270,6 @@ function Collection() {
   const mutation = useMutation(putCollection);
   const onDelete = (wordPk: number, title: string) => {
     setCollections((prev) => prev.filter((set) => set.pk != wordPk));
-    console.log(curAllFinishedRef.current);
     const temp = curAllFinishedRef.current.filter((set) => set.title != title);
     mutation.mutate({ userInfo, wordPk });
     const newFinished = JSON.stringify(temp);
@@ -394,7 +418,7 @@ function Collection() {
   const { getValues, register, unregister } = useForm();
   const ShowWords = ({ list }: { list: Array<string> }) => {
     return (
-      <>
+      <AllWordBox>
         {list.map((word, index) => (
           <div key={index} style={{ display: "flex" }}>
             <WordBox key={word[0] + "div"}>
@@ -432,7 +456,7 @@ function Collection() {
             )}
           </div>
         ))}
-      </>
+      </AllWordBox>
     );
   };
   //
@@ -475,13 +499,13 @@ function Collection() {
               </LeftContentBox>
               <RightContentBox>
                 <AchievementHeader>
-                  <Blind
+                  <OnShowAchievement
                     onClick={() =>
                       showAchievement(clickedSet.title, Number(setId))
                     }
                   >
                     성취도 보기
-                  </Blind>
+                  </OnShowAchievement>
                   <CloseBox>
                     <p>
                       <IoArrowForwardSharp

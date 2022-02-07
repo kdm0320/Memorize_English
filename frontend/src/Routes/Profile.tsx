@@ -1,5 +1,5 @@
 import axios from "axios";
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Loading from "react-loading";
 import { useMutation, useQuery } from "react-query";
@@ -8,7 +8,7 @@ import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { baseUrl, fetchUser } from "../api";
 import { isLoggedAtom, IUserInfo, userInfoAtom } from "../atoms";
-import { BackGround, Error, Input } from "../Components/Others";
+import { Error, Noti, Overlay } from "../Components/Others";
 
 interface IProFileInfo {
   avatar: string;
@@ -152,10 +152,13 @@ function Profile() {
     <>
       {isLoading || profileMutate.isLoading ? <Loading /> : null}
       {isUpdate ? (
-        <div>
-          <h3>저장되었습니다</h3>
-          <button onClick={toggleIsUpdate}>완료</button>
-        </div>
+        <Overlay>
+          <Noti>
+            <div />
+            <h3>저장되었습니다</h3>
+            <button onClick={toggleIsUpdate}>완료</button>
+          </Noti>
+        </Overlay>
       ) : null}
       <div>
         <ProfileLabel>

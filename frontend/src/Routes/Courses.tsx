@@ -6,7 +6,7 @@ import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { fetchUser, fetchWords, putCollection } from "../api";
 import { isLoggedAtom, userInfoAtom } from "../atoms";
-import { BackGround, IProp, WordSetBox } from "../Components/Others";
+import { BackGround, WordSetBox } from "../Components/Others";
 import { IoHeartOutline, IoHeartSharp } from "react-icons/io5";
 interface IWordData {
   pk: number;

@@ -5,7 +5,6 @@ import { RecoilRoot } from "recoil";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { theme } from "./theme";
 import { QueryClient, QueryClientProvider } from "react-query";
-import Pagination from "rc-pagination";
 
 const GlobalStyle = createGlobalStyle`
   html, body, div, span, applet, object, iframe,
