@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { postBoards } from "../api";
@@ -11,7 +11,7 @@ import { WriteButton } from "./Board";
 interface IFormData {
   title: string;
   content: string;
-  writer: string;
+  writer: number | undefined;
   isSolved: boolean;
 }
 
@@ -68,6 +68,7 @@ const WriteForm = styled.form`
     border: 2px solid;
     text-align: center;
     margin-left: 85.5%;
+    cursor: pointer;
   }
 `;
 
@@ -88,15 +89,16 @@ function Write() {
   const onSubmit = (data: {
     title: string;
     content: string;
-    writer: string;
+    writer: number | undefined;
   }) => {
     const formdata: IFormData = {
       title: data.title,
       content: data.content,
-      writer: data.writer,
+      writer: Number(userInfo.pk),
       isSolved: false,
     };
     writeMutate.mutate({ formdata });
+    navigate("/qna");
   };
   return (
     <div>

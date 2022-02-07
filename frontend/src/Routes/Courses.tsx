@@ -6,9 +6,8 @@ import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { fetchUser, fetchWords, putCollection } from "../api";
 import { isLoggedAtom, userInfoAtom } from "../atoms";
-import { BackGround, WordSetBox } from "../Components/Others";
+import { BackGround, IProp, WordSetBox } from "../Components/Others";
 import { IoHeartOutline, IoHeartSharp } from "react-icons/io5";
-import { IProp } from "../theme";
 interface IWordData {
   pk: number;
   title: string;
@@ -35,7 +34,7 @@ const FavButton = styled.div`
   margin-right: 10px;
 `;
 
-const WordSet = styled(motion.div)<IProp>`
+const WordSet = styled(motion.div)`
   display: flex;
   width: 250px;
   height: 180px;

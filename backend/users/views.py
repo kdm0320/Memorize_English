@@ -27,8 +27,8 @@ class UserViewSet(ModelViewSet):
         serializer = UserSerializer(data=request.data)
         userValue = request.data['username']
         emailValue = request.data['email']
-        exist_email = User.objects.filter(email=emailValue).first()
         exist_user = User.objects.filter(username=userValue).first()
+        exist_email = User.objects.filter(email=emailValue).first()
         if exist_email:
             return Response(status=status.HTTP_409_CONFLICT)
         if exist_user:
@@ -42,9 +42,9 @@ class UserViewSet(ModelViewSet):
         if finisehd_voca is None:
             kwargs['partial'] = True
             emailValue = request.data['email']
-            exist_email = User.objects.filter(email=emailValue).first()
             user_email = User.objects.get(username=self.get_object()).email
-            if exist_email == user_email:
+            exist_email = User.objects.filter(email=emailValue).first()
+            if user_email == emailValue:
                 return self.update(request, *args, **kwargs)
             if exist_email:
                 return Response(status=status.HTTP_409_CONFLICT)

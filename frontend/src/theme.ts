@@ -3,10 +3,6 @@ import styled, { DefaultTheme } from "styled-components";
 
 export const theme: DefaultTheme = {};
 
-export interface IProp {
-  visiblity?: string;
-}
-
 export const Noti = styled(motion.div)`
   width: 300px;
   height: 200px;

@@ -15,10 +15,9 @@ import {
   putCollection,
 } from "../api";
 import { isLoggedAtom, userInfoAtom } from "../atoms";
-import { IProp } from "../theme";
 import { useForm } from "react-hook-form";
 import { Loading } from "../Components/Loading";
-import { BackGround, Overlay, WordSetBox } from "../Components/Others";
+import { BackGround, IProp, Overlay, WordSetBox } from "../Components/Others";
 import {
   IoArrowForwardCircleSharp,
   IoArrowBackCircleSharp,
@@ -90,7 +89,7 @@ const ContentHeader = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-around;
-  padding-left: 2vw;
+  padding-left: 1.5vw;
   span {
     padding-top: 10px;
     text-justify: center;
@@ -101,8 +100,8 @@ const ContentHeader = styled.div`
 const Blind = styled.button`
   position: fixed;
   all: unset;
-  width: 100px;
-  height: 30px;
+  width: 6vw;
+  height: 100%;
   text-justify: center;
   text-align: center;
   padding-top: 3px;
@@ -121,8 +120,8 @@ const Content = styled(motion.div)`
   display: flex;
   width: 90%;
   height: 85%;
-  margin-top: 20px;
-  margin-left: 50px;
+  margin-top: 2%;
+  margin-left: 5%;
   background-color: rgb(232, 220, 192);
   border-radius: 20px;
   border-style: solid;
@@ -173,12 +172,14 @@ const AchievementHeader = styled.div`
   display: flex;
   position: fixed;
   padding-top: 1.5vw;
-  padding-left: 17vw;
+  padding-left: 18vw;
+  width: 20%;
+  height: 5%;
 `;
 const CloseBox = styled.div`
   display: flex;
   width: 3%;
-  padding-left: 10%;
+  padding-left: 5%;
   justify-self: right;
   p {
     margin-top: 0.01vw;
@@ -194,7 +195,7 @@ const Graph = styled.div`
   width: 60%;
   height: 70%;
   margin-top: 6vw;
-  margin-left: 14vw;
+  margin-left: 10vw;
   margin-right: 5vw;
   border-radius: 30px;
   background-color: rgb(241, 191, 169);

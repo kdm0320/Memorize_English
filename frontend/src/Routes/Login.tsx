@@ -36,6 +36,7 @@ const PhraseVariant = {
 
 const SignupText = styled(motion.span)`
   color: rgba(225, 112, 85, 1);
+  margin-left: 2%;
   :hover {
     text-decoration: underline;
     cursor: pointer;
@@ -43,9 +44,22 @@ const SignupText = styled(motion.span)`
 `;
 
 const IsAccount = styled(motion.span)`
-  margin-right: 15px;
+  margin-right: 1%;
 `;
 
+const AskBox = styled.div`
+  margin-top: 4%;
+`;
+const LoginBtnBox = styled.div`
+  height: 20%;
+  padding-bottom: 10%;
+`;
+const LoginError = styled(Error)`
+  margin-right: 35%;
+`;
+const Error400 = styled(Error)`
+  padding-bottom: 30%;
+`;
 function Login() {
   const {
     register,
@@ -92,9 +106,6 @@ function Login() {
   };
   return (
     <Wrapper>
-      {mutation.isError ? (
-        <div>아이디 혹은 비밀번호 오류입니다 다시 확인해 주십시오</div>
-      ) : null}
       <Box>
         <LeftBox>
           <Phrase
@@ -106,6 +117,11 @@ function Login() {
           </Phrase>
         </LeftBox>
         <RightBox>
+          {mutation.isError ? (
+            <Error400>
+              아이디 혹은 비밀번호 오류입니다 다시 확인해 주십시오
+            </Error400>
+          ) : null}
           <Form onSubmit={handleSubmit(onValid)}>
             <Input
               {...register("username", { required: "필수 항목입니다." })}
@@ -114,7 +130,7 @@ function Login() {
               initial="start"
               animate="end"
             />
-            <Error>{errors.username?.message}</Error>
+            <LoginError>{errors.username?.message}</LoginError>
             <Input
               {...register("password", { required: "필수 항목입니다." })}
               placeholder="Password"
@@ -123,16 +139,19 @@ function Login() {
               initial="start"
               animate="end"
             />
-            <Error>{errors.password?.message}</Error>
-            <Btn
-              variants={isSignup ? PhraseVariant : undefined}
-              initial="start"
-              animate="end"
-            >
-              LOGIN
-            </Btn>
+            <LoginError>{errors.password?.message}</LoginError>
+
+            <LoginBtnBox>
+              <Btn
+                variants={isSignup ? PhraseVariant : undefined}
+                initial="start"
+                animate="end"
+              >
+                LOGIN
+              </Btn>
+            </LoginBtnBox>
           </Form>
-          <div>
+          <AskBox>
             <IsAccount
               variants={isSignup ? PhraseVariant : undefined}
               initial="start"
@@ -148,7 +167,7 @@ function Login() {
             >
               Sign up
             </SignupText>
-          </div>
+          </AskBox>
         </RightBox>
       </Box>
     </Wrapper>

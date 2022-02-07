@@ -94,7 +94,7 @@ export async function postBoards({
     title: string;
     content: string;
     isSolved: boolean;
-    writer: string;
+    writer: number | undefined;
   };
 }) {
   axios.post(`${baseUrl}/qnaboards/`, {
@@ -103,5 +103,59 @@ export async function postBoards({
     writer: formdata.writer,
     views: 0,
     is_solved: formdata.isSolved,
+  });
+}
+
+export async function patchBoard({
+  userInfo,
+  noticePk,
+  title,
+  content,
+}: {
+  userInfo: IUserInfo;
+  noticePk: number;
+  title: string;
+  content: string;
+}) {
+  axios.patch(
+    `${baseUrl}/qnaboards/${noticePk}/`,
+    { title: title, content: content },
+    {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+  );
+}
+export async function putAddBoardViews({
+  userInfo,
+  postId,
+  views,
+}: {
+  userInfo: IUserInfo;
+  postId: number;
+  views: number;
+}) {
+  axios.put(
+    `${baseUrl}/qnaboards/${postId}/`,
+    { views: views },
+    {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+  );
+}
+export async function deleteBoards({
+  userInfo,
+  noticePk,
+}: {
+  userInfo: IUserInfo;
+  noticePk: number;
+}) {
+  await axios.delete(`${baseUrl}/qnaboards/${noticePk}`, {
+    headers: {
+      Authorization: `Bearer ${userInfo.token}`,
+    },
   });
 }

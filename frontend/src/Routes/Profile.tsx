@@ -8,7 +8,7 @@ import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { baseUrl, fetchUser } from "../api";
 import { isLoggedAtom, IUserInfo, userInfoAtom } from "../atoms";
-import { BackGround, Input } from "../Components/Others";
+import { BackGround, Error, Input } from "../Components/Others";
 
 interface IProFileInfo {
   avatar: string;
@@ -22,6 +22,10 @@ interface IProfileForm {
   lastName: string;
   email: string;
 }
+
+const ProflieError = styled(Error)`
+  margin-left: 1.2%;
+`;
 
 const LabelHead = styled.h3``;
 const LabelEx = styled.p``;
@@ -52,8 +56,8 @@ const ProfileForm = styled.form`
   padding: 20px 50px 20px 30px;
   ${ProfileInput} {
     width: 20%;
-    margin-left: 20px;
-    margin-bottom: 25px;
+    margin-left: 1.2%;
+    margin-bottom: 1%;
     border-bottom: 1px solid;
     border-left: none;
     border-right: none;
@@ -76,6 +80,7 @@ const ProfileForm = styled.form`
     height: 40px;
     border-radius: 20px;
     border: 2px solid rgb(22, 175, 202);
+    cursor: pointer;
   }
 `;
 function Profile() {
@@ -99,11 +104,13 @@ function Profile() {
   const toggleIsUpdate = () => setIsUpdate((prev) => !prev);
   const profileMutate = useMutation(
     ({
+      pk,
       userInfo,
       firstName,
       lastName,
       email,
     }: {
+      pk: string | undefined;
       userInfo: IUserInfo;
       firstName: string;
       lastName: string;
@@ -111,7 +118,12 @@ function Profile() {
     }) =>
       axios.patch(
         `${baseUrl}/users/${userInfo.pk}/`,
-        { first_name: firstName, last_name: lastName, email: email },
+        {
+          pk: pk,
+          first_name: firstName,
+          last_name: lastName,
+          email: email,
+        },
         {
           headers: {
             Authorization: `Bearer ${userInfo.token}`,
@@ -123,8 +135,10 @@ function Profile() {
     const firstName = data.firstName;
     const lastName = data.lastName;
     const email = data.email;
+    const pk = userInfo.pk;
     profileMutate
       .mutateAsync({
+        pk,
         userInfo,
         firstName,
         lastName,
@@ -157,13 +171,13 @@ function Profile() {
             defaultValue={data?.first_name}
             placeholder="이름(First Name)"
           />
-          <span>{errors.firstName?.message}</span>
+          <ProflieError>{errors.firstName?.message}</ProflieError>
           <ProfileInput
             {...register("lastName", { required: "필수 입력 항목입니다." })}
             placeholder="성(Last Name)"
             defaultValue={data?.last_name}
           />
-          <span>{errors.lastName?.message}</span>
+          <ProflieError>{errors.lastName?.message}</ProflieError>
           <p>Your Email</p>
           <ProfileInput
             {...register("email", {
@@ -176,8 +190,8 @@ function Profile() {
             defaultValue={data?.email}
             placeholder="이메일(E-mail)"
           />
-          {errorCode === 409 ? <span>이미 존재하는 이메일입니다</span> : null}
-          <span>{errors.email?.message}</span>
+          {errorCode === 409 ? <Error>이미 존재하는 이메일입니다</Error> : null}
+          <ProflieError>{errors.email?.message}</ProflieError>
           <SaveButton>save</SaveButton>
         </ProfileForm>
       </div>

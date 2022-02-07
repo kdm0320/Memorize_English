@@ -1,8 +1,12 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
-import { IProp } from "../theme";
+export interface IProp {
+  visiblity?: string;
+}
 
-export const Error = styled.span``;
+export const Error = styled.span`
+  color: rgb(183, 61, 65);
+`;
 
 export const Wrapper = styled.div`
   display: flex;
@@ -48,12 +52,14 @@ export const Form = styled(motion.form)`
   flex-direction: column;
   justify-content: center;
   text-align: center;
+  justify-content: space-between;
 `;
 export const Input = styled(motion.input)`
   display: flex;
   place-self: center;
-  margin-bottom: 30px;
-  height: 30px;
+  margin-bottom: 2%;
+  padding-bottom: 3%;
+  height: 10%;
   width: 60%;
   border-bottom: 1px solid;
   border-left: none;
@@ -74,12 +80,14 @@ export const Phrase = styled(motion.span)`
 
 export const Btn = styled(motion.button)`
   width: 60%;
-  height: 33px;
+  height: 100%;
   background-color: rgba(225, 112, 85, 1);
   border-radius: 10px;
   color: white;
-  margin-bottom: 20px;
+  margin-top: 8%;
+  margin-bottom: 5%;
   place-self: center;
+  cursor: pointer;
 `;
 
 export const BackGround = styled.div`

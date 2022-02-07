@@ -25,6 +25,14 @@ interface ISingnUpForm {
   email: string;
 }
 
+const SignUpError = styled(Error)`
+  margin-right: 40%;
+  font-size: 80%;
+`;
+const EmailError = styled(Error)`
+  margin-right: 19%;
+`;
+
 const PhraseVariant = {
   start: {
     opacity: 0,
@@ -75,7 +83,7 @@ function SignUp() {
               initial="start"
               animate="end"
             />
-            <Error>{errors.last_name?.message}</Error>
+            <SignUpError>{errors.last_name?.message}</SignUpError>
             <Input
               {...register("last_name", { required: "필수 항목입니다." })}
               placeholder="이름(First Name)"
@@ -83,14 +91,13 @@ function SignUp() {
               initial="start"
               animate="end"
             />
-            <Error>{errors.first_name?.message}</Error>
+            <SignUpError>{errors.first_name?.message}</SignUpError>
             <Input
               {...register("username", {
                 required: "필수 항목입니다.",
                 pattern: {
                   value: /^[a-z]+[a-z0-9]{5,19}$/g,
-                  message:
-                    "영문자로 시작하는 6~20자 영문자 또는 숫자여야합니다. ",
+                  message: "6~20자 영문자 또는 숫자여야합니다. ",
                 },
               })}
               placeholder="아이디(ID)"
@@ -99,8 +106,10 @@ function SignUp() {
               initial="start"
               animate="end"
             />
-            {errorCode === 400 ? <span>이미 존재하는 아이디입니다</span> : null}
-            <Error>{errors.username?.message}</Error>
+            {errorCode === 400 ? (
+              <EmailError>이미 존재하는 아이디입니다</EmailError>
+            ) : null}
+            <SignUpError>{errors.username?.message}</SignUpError>
             <Input
               {...register("email", {
                 required: "필수 항목입니다.",
@@ -114,8 +123,10 @@ function SignUp() {
               initial="start"
               animate="end"
             />
-            {errorCode === 409 ? <span>이미 존재하는 이메일입니다</span> : null}
-            <Error>{errors.email?.message}</Error>
+            {errorCode === 409 ? (
+              <EmailError>이미 존재하는 이메일입니다</EmailError>
+            ) : null}
+            <SignUpError>{errors.email?.message}</SignUpError>
             <Input
               {...register("password", {
                 required: "필수 항목입니다.",
@@ -131,7 +142,7 @@ function SignUp() {
               placeholder="비밀번호(Password)"
               type="password"
             />
-            <Error>{errors.password?.message}</Error>
+            <SignUpError>{errors.password?.message}</SignUpError>
             <Btn variants={PhraseVariant} initial="start" animate="end">
               Create
             </Btn>
