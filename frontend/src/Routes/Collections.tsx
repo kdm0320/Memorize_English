@@ -14,7 +14,6 @@ import {
 } from "../api";
 import { isLoggedAtom, userInfoAtom } from "../atoms";
 import { useForm } from "react-hook-form";
-import { Loading } from "../Components/Loading";
 import { BackGround, IProp, Overlay, WordSetBox } from "../Components/Others";
 import {
   IoArrowForwardCircleSharp,
@@ -28,7 +27,6 @@ interface ICollect {
   title: string;
   content: Array<any>;
 }
-
 const CollectionSet = styled(motion.div)`
   display: flex;
   width: 145px;
@@ -113,6 +111,14 @@ const Blind = styled.button`
 
   cursor: pointer;
 `;
+const AllWordBox = styled.div`
+  font-family: "Sarabun", sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  justify-content: space-between;
+`;
 
 const Content = styled(motion.div)`
   display: flex;
@@ -129,13 +135,6 @@ const Content = styled(motion.div)`
   padding-top: 2%;
   padding-left: 2vw;
   overflow: auto;
-`;
-const AllWordBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-  justify-content: space-between;
 `;
 const WordBox = styled.div`
   display: flex;

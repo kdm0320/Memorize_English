@@ -137,7 +137,7 @@ export const Btn = styled(motion.button)`
 export const BackGround = styled.div`
   height: 100vh;
   width: 100vw;
-  background-color: rgb(220, 221, 218);
+  background-color: ${(props) => props.theme.bgColor};
 `;
 
 export const WordSetBox = styled.div`

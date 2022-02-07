@@ -7,6 +7,8 @@ import { theme } from "./theme";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 const GlobalStyle = createGlobalStyle`
+@import url("https://fonts.googleapis.com/css2?family=Dongle:wght@300;400&family=Sarabun:ital,wght@0,100;0,300;0,400;1,100;1,200;1,300;1,400&family=Source+Sans+Pro:wght@300&display=swap");
+
   html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -34,6 +36,7 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
+	font-family: 'Source Sans Pro', sans-serif;
 }
 ol, ul {
 	list-style: none;
