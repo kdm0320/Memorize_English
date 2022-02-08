@@ -78,6 +78,12 @@ export const WriteButton = styled.button`
   margin-top: 30px;
   margin-left: 80%;
   cursor: pointer;
+  :hover {
+    box-shadow: 1px 1px;
+  }
+  :active {
+    box-shadow: none;
+  }
 `;
 const TopBox = styled.div``;
 const PostBox = styled(motion.div)`
@@ -200,6 +206,12 @@ const EditBtn = styled.button`
   margin-right: 1%;
   margin-bottom: 0.4%;
   cursor: pointer;
+  :hover {
+    box-shadow: 1px 1px;
+  }
+  :active {
+    box-shadow: none;
+  }
 `;
 function Board() {
   const userInfo = useRecoilValue(userInfoAtom);

@@ -36,25 +36,25 @@ const FavButton = styled.div`
 
 const WordSet = styled(motion.div)`
   display: flex;
-  width: 250px;
-  height: 180px;
+  width: 18vw;
+  height: 22vh;
   background-color: rgb(237, 235, 222);
   border-width: 3px;
   border-style: solid;
   border-color: rgb(86, 182, 194);
-  margin: 10px;
-  margin-top: 30px;
+  margin: 15px;
+  margin-top: 14%;
   box-shadow: 5px 5px 5px;
-  border-radius: 30px;
+  border-radius: 15px;
   flex-direction: row-reverse;
   justify-content: space-around;
   text-align: center;
   span {
-    margin-top: 50px;
-    margin-left: 50px;
+    margin-top: 15%;
+    margin-left: 12%;
     justify-self: center;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 110%;
   }
 `;
 

@@ -207,13 +207,14 @@ const Finished = styled.div`
 const PaginatorBox = styled.div`
   display: flex;
   width: 100%;
+  font-size: 25px;
+  overflow: auto;
 `;
 const Paginator = styled.div`
   display: flex;
   color: rgb(75, 165, 177);
   margin-top: 2%;
   margin-bottom: 1%;
-  font-size: 100%;
 `;
 const RightContentBox = styled.div`
   display: flex;

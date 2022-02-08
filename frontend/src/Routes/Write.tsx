@@ -72,6 +72,12 @@ const WriteForm = styled.form`
     text-align: center;
     margin-left: 85.5%;
     cursor: pointer;
+    :hover {
+      box-shadow: 1px 1px;
+    }
+    :active {
+      box-shadow: none;
+    }
   }
 `;
 
