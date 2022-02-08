@@ -57,6 +57,7 @@
   },
   "devDependencies": {
     "@types/styled-components": "^5.1.20",
-    "mini-css-extract-plugin": "2.4.5"
+    "mini-css-extract-plugin": "2.4.5",
+    "webpack-bundle-tracker": "^1.4.0"
   }
 }

@@ -9,6 +9,7 @@ djangorestframework = "*"
 django-cors-headers = "*"
 pyjwt = "*"
 openpyxl = "*"
+django-webpack-loader = "*"
 
 [dev-packages]
 black = "*"

@@ -70,12 +70,10 @@ class UserViewSet(ModelViewSet):
     def login(self, request):
         username = request.data.get("username")
         password = request.data.get("password")
-        print(username,password)
         if not username or not password:
             return Response(statue=status.HTTP_400_BAD_REQUEST)
 
         user = authenticate(username=username, password=password)
-        print(user)
         if user:
             encoded_jwt = jwt.encode(
                 {"pk": user.pk}, settings.SECRET_KEY, algorithm="HS256"
