@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
@@ -7,14 +7,18 @@ import styled from "styled-components";
 import { baseUrl } from "../api";
 import Footer from "../Components/Footer";
 import {
+  AskBox,
   Box,
   Btn,
   Error,
   Form,
   Input,
+  IsAccount,
   LeftBox,
   Phrase,
+  PhraseBox,
   RightBox,
+  SignupText,
   Wrapper,
 } from "../Components/Others";
 
@@ -41,6 +45,7 @@ const PhraseVariant = {
   end: {
     opacity: 1,
   },
+  hover: { scale: 1.5 },
 };
 
 function SignUp() {
@@ -67,14 +72,26 @@ function SignUp() {
       .then(() => navigate("/"))
       .catch((e) => setErrorCode(e.response["status"]));
   };
+  const leftBoxRef = useRef<HTMLDivElement>(null);
   return (
     <>
       <Wrapper>
         <Box>
-          <LeftBox>
-            <Phrase variants={PhraseVariant} initial="start" animate="end">
-              Regist
-            </Phrase>
+          <LeftBox ref={leftBoxRef}>
+            <PhraseBox>
+              <Phrase
+                variants={PhraseVariant}
+                drag
+                dragConstraints={leftBoxRef}
+                dragSnapToOrigin
+                dragElastic={0.8}
+                initial="start"
+                animate="end"
+                whileHover={"hover"}
+              >
+                Regist
+              </Phrase>
+            </PhraseBox>
           </LeftBox>
           <RightBox>
             <Form onSubmit={handleSubmit(onValid)}>
@@ -149,6 +166,19 @@ function SignUp() {
                 Create
               </Btn>
             </Form>
+            <AskBox>
+              <IsAccount variants={PhraseVariant} initial="start" animate="end">
+                Do you already have a account?
+              </IsAccount>
+              <SignupText
+                onClick={() => navigate("/")}
+                variants={PhraseVariant}
+                initial="start"
+                animate="end"
+              >
+                Sign in
+              </SignupText>
+            </AskBox>
           </RightBox>
         </Box>
       </Wrapper>

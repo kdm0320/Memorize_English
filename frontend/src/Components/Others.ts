@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
+
+//페이지 내부 모든 페이지 공유
 export interface IProp {
   visiblity?: string;
 }
@@ -7,7 +9,11 @@ export interface IProp {
 export const Error = styled.span`
   color: rgb(183, 61, 65);
 `;
-
+export const BackGround = styled.div`
+  min-height: 100vh;
+  width: 100vw;
+  background-color: ${(props) => props.theme.bgColor};
+`;
 export const Noti = styled(motion.div)`
   display: flex;
   width: 20vw;
@@ -20,7 +26,7 @@ export const Noti = styled(motion.div)`
   border-radius: 15px;
   flex-direction: column;
 `;
-
+//로그인,회원가입 페이지 공유
 export const Wrapper = styled.div`
   display: flex;
   height: 100vh;
@@ -54,6 +60,16 @@ export const LeftBox = styled(Box)`
   text-align: center;
 `;
 
+export const Phrase = styled(motion.span)`
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: 30px;
+`;
+export const PhraseBox = styled(motion.div)`
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin-top: 150px;
+`;
 export const RightBox = styled(LeftBox)`
   background-color: whitesmoke;
   border-radius: 0 40px 40px 0;
@@ -82,15 +98,6 @@ export const Input = styled(motion.input)`
   outline: 0;
 `;
 
-export const Phrase = styled(motion.span)`
-  display: flex;
-  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-  font-size: 30px;
-  justify-content: center;
-  text-align: center;
-  margin-top: 150px;
-`;
-
 export const Btn = styled(motion.button)`
   width: 60%;
   height: 100%;
@@ -102,19 +109,28 @@ export const Btn = styled(motion.button)`
   place-self: center;
   cursor: pointer;
 `;
-
-export const BackGround = styled.div`
-  min-height: 100vh;
-  width: 100vw;
-  background-color: ${(props) => props.theme.bgColor};
+export const IsAccount = styled(motion.span)`
+  margin-right: 1%;
 `;
 
+export const AskBox = styled.div`
+  margin-top: 4%;
+`;
+export const SignupText = styled(motion.span)`
+  color: rgba(225, 112, 85, 1);
+  margin-left: 2%;
+  :hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+`;
+// 단어모음,학습관리 페이지 공유
 export const WordSetBox = styled.div`
   display: flex;
   padding-left: 4%;
   width: 90%;
 `;
-
+//반투명 흑백 배경
 export const Overlay = styled(motion.div)`
   display: flex;
   position: fixed;

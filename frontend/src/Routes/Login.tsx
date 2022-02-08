@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,14 +9,18 @@ import { isLoggedAtom, userInfoAtom } from "../atoms";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import {
+  AskBox,
   Box,
   Btn,
   Error,
   Form,
   Input,
+  IsAccount,
   LeftBox,
   Phrase,
+  PhraseBox,
   RightBox,
+  SignupText,
   Wrapper,
 } from "../Components/Others";
 import Footer from "../Components/Footer";
@@ -35,22 +39,10 @@ const PhraseVariant = {
   },
 };
 
-const SignupText = styled(motion.span)`
-  color: rgba(225, 112, 85, 1);
-  margin-left: 2%;
-  :hover {
-    text-decoration: underline;
-    cursor: pointer;
-  }
-`;
+const PhraseEffectVariant = {
+  hover: { scale: 1.5 },
+};
 
-const IsAccount = styled(motion.span)`
-  margin-right: 1%;
-`;
-
-const AskBox = styled.div`
-  margin-top: 4%;
-`;
 const LoginBtnBox = styled.div`
   height: 20%;
   padding-bottom: 10%;
@@ -105,18 +97,26 @@ function Login() {
       navigate("/signup");
     }, 400);
   };
+  const leftBoxRef = useRef<HTMLDivElement>(null);
   return (
     <>
       <Wrapper>
         <Box>
-          <LeftBox>
-            <Phrase
-              variants={isSignup ? PhraseVariant : undefined}
-              initial="start"
-              animate="end"
-            >
-              Welcome!
-            </Phrase>
+          <LeftBox ref={leftBoxRef}>
+            <PhraseBox>
+              <Phrase
+                drag
+                dragConstraints={leftBoxRef}
+                dragSnapToOrigin
+                dragElastic={0.8}
+                variants={isSignup ? PhraseVariant : PhraseEffectVariant}
+                initial="start"
+                animate="end"
+                whileHover={"hover"}
+              >
+                Welcome!
+              </Phrase>
+            </PhraseBox>
           </LeftBox>
           <RightBox>
             {mutation.isError ? (
