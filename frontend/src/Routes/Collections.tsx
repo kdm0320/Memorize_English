@@ -14,7 +14,13 @@ import {
 } from "../api";
 import { isLoggedAtom, userInfoAtom } from "../atoms";
 import { useForm } from "react-hook-form";
-import { BackGround, IProp, Overlay, WordSetBox } from "../Components/Others";
+import {
+  BackGround,
+  IProp,
+  Noti,
+  Overlay,
+  WordSetBox,
+} from "../Components/Others";
 import {
   IoArrowForwardCircleSharp,
   IoArrowBackCircleSharp,
@@ -50,13 +56,14 @@ const CollectionSet = styled(motion.div)`
   }
 `;
 
-const DeleteButton = styled.p`
-  width: 30px;
+const DeleteButton = styled.button`
+  width: 15%;
   height: 30px;
   background-color: transparent;
   margin-top: 5px;
   margin-right: 8px;
   font-size: 20px;
+  border: 0;
   color: rgb(203, 0, 22);
   cursor: pointer;
 `;
@@ -266,15 +273,30 @@ function Collection() {
   };
 
   //세트 삭제 관련
+  const [onDeleteNoti, SetOnDeleteNoti] = useState(false);
+  const toggleOnDeleteNoti = () => SetOnDeleteNoti((prev) => !prev);
   const mutation = useMutation(putCollection);
-  const onDelete = (wordPk: number, title: string) => {
-    setCollections((prev) => prev.filter((set) => set.pk != wordPk));
-    const temp = curAllFinishedRef.current.filter((set) => set.title != title);
-    mutation.mutate({ userInfo, wordPk });
-    const newFinished = JSON.stringify(temp);
-    finishedMutation.mutate({ userInfo, newFinished });
+  const tempCurFinishedRef = useRef<ICollect[]>([]);
+  const targetSetNumberRef = useRef(0);
+  const onDelete = (e: React.MouseEvent, wordPk: number, title: string) => {
+    e.stopPropagation();
+    toggleOnDeleteNoti();
+    tempCurFinishedRef.current = allFinished;
+    targetSetNumberRef.current = wordPk;
+    SetAllFinished((prev) => prev.filter((set) => set.title != title));
   };
-
+  const cancleDelete = () => {
+    SetAllFinished(tempCurFinishedRef.current);
+    toggleOnDeleteNoti();
+  };
+  const confirmDelete = () => {
+    const wordPk = targetSetNumberRef.current;
+    setCollections((prev) => prev.filter((set) => set.pk != wordPk));
+    mutation.mutate({ userInfo, wordPk });
+    const newFinished = JSON.stringify(allFinished);
+    finishedMutation.mutate({ userInfo, newFinished });
+    toggleOnDeleteNoti();
+  };
   //Pagination
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -314,105 +336,104 @@ function Collection() {
   const showAchievement = (wordTitle: string, pk: number) => {
     const temp = collections.filter((set) => set.pk === pk);
     setCurCollection(temp[0]);
-    setFinishedWords(curFinishedRef.current.length);
+    setFinishedWords(targetFinished.content.length);
     toggleAchievement();
   };
 
   //외운 단어 체크 처리 관련
   const finishedMutation = useMutation(patchFinished);
-  const [isChangeFinished, SetIsChangeFinished] = useState(false);
-  const [showFinished, setShowFinished] = useState<any[]>([]);
-  const toggleIsChanged = () => {
-    SetIsChangeFinished((prev) => !prev);
-  };
-  const curAllFinishedRef = useRef<any[]>([]);
-  const curFinishedRef = useRef<any[]>([]);
-
-  useEffect(() => {
-    fetchUser(userInfo).then((value) => {
-      const temp: ICollect[] = JSON.parse(value.finished_voca);
-      curAllFinishedRef.current = temp;
-    });
-  }, [isChangeFinished]); //전체 finished_voca 양식 저장
-
-  useEffect(() => {
-    fetchUser(userInfo).then((value) => {
-      const temp: ICollect[] = JSON.parse(value.finished_voca);
-      if (clickedSet) {
-        temp.map((set) => {
-          if (set.title === clickedSet.title) {
-            curFinishedRef.current = set.content;
-            setShowFinished(set.content);
-          }
-        });
-      }
-    });
-  }, [setId]);
-  const newCreateSet = (word: string, mean: string) => {
-    if (clickedSet) {
-      const newContent = {
-        title: clickedSet.title,
-        content: [{ [word]: mean }],
-      };
-      curAllFinishedRef.current.push(newContent);
-      setShowFinished((prev) => [...prev, ...newContent.content]);
-      const newFinished: string = JSON.stringify(curAllFinishedRef.current);
-      finishedMutation.mutate({ userInfo, newFinished });
-    }
-  };
   const isFinished = (word: string, mean: string) => {
-    for (let i = 0; i < showFinished.length; i++) {
+    for (let i = 0; i < targetFinished.content.length; i++) {
       if (
-        Object.keys(showFinished[i]).includes(word) &&
-        Object.values(showFinished[i]).includes(mean)
+        Object.keys(targetFinished.content[i]).includes(word) &&
+        Object.values(targetFinished.content[i]).includes(mean)
       ) {
         return true;
       }
     }
     return false;
   };
+  //단어 완료처리
+  const [allFinished, SetAllFinished] = useState<ICollect[]>([]);
+  useEffect(() => {
+    fetchUser(userInfo).then((value) => {
+      const temp: ICollect[] = JSON.parse(value.finished_voca);
+      SetAllFinished(temp);
+    });
+  }, [clickedSet]); //전체 finished_voca 양식 저장 1번 state
+
+  const [targetFinished, SetTargetFinished] = useState<ICollect>({
+    title: "",
+    content: [],
+  }); //현재 finisehd 2번 state
+  useEffect(() => {
+    if (clickedSet) {
+      if (
+        allFinished.length === 0 ||
+        allFinished.every((set) => set.title != clickedSet.title)
+      ) {
+        SetTargetFinished({ title: "", content: [] });
+      } else {
+        allFinished.map((set) => {
+          if (set.title === clickedSet.title) {
+            SetTargetFinished((prev) => {
+              return { ...prev, title: set.title, content: set.content };
+            });
+          }
+        });
+      }
+    }
+  }, [clickedSet]);
+  const createSet = (word: string, mean: string) => {
+    SetTargetFinished((prev) => {
+      return {
+        ...prev,
+        title: clickedSet.title,
+        content: [{ [word]: mean }],
+      };
+    });
+  };
   const addFinished = (index: number) => {
-    toggleIsChanged();
     const word = getValues(`word${index}`);
     const mean = getValues(`mean${index}`);
-    if (curFinishedRef.current.length === 0) {
-      newCreateSet(word, mean);
+    if (targetFinished.title === "") {
+      createSet(word, mean);
     } else {
-      curFinishedRef.current.push({ [word]: mean });
-      setShowFinished((prev) => [...prev, { [word]: mean }]);
-      curAllFinishedRef.current.map((set) => {
-        if (set.title === clickedSet.title) {
-          set.content = curFinishedRef.current;
-        }
+      SetTargetFinished((prev: ICollect) => {
+        return { ...prev, content: [...prev.content, { [word]: mean }] };
       });
-      const newFinished: string = JSON.stringify(curAllFinishedRef.current);
-      finishedMutation.mutate({ userInfo, newFinished });
     }
   };
   const deleteFinished = (index: number) => {
-    toggleIsChanged();
     const word = getValues(`word${index}`);
     const mean = getValues(`mean${index}`);
-    curFinishedRef.current = curFinishedRef.current.filter(
-      (voca) =>
-        !Object.keys(voca).includes(word) && !Object.values(voca).includes(mean)
-    );
-    setShowFinished((prev) =>
-      prev.filter(
-        (voca) =>
-          !Object.keys(voca).includes(word) &&
-          !Object.values(voca).includes(mean)
-      )
-    );
-    curAllFinishedRef.current.map((set) => {
-      if (set.title === clickedSet.title) {
-        set.content = curFinishedRef.current;
-      }
+    SetTargetFinished((prev: ICollect) => {
+      return {
+        ...prev,
+        content: prev.content.filter(
+          (voca) => Object.keys(voca) != word && Object.values(voca) != mean
+        ),
+      };
     });
-    const newFinished: string = JSON.stringify(curAllFinishedRef.current);
+  };
+  const setFinished = () => {
+    if (allFinished.length === 0) {
+      SetAllFinished((prev) => [...prev, { ...targetFinished }]);
+    } else {
+      allFinished.some((set) => set.title === clickedSet.title)
+        ? SetAllFinished((prev) =>
+            prev.map((set) =>
+              set.title === clickedSet.title ? { ...targetFinished } : set
+            )
+          )
+        : SetAllFinished((prev) => [...prev, { ...targetFinished }]);
+    }
+    console.log(allFinished);
+  };
+  const saveFinished = () => {
+    const newFinished = JSON.stringify(allFinished);
     finishedMutation.mutate({ userInfo, newFinished });
   };
-
   //단어 보여주기
   const { getValues, register, unregister } = useForm();
   const ShowWords = ({ list }: { list: Array<string> }) => {
@@ -461,6 +482,16 @@ function Collection() {
   //
   return (
     <BackGround>
+      {onDeleteNoti ? (
+        <Overlay>
+          <Noti>
+            <div />
+            <h3>삭제하시겠습니까? 모든 데이터가 사라집니다.</h3>
+            <button onClick={confirmDelete}>삭제</button>
+            <button onClick={cancleDelete}>취소</button>
+          </Noti>
+        </Overlay>
+      ) : null}
       <AnimatePresence>
         {clickedSet ? (
           <Overlay>
@@ -505,6 +536,8 @@ function Collection() {
                   >
                     성취도 보기
                   </OnShowAchievement>
+                  <button onClick={setFinished}>Test</button>
+                  <button onClick={saveFinished}>save</button>
                   <CloseBox>
                     <p>
                       <IoArrowForwardSharp
@@ -564,7 +597,7 @@ function Collection() {
               <DeleteButton key={"deleteBox" + collection.pk}>
                 <IoCloseCircleSharp
                   key={"delete" + collection.pk}
-                  onClick={() => onDelete(collection.pk, collection.title)}
+                  onClick={(e) => onDelete(e, collection.pk, collection.title)}
                 />
               </DeleteButton>
             </CollectionSet>
