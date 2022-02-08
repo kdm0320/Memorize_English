@@ -26,7 +26,6 @@ function App() {
         })}
         <Route path="/qna/write" element={<Write />} />
       </Routes>
-      {/* <Footer /> */}
     </Router>
   );
 }

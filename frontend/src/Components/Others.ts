@@ -104,20 +104,23 @@ export const Btn = styled(motion.button)`
 `;
 
 export const BackGround = styled.div`
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
   background-color: ${(props) => props.theme.bgColor};
 `;
 
 export const WordSetBox = styled.div`
   display: flex;
-  margin: 5px 5px 30px 85px;
+  padding-left: 4%;
   width: 90%;
 `;
 
 export const Overlay = styled(motion.div)`
   display: flex;
   position: fixed;
+  height: 100vh;
+  padding-bottom: 1%;
+
   top: 0;
   width: 100%;
   height: 100%;

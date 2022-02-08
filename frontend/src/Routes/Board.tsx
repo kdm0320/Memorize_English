@@ -11,10 +11,11 @@ import {
   putAddBoardViews,
 } from "../api";
 import { isLoggedAtom, userInfoAtom } from "../atoms";
-import { Overlay } from "../Components/Others";
+import { BackGround, Overlay } from "../Components/Others";
 import { IoCloseCircleSharp } from "react-icons/io5";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
+import Footer from "../Components/Footer";
 
 const Head = styled.h1``;
 const Title = styled.div`
@@ -278,124 +279,131 @@ function Board() {
   };
 
   return (
-    <div>
-      {onPost ? (
-        <Overlay>
-          {!onEdit ? (
-            <PostBox layoutId="Edit">
-              <TopBox>
-                <h2>상세내용</h2>
-                <IoCloseCircleSharp
-                  onClick={() => onCloseClick(clickedPost.pk)}
-                  style={{
-                    fontSize: "2vw",
-                    color: "rgb(252,70,70)",
-                    cursor: "pointer",
-                  }}
-                />
-              </TopBox>
-              <PostTable>
-                <PostHeader>
-                  <tr>
-                    <TitleLabel>제목</TitleLabel>
-                    <PostTitle>{clickedPost.title}</PostTitle>
-                  </tr>
-                </PostHeader>
-                <PostBody>
-                  <tr>
-                    <PostContent colSpan={2}>{clickedPost.content}</PostContent>
-                  </tr>
-                </PostBody>
-              </PostTable>
-              {clickedPost?.writer === userInfo.pk ? (
-                <div>
-                  <EditBtn
-                    type="button"
-                    onClick={() => onDelete(clickedPost.pk)}
-                  >
-                    삭제
-                  </EditBtn>
-                  <EditBtn onClick={toggleOnEdit}>수정</EditBtn>
-                </div>
-              ) : null}
-            </PostBox>
-          ) : (
-            <EditBox layoutId="Edit">
-              <EditForm>
-                <EditTitleBox>
-                  <EditTitleLabel>제목</EditTitleLabel>
-                  <EditTitle
-                    {...register("title")}
-                    defaultValue={clickedPost.title}
+    <>
+      <BackGround>
+        {onPost ? (
+          <Overlay>
+            {!onEdit ? (
+              <PostBox layoutId="Edit">
+                <TopBox>
+                  <h2>상세내용</h2>
+                  <IoCloseCircleSharp
+                    onClick={() => onCloseClick(clickedPost.pk)}
+                    style={{
+                      fontSize: "2vw",
+                      color: "rgb(252,70,70)",
+                      cursor: "pointer",
+                    }}
                   />
-                </EditTitleBox>
-                <EditContentBox>
-                  <EditContent
-                    {...register("content")}
-                    defaultValue={clickedPost.content}
-                  />
-                </EditContentBox>
-                <EditBtnBox>
-                  <EditBtn type="button" onClick={() => onCancleEdit()}>
-                    취소
-                  </EditBtn>
-                  <EditBtn
-                    type="button"
-                    onClick={() => onConfirmEdit(clickedPost.pk)}
+                </TopBox>
+                <PostTable>
+                  <PostHeader>
+                    <tr>
+                      <TitleLabel>제목</TitleLabel>
+                      <PostTitle>{clickedPost.title}</PostTitle>
+                    </tr>
+                  </PostHeader>
+                  <PostBody>
+                    <tr>
+                      <PostContent colSpan={2}>
+                        {clickedPost.content}
+                      </PostContent>
+                    </tr>
+                  </PostBody>
+                </PostTable>
+                {clickedPost?.writer === userInfo.pk ? (
+                  <div>
+                    <EditBtn
+                      type="button"
+                      onClick={() => onDelete(clickedPost.pk)}
+                    >
+                      삭제
+                    </EditBtn>
+                    <EditBtn onClick={toggleOnEdit}>수정</EditBtn>
+                  </div>
+                ) : null}
+              </PostBox>
+            ) : (
+              <EditBox layoutId="Edit">
+                <EditForm>
+                  <EditTitleBox>
+                    <EditTitleLabel>제목</EditTitleLabel>
+                    <EditTitle
+                      {...register("title")}
+                      defaultValue={clickedPost.title}
+                    />
+                  </EditTitleBox>
+                  <EditContentBox>
+                    <EditContent
+                      {...register("content")}
+                      defaultValue={clickedPost.content}
+                    />
+                  </EditContentBox>
+                  <EditBtnBox>
+                    <EditBtn type="button" onClick={() => onCancleEdit()}>
+                      취소
+                    </EditBtn>
+                    <EditBtn
+                      type="button"
+                      onClick={() => onConfirmEdit(clickedPost.pk)}
+                    >
+                      수정
+                    </EditBtn>
+                  </EditBtnBox>
+                </EditForm>
+              </EditBox>
+            )}
+          </Overlay>
+        ) : null}
+        <Title>
+          <Head>QnA</Head>
+        </Title>
+        <Table>
+          <MenuBox>
+            <MenuBar>
+              <Menu>No.</Menu>
+              <Menu>제목</Menu>
+              <Menu>작성자</Menu>
+              <Menu>작성일</Menu>
+              <Menu>조회수</Menu>
+            </MenuBar>
+          </MenuBox>
+          <ContentBox>
+            {posts?.map((post, index) => (
+              <ContentBar key={post.pk}>
+                <ContentNo key={post.title + post.pk + "num"}>
+                  {index + 1}
+                </ContentNo>
+                <ContentTitle key={post.title + post.pk}>
+                  <span
+                    key={"forClick" + post.title}
+                    onClick={() => onPostClick(post.pk, post.views)}
                   >
-                    수정
-                  </EditBtn>
-                </EditBtnBox>
-              </EditForm>
-            </EditBox>
-          )}
-        </Overlay>
-      ) : null}
-      <Title>
-        <Head>QnA</Head>
-      </Title>
-      <Table>
-        <MenuBox>
-          <MenuBar>
-            <Menu>No.</Menu>
-            <Menu>제목</Menu>
-            <Menu>작성자</Menu>
-            <Menu>작성일</Menu>
-            <Menu>조회수</Menu>
-          </MenuBar>
-        </MenuBox>
-        <ContentBox>
-          {posts?.map((post, index) => (
-            <ContentBar key={post.pk}>
-              <ContentNo key={post.title + post.pk + "num"}>
-                {index + 1}
-              </ContentNo>
-              <ContentTitle key={post.title + post.pk}>
-                <span
-                  key={"forClick" + post.title}
-                  onClick={() => onPostClick(post.pk, post.views)}
-                >
-                  {post.title}
-                </span>
-              </ContentTitle>
-              {users.map((user) => {
-                if (user.id === post.writer) {
-                  return (
-                    <Writer key={post.writer + post.pk}>{user.username}</Writer>
-                  );
-                }
-              })}
-              <CreatedDate key={post.created}>
-                {post.created.substring(0, 10)}
-              </CreatedDate>
-              <Views key={post.title + "view"}>{post.views}</Views>
-            </ContentBar>
-          ))}
-        </ContentBox>
-      </Table>
+                    {post.title}
+                  </span>
+                </ContentTitle>
+                {users.map((user) => {
+                  if (user.id === post.writer) {
+                    return (
+                      <Writer key={post.writer + post.pk}>
+                        {user.username}
+                      </Writer>
+                    );
+                  }
+                })}
+                <CreatedDate key={post.created}>
+                  {post.created.substring(0, 10)}
+                </CreatedDate>
+                <Views key={post.title + "view"}>{post.views}</Views>
+              </ContentBar>
+            ))}
+          </ContentBox>
+        </Table>
 
-      <WriteButton onClick={() => navigate("/qna/write")}>글쓰기</WriteButton>
-    </div>
+        <WriteButton onClick={() => navigate("/qna/write")}>글쓰기</WriteButton>
+      </BackGround>
+      <Footer />
+    </>
   );
 }
 

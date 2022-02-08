@@ -29,6 +29,7 @@ import {
   IoArrowForwardSharp,
   IoCloseCircleSharp,
 } from "react-icons/io5";
+import Footer from "../Components/Footer";
 interface ICollect {
   title: string;
   content: Array<any>;
@@ -544,135 +545,141 @@ function Collection() {
   };
   //
   return (
-    <BackGround>
-      {onDeleteNoti ? (
-        <Overlay>
-          <DeleteNoti>
-            <div />
-            <h3>모든 데이터가 사라집니다.</h3>
-            <h3>삭제하시겠습니까?</h3>
-            <ButtonBox>
-              <button onClick={confirmDelete}>삭제</button>
-              <button onClick={cancleDelete}>취소</button>
-            </ButtonBox>
-          </DeleteNoti>
-        </Overlay>
-      ) : null}
-      <AnimatePresence>
-        {clickedSet ? (
+    <>
+      <BackGround>
+        {onDeleteNoti ? (
           <Overlay>
-            <ContentBox layoutId={String(clickedSet.pk)}>
-              <LeftContentBox>
-                <ContentHeader>
-                  <Blind
-                    onClick={toggleWordBlind}
-                    style={{ marginRight: "90px" }}
-                  >
-                    단어 가리기
-                  </Blind>
-                  <Blind onClick={toggleMeanBlind}>뜻 가리기</Blind>
-                  <span>완료체크</span>
-                </ContentHeader>
-                <Content>
-                  {clickedSet && (
-                    <ShowWords list={sliceDatas(clickedSet.content)} />
-                  )}
-                  <PaginatorBox>
-                    <Paginator>
-                      {indexOfFirst != 0 ? (
-                        <IoArrowBackCircleSharp
-                          onClick={prevClick}
-                          style={{ marginRight: "10px", cursor: "pointer" }}
-                        />
-                      ) : null}
-                      {clickedSet && indexOfLast < clickedSet.content.length ? (
-                        <IoArrowForwardCircleSharp
-                          onClick={nextClick}
-                          style={{ marginLeft: "10px", cursor: "pointer" }}
-                        />
-                      ) : null}
-                    </Paginator>
-                  </PaginatorBox>
-                </Content>
-              </LeftContentBox>
-              <RightContentBox>
-                <AchievementHeader>
-                  <SaveBtn onClick={setFinished}>Save</SaveBtn>
-                  <OnShowAchievement
-                    onClick={() =>
-                      showAchievement(clickedSet.title, Number(setId))
-                    }
-                  >
-                    성취도 보기
-                  </OnShowAchievement>
-                  <CloseBox>
-                    <p>
-                      <IoArrowForwardSharp
-                        style={{
-                          cursor: "pointer",
-                        }}
-                        onClick={() => onCloseClicked()}
-                      />
-                    </p>
-                  </CloseBox>
-                </AchievementHeader>
-                <Graph>
-                  {onAchievement ? (
-                    <div>
-                      <ReactApexChart
-                        height="150%"
-                        width="110%"
-                        type="pie"
-                        series={[
-                          curCollection?.content?.length - finishedWords,
-                          finishedWords,
-                        ]}
-                        options={{
-                          labels: ["남은단어", "외운단어"],
-                          tooltip: {
-                            fillSeriesColor: false,
-                            marker: {
-                              show: false,
-                            },
-                          },
-                          plotOptions: {
-                            pie: {
-                              expandOnClick: true,
-                            },
-                          },
-                        }}
-                      />
-                    </div>
-                  ) : null}
-                </Graph>
-              </RightContentBox>
-            </ContentBox>
+            <DeleteNoti>
+              <div />
+              <h3>모든 데이터가 사라집니다.</h3>
+              <h3>삭제하시겠습니까?</h3>
+              <ButtonBox>
+                <button onClick={confirmDelete}>삭제</button>
+                <button onClick={cancleDelete}>취소</button>
+              </ButtonBox>
+            </DeleteNoti>
           </Overlay>
         ) : null}
-      </AnimatePresence>
-      <AnimatePresence>
-        <WordSetBox>
-          {collections.map((collection) => (
-            <CollectionSet
-              key={collection.pk}
-              layoutId={String(collection.pk)}
-              onClick={() => {
-                onSetClicked(collection.pk);
-              }}
-            >
-              <span key={collection.title}>{collection.title}</span>
-              <DeleteButton key={"deleteBox" + collection.pk}>
-                <IoCloseCircleSharp
-                  key={"delete" + collection.pk}
-                  style={{ cursor: "pointer" }}
-                  onClick={(e) => onDelete(e, collection.pk, collection.title)}
-                />
-              </DeleteButton>
-            </CollectionSet>
-          ))}
-        </WordSetBox>
-      </AnimatePresence>
-    </BackGround>
+        <AnimatePresence>
+          {clickedSet ? (
+            <Overlay>
+              <ContentBox layoutId={String(clickedSet.pk)}>
+                <LeftContentBox>
+                  <ContentHeader>
+                    <Blind
+                      onClick={toggleWordBlind}
+                      style={{ marginRight: "90px" }}
+                    >
+                      단어 가리기
+                    </Blind>
+                    <Blind onClick={toggleMeanBlind}>뜻 가리기</Blind>
+                    <span>완료체크</span>
+                  </ContentHeader>
+                  <Content>
+                    {clickedSet && (
+                      <ShowWords list={sliceDatas(clickedSet.content)} />
+                    )}
+                    <PaginatorBox>
+                      <Paginator>
+                        {indexOfFirst != 0 ? (
+                          <IoArrowBackCircleSharp
+                            onClick={prevClick}
+                            style={{ marginRight: "10px", cursor: "pointer" }}
+                          />
+                        ) : null}
+                        {clickedSet &&
+                        indexOfLast < clickedSet.content.length ? (
+                          <IoArrowForwardCircleSharp
+                            onClick={nextClick}
+                            style={{ marginLeft: "10px", cursor: "pointer" }}
+                          />
+                        ) : null}
+                      </Paginator>
+                    </PaginatorBox>
+                  </Content>
+                </LeftContentBox>
+                <RightContentBox>
+                  <AchievementHeader>
+                    <SaveBtn onClick={setFinished}>Save</SaveBtn>
+                    <OnShowAchievement
+                      onClick={() =>
+                        showAchievement(clickedSet.title, Number(setId))
+                      }
+                    >
+                      성취도 보기
+                    </OnShowAchievement>
+                    <CloseBox>
+                      <p>
+                        <IoArrowForwardSharp
+                          style={{
+                            cursor: "pointer",
+                          }}
+                          onClick={() => onCloseClicked()}
+                        />
+                      </p>
+                    </CloseBox>
+                  </AchievementHeader>
+                  <Graph>
+                    {onAchievement ? (
+                      <div>
+                        <ReactApexChart
+                          height="150%"
+                          width="110%"
+                          type="pie"
+                          series={[
+                            curCollection?.content?.length - finishedWords,
+                            finishedWords,
+                          ]}
+                          options={{
+                            labels: ["남은단어", "외운단어"],
+                            tooltip: {
+                              fillSeriesColor: false,
+                              marker: {
+                                show: false,
+                              },
+                            },
+                            plotOptions: {
+                              pie: {
+                                expandOnClick: true,
+                              },
+                            },
+                          }}
+                        />
+                      </div>
+                    ) : null}
+                  </Graph>
+                </RightContentBox>
+              </ContentBox>
+            </Overlay>
+          ) : null}
+        </AnimatePresence>
+        <AnimatePresence>
+          <WordSetBox>
+            {collections.map((collection) => (
+              <CollectionSet
+                key={collection.pk}
+                layoutId={String(collection.pk)}
+                onClick={() => {
+                  onSetClicked(collection.pk);
+                }}
+              >
+                <span key={collection.title}>{collection.title}</span>
+                <DeleteButton key={"deleteBox" + collection.pk}>
+                  <IoCloseCircleSharp
+                    key={"delete" + collection.pk}
+                    style={{ cursor: "pointer" }}
+                    onClick={(e) =>
+                      onDelete(e, collection.pk, collection.title)
+                    }
+                  />
+                </DeleteButton>
+              </CollectionSet>
+            ))}
+          </WordSetBox>
+        </AnimatePresence>
+      </BackGround>
+      <Footer />;
+    </>
   );
 }
 

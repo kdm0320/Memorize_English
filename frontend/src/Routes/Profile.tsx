@@ -8,7 +8,8 @@ import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { baseUrl, fetchUser } from "../api";
 import { isLoggedAtom, IUserInfo, userInfoAtom } from "../atoms";
-import { Error, Noti, Overlay } from "../Components/Others";
+import Footer from "../Components/Footer";
+import { BackGround, Error, Noti, Overlay } from "../Components/Others";
 
 interface IProFileInfo {
   avatar: string;
@@ -55,11 +56,10 @@ const LabelHead = styled.h3``;
 const LabelEx = styled.p``;
 
 const ProfileLabel = styled.div`
+  padding-top: 2%;
   width: 80%;
-  margin-left: 30px;
-  margin-right: 50px;
-  margin-top: 30px;
-  padding-bottom: 13px;
+  margin-left: 2%;
+  padding-bottom: 1%;
   ${LabelHead} {
     font-size: 30px;
     font-weight: bold;
@@ -184,7 +184,7 @@ function Profile() {
           </ProfileNoti>
         </Overlay>
       ) : null}
-      <div>
+      <BackGround>
         <ProfileLabel>
           <LabelHead>Profile settings</LabelHead>
           <LabelEx>Update your name or Email</LabelEx>
@@ -221,7 +221,8 @@ function Profile() {
           <ProflieError>{errors.email?.message}</ProflieError>
           <SaveButton>save</SaveButton>
         </ProfileForm>
-      </div>
+      </BackGround>
+      <Footer />
     </>
   );
 }

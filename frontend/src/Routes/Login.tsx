@@ -19,6 +19,7 @@ import {
   RightBox,
   Wrapper,
 } from "../Components/Others";
+import Footer from "../Components/Footer";
 
 interface ILoginForm {
   username?: string;
@@ -105,72 +106,75 @@ function Login() {
     }, 400);
   };
   return (
-    <Wrapper>
-      <Box>
-        <LeftBox>
-          <Phrase
-            variants={isSignup ? PhraseVariant : undefined}
-            initial="start"
-            animate="end"
-          >
-            Welcome!
-          </Phrase>
-        </LeftBox>
-        <RightBox>
-          {mutation.isError ? (
-            <Error400>
-              아이디 혹은 비밀번호 오류입니다 다시 확인해 주십시오
-            </Error400>
-          ) : null}
-          <Form onSubmit={handleSubmit(onValid)}>
-            <Input
-              {...register("username", { required: "필수 항목입니다." })}
-              placeholder="ID"
+    <>
+      <Wrapper>
+        <Box>
+          <LeftBox>
+            <Phrase
               variants={isSignup ? PhraseVariant : undefined}
               initial="start"
               animate="end"
-            />
-            <LoginError>{errors.username?.message}</LoginError>
-            <Input
-              {...register("password", { required: "필수 항목입니다." })}
-              placeholder="Password"
-              type="password"
-              variants={isSignup ? PhraseVariant : undefined}
-              initial="start"
-              animate="end"
-            />
-            <LoginError>{errors.password?.message}</LoginError>
+            >
+              Welcome!
+            </Phrase>
+          </LeftBox>
+          <RightBox>
+            {mutation.isError ? (
+              <Error400>
+                아이디 혹은 비밀번호 오류입니다 다시 확인해 주십시오
+              </Error400>
+            ) : null}
+            <Form onSubmit={handleSubmit(onValid)}>
+              <Input
+                {...register("username", { required: "필수 항목입니다." })}
+                placeholder="ID"
+                variants={isSignup ? PhraseVariant : undefined}
+                initial="start"
+                animate="end"
+              />
+              <LoginError>{errors.username?.message}</LoginError>
+              <Input
+                {...register("password", { required: "필수 항목입니다." })}
+                placeholder="Password"
+                type="password"
+                variants={isSignup ? PhraseVariant : undefined}
+                initial="start"
+                animate="end"
+              />
+              <LoginError>{errors.password?.message}</LoginError>
 
-            <LoginBtnBox>
-              <Btn
+              <LoginBtnBox>
+                <Btn
+                  variants={isSignup ? PhraseVariant : undefined}
+                  initial="start"
+                  animate="end"
+                >
+                  LOGIN
+                </Btn>
+              </LoginBtnBox>
+            </Form>
+            <AskBox>
+              <IsAccount
                 variants={isSignup ? PhraseVariant : undefined}
                 initial="start"
                 animate="end"
               >
-                LOGIN
-              </Btn>
-            </LoginBtnBox>
-          </Form>
-          <AskBox>
-            <IsAccount
-              variants={isSignup ? PhraseVariant : undefined}
-              initial="start"
-              animate="end"
-            >
-              Don't have a account?
-            </IsAccount>
-            <SignupText
-              onClick={signUpClick}
-              variants={isSignup ? PhraseVariant : undefined}
-              initial="start"
-              animate="end"
-            >
-              Sign up
-            </SignupText>
-          </AskBox>
-        </RightBox>
-      </Box>
-    </Wrapper>
+                Don't have a account?
+              </IsAccount>
+              <SignupText
+                onClick={signUpClick}
+                variants={isSignup ? PhraseVariant : undefined}
+                initial="start"
+                animate="end"
+              >
+                Sign up
+              </SignupText>
+            </AskBox>
+          </RightBox>
+        </Box>
+      </Wrapper>
+      <Footer />
+    </>
   );
 }
 

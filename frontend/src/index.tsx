@@ -35,8 +35,11 @@ footer, header, hgroup, menu, nav, section {
 	display: block;
 }
 body {
+	position: relative;
 	line-height: 1;
 	font-family: 'Source Sans Pro', sans-serif;
+	padding-bottom: 40px;
+	min-height: 100%;
 }
 ol, ul {
 	list-style: none;

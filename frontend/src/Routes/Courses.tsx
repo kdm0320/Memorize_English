@@ -8,6 +8,7 @@ import { fetchUser, fetchWords, putCollection } from "../api";
 import { isLoggedAtom, userInfoAtom } from "../atoms";
 import { BackGround, WordSetBox } from "../Components/Others";
 import { IoHeartOutline, IoHeartSharp } from "react-icons/io5";
+import Footer from "../Components/Footer";
 interface IWordData {
   pk: number;
   title: string;
@@ -90,37 +91,38 @@ function Courses() {
   };
   //
   return (
-    <BackGround>
-      <WordSetBox>
-        {datas?.map((data: IWordData, index) => (
-          <div key={index}>
-            <WordSet key={data.pk + "#"} layoutId={data.pk + "#"}>
-              <FavButton>
-                {isFinished.includes(data.pk) ? (
-                  <IoHeartSharp
-                    onClick={() => deleteFinished(data.pk)}
-                    fontSize={30}
-                    color="rgb(252,28,74)"
-                    cursor="pointer"
-                  />
-                ) : (
-                  <IoHeartOutline
-                    onClick={() => addFinished(data.pk)}
-                    fontSize={30}
-                    cursor="pointer"
-                  />
-                )}
-              </FavButton>
-              <span>{data.title}</span>
-            </WordSet>
+    <>
+      <BackGround>
+        <WordSetBox>
+          {datas?.map((data: IWordData, index) => (
+            <div key={index}>
+              <WordSet key={data.pk + "#"} layoutId={data.pk + "#"}>
+                <FavButton>
+                  {isFinished.includes(data.pk) ? (
+                    <IoHeartSharp
+                      onClick={() => deleteFinished(data.pk)}
+                      fontSize={30}
+                      color="rgb(252,28,74)"
+                      cursor="pointer"
+                    />
+                  ) : (
+                    <IoHeartOutline
+                      onClick={() => addFinished(data.pk)}
+                      fontSize={30}
+                      cursor="pointer"
+                    />
+                  )}
+                </FavButton>
+                <span>{data.title}</span>
+              </WordSet>
 
-            {(index + 1) % 4 === 0 ? <br /> : null}
-          </div>
-        ))}
-      </WordSetBox>
-
-      <AnimatePresence></AnimatePresence>
-    </BackGround>
+              {(index + 1) % 4 === 0 ? <br /> : null}
+            </div>
+          ))}
+        </WordSetBox>
+      </BackGround>
+      <Footer />;
+    </>
   );
 }
 
