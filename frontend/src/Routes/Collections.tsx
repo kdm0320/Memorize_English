@@ -55,7 +55,38 @@ const CollectionSet = styled(motion.div)`
     font-size: 15px;
   }
 `;
-
+const ButtonBox = styled.div``;
+const DeleteNoti = styled(Noti)`
+  justify-content: center;
+  h3 {
+    text-align: center;
+    padding-bottom: 5%;
+    font-size: 110%;
+  }
+  ${ButtonBox} {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+  }
+  button {
+    all: unset;
+    width: 17%;
+    border: 1px solid;
+    border-color: rgb(211, 16, 39);
+    border-radius: 5px;
+    text-align: center;
+    padding-top: 2px;
+    color: white;
+    background-color: rgb(211, 16, 39);
+    cursor: pointer;
+    :hover {
+      box-shadow: 1px 1px gray;
+    }
+    :active {
+      box-shadow: none;
+    }
+  }
+`;
 const DeleteButton = styled.button`
   width: 15%;
   height: 30px;
@@ -65,7 +96,6 @@ const DeleteButton = styled.button`
   font-size: 20px;
   border: 0;
   color: rgb(203, 0, 22);
-  cursor: pointer;
 `;
 
 const ContentBox = styled(motion.div)`
@@ -117,6 +147,12 @@ const Blind = styled.button`
   text-align: center;
 
   cursor: pointer;
+  :hover {
+    box-shadow: 1px 1px gray;
+  }
+  :active {
+    box-shadow: none;
+  }
 `;
 const AllWordBox = styled.div`
   font-family: "Sarabun", sans-serif;
@@ -168,12 +204,16 @@ const Finished = styled.div`
   font-size: 25px;
   overflow: hidden;
 `;
+const PaginatorBox = styled.div`
+  display: flex;
+  width: 100%;
+`;
 const Paginator = styled.div`
   display: flex;
   color: rgb(75, 165, 177);
   margin-top: 2%;
   margin-bottom: 1%;
-  font-size: 170%;
+  font-size: 100%;
 `;
 const RightContentBox = styled.div`
   display: flex;
@@ -186,11 +226,28 @@ const RightContentBox = styled.div`
 
 const AchievementHeader = styled.div`
   display: flex;
+  justify-content: space-between;
   position: fixed;
   padding-top: 1.5vw;
-  padding-left: 15vw;
-  width: 20%;
+  width: 33%;
   height: 5%;
+`;
+const SaveBtn = styled.button`
+  all: unset;
+  width: 15%;
+  padding-top: 2px;
+  border: 1px solid;
+  text-align: center;
+  border-color: rgb(33, 175, 126);
+  background-color: rgb(33, 175, 126);
+  border-radius: 5px;
+  cursor: pointer;
+  :hover {
+    box-shadow: 1px 1px;
+  }
+  :active {
+    box-shadow: none;
+  }
 `;
 const OnShowAchievement = styled.button`
   all: unset;
@@ -200,10 +257,16 @@ const OnShowAchievement = styled.button`
   border: 2px solid;
   border-radius: 10px;
   border-color: white;
-  width: 50%;
+  width: 40%;
   background-color: rgb(241, 174, 45);
   overflow: hidden;
   cursor: pointer;
+  :hover {
+    box-shadow: 1px 1px gray;
+  }
+  :active {
+    box-shadow: none;
+  }
 `;
 const CloseBox = styled.div`
   display: flex;
@@ -213,7 +276,6 @@ const CloseBox = styled.div`
 
   p {
     margin-top: 0.01vw;
-    padding-left: 6vw;
     font-size: 3vw;
     justify-self: right;
   }
@@ -269,6 +331,7 @@ function Collection() {
     unregist();
     setCurrentPage(1);
     setOnAchievement(false);
+    saveFinished();
     navigate(`/collection`);
   };
 
@@ -428,7 +491,6 @@ function Collection() {
           )
         : SetAllFinished((prev) => [...prev, { ...targetFinished }]);
     }
-    console.log(allFinished);
   };
   const saveFinished = () => {
     const newFinished = JSON.stringify(allFinished);
@@ -484,12 +546,15 @@ function Collection() {
     <BackGround>
       {onDeleteNoti ? (
         <Overlay>
-          <Noti>
+          <DeleteNoti>
             <div />
-            <h3>삭제하시겠습니까? 모든 데이터가 사라집니다.</h3>
-            <button onClick={confirmDelete}>삭제</button>
-            <button onClick={cancleDelete}>취소</button>
-          </Noti>
+            <h3>모든 데이터가 사라집니다.</h3>
+            <h3>삭제하시겠습니까?</h3>
+            <ButtonBox>
+              <button onClick={confirmDelete}>삭제</button>
+              <button onClick={cancleDelete}>취소</button>
+            </ButtonBox>
+          </DeleteNoti>
         </Overlay>
       ) : null}
       <AnimatePresence>
@@ -511,24 +576,27 @@ function Collection() {
                   {clickedSet && (
                     <ShowWords list={sliceDatas(clickedSet.content)} />
                   )}
-                  <Paginator>
-                    {indexOfFirst != 0 ? (
-                      <IoArrowBackCircleSharp
-                        onClick={prevClick}
-                        style={{ marginRight: "10px", cursor: "pointer" }}
-                      />
-                    ) : null}
-                    {clickedSet && indexOfLast < clickedSet.content.length ? (
-                      <IoArrowForwardCircleSharp
-                        onClick={nextClick}
-                        style={{ marginLeft: "10px", cursor: "pointer" }}
-                      />
-                    ) : null}
-                  </Paginator>
+                  <PaginatorBox>
+                    <Paginator>
+                      {indexOfFirst != 0 ? (
+                        <IoArrowBackCircleSharp
+                          onClick={prevClick}
+                          style={{ marginRight: "10px", cursor: "pointer" }}
+                        />
+                      ) : null}
+                      {clickedSet && indexOfLast < clickedSet.content.length ? (
+                        <IoArrowForwardCircleSharp
+                          onClick={nextClick}
+                          style={{ marginLeft: "10px", cursor: "pointer" }}
+                        />
+                      ) : null}
+                    </Paginator>
+                  </PaginatorBox>
                 </Content>
               </LeftContentBox>
               <RightContentBox>
                 <AchievementHeader>
+                  <SaveBtn onClick={setFinished}>Save</SaveBtn>
                   <OnShowAchievement
                     onClick={() =>
                       showAchievement(clickedSet.title, Number(setId))
@@ -536,8 +604,6 @@ function Collection() {
                   >
                     성취도 보기
                   </OnShowAchievement>
-                  <button onClick={setFinished}>Test</button>
-                  <button onClick={saveFinished}>save</button>
                   <CloseBox>
                     <p>
                       <IoArrowForwardSharp
@@ -597,6 +663,7 @@ function Collection() {
               <DeleteButton key={"deleteBox" + collection.pk}>
                 <IoCloseCircleSharp
                   key={"delete" + collection.pk}
+                  style={{ cursor: "pointer" }}
                   onClick={(e) => onDelete(e, collection.pk, collection.title)}
                 />
               </DeleteButton>

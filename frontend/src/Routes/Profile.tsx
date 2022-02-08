@@ -27,6 +27,30 @@ const ProflieError = styled(Error)`
   margin-left: 1.2%;
 `;
 
+export const ProfileNoti = styled(Noti)`
+  h3 {
+    align-self: center;
+    padding-top: 15%;
+    padding-bottom: 10%;
+    font-size: 3vh;
+  }
+  button {
+    all: unset;
+    width: 17%;
+    height: 16%;
+    margin-bottom: 6%;
+    padding-top: 1%;
+    align-self: center;
+    text-align: center;
+    border: 1px solid;
+    border-color: transparent;
+    border-radius: 15px;
+    color: white;
+    background-color: rgba(235, 47, 6, 1);
+    cursor: pointer;
+  }
+`;
+
 const LabelHead = styled.h3``;
 const LabelEx = styled.p``;
 
@@ -153,11 +177,11 @@ function Profile() {
       {isLoading || profileMutate.isLoading ? <Loading /> : null}
       {isUpdate ? (
         <Overlay>
-          <Noti>
+          <ProfileNoti>
             <div />
             <h3>저장되었습니다</h3>
             <button onClick={toggleIsUpdate}>완료</button>
-          </Noti>
+          </ProfileNoti>
         </Overlay>
       ) : null}
       <div>

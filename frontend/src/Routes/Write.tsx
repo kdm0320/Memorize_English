@@ -6,7 +6,8 @@ import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { postBoards } from "../api";
 import { isLoggedAtom, userInfoAtom } from "../atoms";
-import { Error, Noti, Overlay } from "../Components/Others";
+import { Error, Overlay } from "../Components/Others";
+import { ProfileNoti } from "./Profile";
 
 interface IFormData {
   title: string;
@@ -111,11 +112,10 @@ function Write() {
     <div>
       {isUpload ? (
         <Overlay>
-          <Noti>
-            <div />
+          <ProfileNoti>
             <h3>저장되었습니다</h3>
             <button onClick={notiUpload}>완료</button>
-          </Noti>
+          </ProfileNoti>
         </Overlay>
       ) : null}
       <Title>
