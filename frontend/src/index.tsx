@@ -7,7 +7,6 @@ import { theme } from "./theme";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 const GlobalStyle = createGlobalStyle`
-@import url("https://fonts.googleapis.com/css2?family=Dongle:wght@300;400&family=Sarabun:ital,wght@0,100;0,300;0,400;1,100;1,200;1,300;1,400&family=Source+Sans+Pro:wght@300&display=swap");
 
   html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -62,6 +61,7 @@ const queryClient = new QueryClient();
 
 ReactDOM.render(
   <React.StrictMode>
+    <head></head>
     <RecoilRoot>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>

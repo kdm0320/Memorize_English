@@ -7,8 +7,6 @@ import SignUp from "./Routes/SignUp";
 import Write from "./Routes/Write";
 import Board from "./Routes/Board";
 import Collection from "./Routes/Collections";
-import Footer from "./Components/Footer";
-
 function App() {
   return (
     <Router>
