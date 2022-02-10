@@ -17,6 +17,16 @@ import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import Footer from "../Components/Footer";
 
+interface IPost {
+  content: string;
+  created: string;
+  is_solved: Boolean;
+  pk: number;
+  title: string;
+  views: number;
+  writer: number;
+}
+
 const Head = styled.h1``;
 const Title = styled.div`
   display: flex;
@@ -228,25 +238,29 @@ function Board() {
   }, []);
   const isLogged = useRecoilValue(isLoggedAtom);
   useEffect(() => {
+    //로그인이 안되어있는 경우 로그인창으로 리다이렉트
     if (!isLogged) navigate("/");
   }, [isLogged]);
   //각 게시물 보여주기
   const navigate = useNavigate();
   const { postId } = useParams();
   const [onPost, setOnPost] = useState(false);
-  const clickedPost = postId && posts.find((set) => String(set.pk) === postId);
+  const clickedPost: IPost =
+    postId && posts.find((set) => String(set.pk) === postId);
   const toggleOnPost = () => setOnPost((prev) => !prev);
   const [views, setViews] = useState(0); // 조회수 설정
   const onPostClick = (postId: number, views: number) => {
     toggleOnPost();
     setViews(views);
-    if (clickedPost?.writer != userInfo.pk) {
-      setViews((prev) => views + 1);
+    if (clickedPost) {
+      if (clickedPost?.writer != Number(userInfo.pk)) {
+        setViews((prev) => views + 1);
+      }
     }
     navigate(`/qna/${postId}`);
   };
 
-  const addViewsMutate = useMutation(putAddBoardViews);
+  const addViewsMutate = useMutation(putAddBoardViews); //조회수 업그레이드 Mutate
   const onCloseClick = (postId: number) => {
     unregister("title");
     unregister("content");
@@ -311,7 +325,7 @@ function Board() {
                     </tr>
                   </PostBody>
                 </PostTable>
-                {clickedPost?.writer === userInfo.pk ? (
+                {clickedPost?.writer === Number(userInfo.pk) ? (
                   <div>
                     <EditBtn
                       type="button"
