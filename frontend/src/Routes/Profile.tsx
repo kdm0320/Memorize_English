@@ -111,6 +111,7 @@ function Profile() {
   const isLogged = useRecoilValue(isLoggedAtom);
   const navigate = useNavigate();
   useEffect(() => {
+    //로그인이 안되어있는 경우 로그인창으로 리다이렉트
     if (!isLogged) navigate("/");
   }, [isLogged]);
   const userInfo = useRecoilValue(userInfoAtom);

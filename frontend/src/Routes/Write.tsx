@@ -86,6 +86,7 @@ function Write() {
   const writeMutate = useMutation(postBoards);
   const isLogged = useRecoilValue(isLoggedAtom);
   useEffect(() => {
+    //로그인이 안되어있는 경우 로그인창으로 리다이렉트
     if (!isLogged) navigate("/");
   }, [isLogged]);
   const [isUpload, setIsUpload] = useState(false);

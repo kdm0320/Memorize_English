@@ -28,6 +28,7 @@ import Footer from "../Components/Footer";
 axios.defaults.xsrfCookieName = "csrftoken";
 
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
+//헤더에 csrfToken 추가함으로서 장고 csrf에러 해결
 
 interface ILoginForm {
   username?: string;
@@ -72,6 +73,7 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    //로그인이 되어있는 경우 바로 학습관리로 리다이렉트
     if (isLoggedIn) navigate("/collection");
   }, []);
   const onValid = (data: ILoginForm) => {

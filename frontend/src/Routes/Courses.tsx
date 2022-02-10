@@ -63,6 +63,7 @@ function Courses() {
   const isLogged = useRecoilValue(isLoggedAtom);
   const navigate = useNavigate();
   useEffect(() => {
+    //로그인이 안되어있는 경우 로그인창으로 리다이렉트
     if (!isLogged) navigate("/");
   }, [isLogged]);
 
@@ -73,20 +74,22 @@ function Courses() {
   );
   const datas: Array<any> | undefined = data?.results;
   //하트 구현
-  const mutation = useMutation(putCollection);
-  const [isFinished, setIsFinished] = useState<any[]>([]);
+  const mutation = useMutation(putCollection); // collection 업데이트 Mutate
+  const [allChosen, setAllChosen] = useState<any[]>([]);
   useEffect(() => {
+    //유저 컬렉션 불러옴
     fetchUser(userInfo).then((value: IValue) => {
-      setIsFinished(value.collection);
+      setAllChosen(value.collection);
     });
   }, []);
 
-  const addFinished = (wordPk: number) => {
-    setIsFinished((prev) => [...prev, wordPk]);
+  const addChoice = (wordPk: number) => {
+    setAllChosen((prev) => [...prev, wordPk]);
     mutation.mutate({ userInfo, wordPk });
   };
-  const deleteFinished = (wordPk: number) => {
-    setIsFinished((prev) => prev.filter((set) => set != wordPk));
+
+  const deleteChoice = (wordPk: number, title: string) => {
+    setAllChosen((prev) => prev.filter((set) => set != wordPk));
     mutation.mutate({ userInfo, wordPk });
   };
   //
@@ -98,16 +101,16 @@ function Courses() {
             <div key={index}>
               <WordSet key={data.pk + "#"} layoutId={data.pk + "#"}>
                 <FavButton>
-                  {isFinished.includes(data.pk) ? (
+                  {allChosen.includes(data.pk) ? (
                     <IoHeartSharp
-                      onClick={() => deleteFinished(data.pk)}
+                      onClick={() => deleteChoice(data.pk, data.title)}
                       fontSize={30}
                       color="rgb(252,28,74)"
                       cursor="pointer"
                     />
                   ) : (
                     <IoHeartOutline
-                      onClick={() => addFinished(data.pk)}
+                      onClick={() => addChoice(data.pk)}
                       fontSize={30}
                       cursor="pointer"
                     />
