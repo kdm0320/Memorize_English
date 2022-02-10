@@ -5,7 +5,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import ReactApexChart from "react-apexcharts";
-import "react-loading-skeleton/dist/skeleton.css";
 import {
   fetchCollections,
   fetchUser,
@@ -315,17 +314,20 @@ function Collection() {
   const userInfo = useRecoilValue(userInfoAtom);
 
   //유저 단어 콜렉션 Fetch 함수
-  const [collections, setCollections] = useState<any[]>([]);
+  const [userCollections, setUserCollections] = useState<Array<any>>([]);
   useEffect(() => {
     fetchCollections(userInfo).then((value) => {
-      setCollections(value);
+      const temp = value;
+      setUserCollections(value);
+      console.log(Array.isArray(value));
+      console.log(value);
     });
   }, []);
 
   //단어세트 클릭시 설정
   const { setId } = useParams();
   const clickedSet =
-    setId && collections.find((set) => String(set.pk) === setId);
+    setId && userCollections.find((set) => String(set.pk) === setId);
   const onSetClicked = (setId: number) => {
     navigate(`/collection/${setId}`);
   };
@@ -356,7 +358,7 @@ function Collection() {
   };
   const confirmDelete = () => {
     const wordPk = targetSetNumberRef.current;
-    setCollections((prev) => prev.filter((set) => set.pk != wordPk));
+    setUserCollections((prev) => prev.filter((set) => set.pk != wordPk));
     mutation.mutate({ userInfo, wordPk });
     const newFinished = JSON.stringify(allFinished);
     finishedMutation.mutate({ userInfo, newFinished });
@@ -399,7 +401,7 @@ function Collection() {
   const [finishedWords, setFinishedWords] = useState(0);
   const toggleAchievement = () => setOnAchievement((prev) => !prev);
   const showAchievement = (wordTitle: string, pk: number) => {
-    const temp = collections.filter((set) => set.pk === pk);
+    const temp = userCollections.filter((set) => set.pk === pk);
     setCurCollection(temp[0]);
     setFinishedWords(targetFinished.content.length);
     toggleAchievement();
@@ -655,7 +657,7 @@ function Collection() {
         </AnimatePresence>
         <AnimatePresence>
           <WordSetBox>
-            {collections.map((collection) => (
+            {userCollections.map((collection) => (
               <CollectionSet
                 key={collection.pk}
                 layoutId={String(collection.pk)}

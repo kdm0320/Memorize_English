@@ -25,6 +25,10 @@ import {
 } from "../Components/Others";
 import Footer from "../Components/Footer";
 
+axios.defaults.xsrfCookieName = "csrftoken";
+
+axios.defaults.xsrfHeaderName = "X-CSRFToken";
+
 interface ILoginForm {
   username?: string;
   password?: string;
