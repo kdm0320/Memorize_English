@@ -161,3 +161,7 @@ cython_debug/
 >>>>>>> 3892110d87d48a468a77426bdc33451a24dc34cc
 extractor.py
 # production
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
