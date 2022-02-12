@@ -11,6 +11,7 @@ pyjwt = "*"
 openpyxl = "*"
 django-environ = "*"
 awsebcli = "*"
+mysqlclient = "*"
 
 [dev-packages]
 black = "*"

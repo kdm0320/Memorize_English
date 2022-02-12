@@ -27,7 +27,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = bool(env('DEBUG'))
 
 # ALLOWED_HOSTS = ['*']
 CORS_ALLOW_HEADERS = ['*']
@@ -84,22 +84,30 @@ TEMPLATES = [
         },
     },
 ]
-# WEBPACK_LOADER = { 'DEFAULT': { 'BUNDLE_DIR_NAME': 'bundles/', 'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.dev.json'), } }
 
 WSGI_APPLICATION = "config.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
-
-
+else:
+    DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.mysql",
+                "NAME": os.environ.get("RDS_NAME"),
+                "USER": os.environ.get("RDS_USER"),
+                "PASSWORD": os.environ.get("RDS_PASSWORD"),
+                "HOST": os.environ.get("RDS_HOST"),
+                "PORT": os.environ.get("RDS_PORT")
+            }
+        }
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
