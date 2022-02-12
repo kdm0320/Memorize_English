@@ -89,32 +89,31 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 
-# Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-# if DEBUG:
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.sqlite3",
-#             "NAME": BASE_DIR / "db.sqlite3",
-#         }
-#     }
-# else:
 pymysql.install_as_MySQLdb()
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": 'memovoca-backend',
-        "USER": "adminkMin",
-        "PASSWORD": "dhfpswl1",
-        "HOST": "memovoca-backend.cdcjy0cbfvgv.ap-northeast-2.rds.amazonaws.com",
-        "PORT": "3306"
-        # "NAME": os.environ.get("RDS_NAME"),
-        # "USER": os.environ.get("RDS_USER"),
-        # "PASSWORD": os.environ.get("RDS_PASSWORD"),
-        # "HOST": os.environ.get("RDS_HOST"),
-        # "PORT": os.environ.get("RDS_PORT")
+
+if DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            # "NAME": 'memovoca-backend',
+            # "USER": "adminkMin",
+            # "PASSWORD": "dhfpswl1",
+            # "HOST": "memovoca-backend.cdcjy0cbfvgv.ap-northeast-2.rds.amazonaws.com",
+            # "PORT": "3306"
+            "NAME": os.environ.get("RDS_NAME"),
+            "USER": os.environ.get("RDS_USER"),
+            "PASSWORD": os.environ.get("RDS_PASSWORD"),
+            "HOST": os.environ.get("RDS_HOST"),
+            "PORT": os.environ.get("RDS_PORT")
+        }
+    }
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
