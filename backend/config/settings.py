@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+from distutils.debug import DEBUG
 from pathlib import Path
 import os,environ
 import pymysql
@@ -28,9 +29,9 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(env('DEBUG'))
-
-# ALLOWED_HOSTS = ['*']
+# DEBUG = bool(env('DEBUG'))
+DEBUG = True
+ALLOWED_HOSTS = ['*']
 CORS_ALLOW_HEADERS = ['*']
 CORS_ORIGIN_WHITELIST = ("http://localhost:3000",)
 
@@ -98,22 +99,25 @@ if DEBUG:
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.mysql",
-            # "NAME": 'memovoca-backend',
-            # "USER": "adminkMin",
-            # "PASSWORD": "dhfpswl1",
-            # "HOST": "memovoca-backend.cdcjy0cbfvgv.ap-northeast-2.rds.amazonaws.com",
-            # "PORT": "3306"
-            "NAME": os.environ.get("RDS_NAME"),
-            "USER": os.environ.get("RDS_USER"),
-            "PASSWORD": os.environ.get("RDS_PASSWORD"),
-            "HOST": os.environ.get("RDS_HOST"),
-            "PORT": os.environ.get("RDS_PORT")
-        }
+# else:
+    # ALLOWED_HOSTS = ['*']
+    # CORS_ALLOW_HEADERS = ['*']
+    # CORS_ORIGIN_WHITELIST = ("http://localhost:3000",)
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME": 'memovoca-backend',
+#         "USER": "adminkMin",
+#         "PASSWORD": "dhfpswl1",
+#         "HOST": "memovoca-backend.cdcjy0cbfvgv.ap-northeast-2.rds.amazonaws.com",
+#         "PORT": "3306"
+        # "NAME": os.environ.get("RDS_NAME"),
+        # "USER": os.environ.get("RDS_USER"),
+        # "PASSWORD": os.environ.get("RDS_PASSWORD"),
+        # "HOST": os.environ.get("RDS_HOST"),
+        # "PORT": os.environ.get("RDS_PORT")
     }
+}
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
