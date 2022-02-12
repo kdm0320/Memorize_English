@@ -30,8 +30,8 @@ SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = bool(env('DEBUG'))
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+DEBUG = False
+ALLOWED_HOSTS = ['memovoca-backend-dev.ap-northeast-2.elasticbeanstalk.com']
 CORS_ALLOW_HEADERS = ['*']
 CORS_ORIGIN_WHITELIST = ("http://localhost:3000",)
 
@@ -90,32 +90,27 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 
-pymysql.install_as_MySQLdb()
+# pymysql.install_as_MySQLdb()
 
-if DEBUG:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
+# if DEBUG:
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.sqlite3",
+#             "NAME": BASE_DIR / "db.sqlite3",
+#         }
+#     }
 # else:
     # ALLOWED_HOSTS = ['*']
     # CORS_ALLOW_HEADERS = ['*']
     # CORS_ORIGIN_WHITELIST = ("http://localhost:3000",)
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.mysql",
-#         "NAME": 'memovoca-backend',
-#         "USER": "adminkMin",
-#         "PASSWORD": "dhfpswl1",
-#         "HOST": "memovoca-backend.cdcjy0cbfvgv.ap-northeast-2.rds.amazonaws.com",
-#         "PORT": "3306"
-        # "NAME": os.environ.get("RDS_NAME"),
-        # "USER": os.environ.get("RDS_USER"),
-        # "PASSWORD": os.environ.get("RDS_PASSWORD"),
-        # "HOST": os.environ.get("RDS_HOST"),
-        # "PORT": os.environ.get("RDS_PORT")
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.environ.get("RDS_NAME"),
+        "USER": os.environ.get("RDS_USER"),
+        "PASSWORD": os.environ.get("RDS_PASSWORD"),
+        "HOST": os.environ.get("RDS_HOST"),
+        "PORT": os.environ.get("RDS_PORT")
     }
 }
 # Password validation
