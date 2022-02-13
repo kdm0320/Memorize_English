@@ -13,25 +13,22 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from distutils.debug import DEBUG
 from pathlib import Path
 import os,environ
-import pymysql
+import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-env = environ.Env(
-    # set casting, default value
-    DEBUG=(bool, False)
-)
+
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = bool(env('DEBUG'))
-DEBUG = True
-ALLOWED_HOSTS = ['memovoca-backend-dev.ap-northeast-2.elasticbeanstalk.com']
+DEBUG = False
+ALLOWED_HOSTS = ['*']
 CORS_ALLOW_HEADERS = ['*']
 CORS_ORIGIN_WHITELIST = ("http://localhost:3000",)
 
@@ -53,11 +50,13 @@ PROJECT_APPS = [
 THIRD_PARTY_APPS = [
     "rest_framework",
     "corsheaders",
+    "dj_database_url"
 ]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -92,27 +91,13 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # pymysql.install_as_MySQLdb()
 
-# if DEBUG:
-    # DATABASES = {
-    #     "default": {
-    #         "ENGINE": "django.db.backends.sqlite3",
-    #         "NAME": BASE_DIR / "db.sqlite3",
-    #     }
-    # }
-# else:
-    # ALLOWED_HOSTS = ['*']
-    # CORS_ALLOW_HEADERS = ['*']
-    # CORS_ORIGIN_WHITELIST = ("http://localhost:3000",)
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.mysql",
-#         "NAME": os.environ.get("RDS_NAME"),
-#         "USER": os.environ.get("RDS_USER"),
-#         "PASSWORD": os.environ.get("RDS_PASSWORD"),
-#         "HOST": os.environ.get("RDS_HOST"),
-#         "PORT": os.environ.get("RDS_PORT")
-#     }
-# }
+DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
@@ -173,3 +158,7 @@ if not DEBUG:
     REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = [
         "rest_framework.renderers.JSONRenderer"
     ]
+
+# Heroku: Update database configuration from $DATABASE_URL.
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
