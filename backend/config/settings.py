@@ -26,8 +26,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = bool(env('DEBUG'))
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['*']
 CORS_ALLOW_HEADERS = ['*']
 CORS_ORIGIN_WHITELIST = ("http://localhost:3000",)
