@@ -64,7 +64,7 @@ function Header() {
       <Nav>
         <Items>
           <Item>
-            <Link to="/qna">QnA</Link>
+            <Link to="/qna">버그 리포트</Link>
           </Item>
           <Item>
             <Link to="/collection">학습관리</Link>
