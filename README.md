@@ -7,15 +7,17 @@
    단어와 뜻을 가리는 기능을 이용해 암기에 도움을 주고  
    외운 단어 체크 및 자신의 성취도를 확인 할 수 있습니다.
 
-2. 프론트와 백엔드를 분리했으며 백엔드는 DRF를 이용해 RESTful하게 구성했습니다.
+2. 프론트와 백엔드를 분리해 배포용 서버와 개발용 서버를 분리했습니다.
+
+3. 백엔드는 DRF를 이용해 RESTful하게 구성했습니다.
 
 ---
 
 ## URL
 
 - ### 프로젝트 URL : https://memovoca.shop
-- ### Frontend : https://github.com/kdm0320/Memorize_English_Frontend.git
-- ### Backend: https://github.com/kdm0320/Memorize_English_Backend.git
+- ### Frontend(배포용) : https://github.com/kdm0320/Memorize_English_Frontend.git
+- ### Backend(배포용): https://github.com/kdm0320/Memorize_English_Backend.git
 
 ---
 
