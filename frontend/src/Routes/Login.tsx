@@ -2,12 +2,11 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { baseUrl } from "../api";
 import { isLoggedAtom, userInfoAtom } from "../atoms";
 import styled from "styled-components";
-import { motion } from "framer-motion";
 import {
   AskBox,
   Box,

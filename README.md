@@ -13,6 +13,13 @@
 
 ---
 
+## Update
+
+- Login 페이지 모바일에서 깨져 보이는 현상 fix
+- 게시판 본문 작성시 작성문 잘려 보이는 현상 fix
+
+---
+
 ## URL
 
 - ### 프로젝트 URL : https://memovoca.shop

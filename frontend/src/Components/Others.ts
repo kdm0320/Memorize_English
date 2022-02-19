@@ -44,8 +44,8 @@ export const Wrapper = styled.div`
 `;
 
 export const Box = styled(motion.div)`
-  width: 800px;
-  height: 450px;
+  width: 45%;
+  height: 50%;
   display: flex;
   grid-template-columns: repeat(2, 1fr);
   background-color: rgba(255, 255, 255, 0.2);
@@ -55,6 +55,7 @@ export const Box = styled(motion.div)`
 
 export const LeftBox = styled(Box)`
   width: 100%;
+  height: 100%;
   border-radius: 40px 0px 0px 40px;
   justify-content: center;
   text-align: center;
@@ -68,7 +69,7 @@ export const PhraseBox = styled(motion.div)`
   display: flex;
   justify-content: center;
   text-align: center;
-  margin-top: 150px;
+  margin-top: 30%;
 `;
 export const RightBox = styled(LeftBox)`
   background-color: whitesmoke;
