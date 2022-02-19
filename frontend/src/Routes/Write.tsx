@@ -37,7 +37,7 @@ const Title = styled.div`
 `;
 
 const ContentTitle = styled.input``;
-const Content = styled.div``;
+const Content = styled.input``;
 const SubmitButton = styled.button``;
 const WriteForm = styled.form`
   display: flex;
@@ -60,7 +60,7 @@ const WriteForm = styled.form`
     border-color: black;
     border-width: 1px;
     border-style: outset;
-    justify-content: center;
+    text-align: center;
   }
   ${SubmitButton} {
     all: unset;
@@ -134,13 +134,11 @@ function Write() {
           placeholder="제목을 입력하세요"
         />
         <WriteError>{errors?.title?.message}</WriteError>
-        <Content>
-          <input
-            {...register("content", { required: "필수 입력 항목입니다." })}
-            placeholder="내용을 입력하세요"
-            style={{ border: "0", outline: "0" }}
-          />
-        </Content>
+        <Content
+          {...register("content", { required: "필수 입력 항목입니다." })}
+          placeholder="내용을 입력하세요"
+        />
+
         <WriteError>{errors?.content?.message}</WriteError>
         <SubmitButton>작성</SubmitButton>
       </WriteForm>
